@@ -203,13 +203,13 @@ const BoardText = styled.h4`
   border-radius: 5px;
   color: ${({ color }) => color};
   display: flex;
-  font-sie: 16px;
+  font-size: 20px;
   height: 45px;
   justify-content: center;
   margin: 0;
-  text-shadow: rgba(255, 255, 255, 0.6) 0px 1px 5px;
+  text-shadow: rgba(255, 255, 255, 0.8) 2px 2px 3px;
   @media (${MEDIUM_RESPONSIVE_BREAK}) {
-    font-size: 14px;
+    font-size: 15px;
   }
   @media (${SMALL_RESPONSIVE_BREAK}) {
     font-size: 12px;

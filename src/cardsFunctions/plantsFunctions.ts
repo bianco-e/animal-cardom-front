@@ -1,6 +1,21 @@
 import { IHandsState } from "../context/HandsContext";
 import { HandKey, IAnimal, Poisoned } from "../interfaces";
 
+const updateCardBleeding = (
+  arr: IAnimal[],
+  animalToTreat: IAnimal,
+  isBleeding: boolean
+): IAnimal[] => {
+  return arr.map((card) => {
+    if (card === animalToTreat) {
+      return {
+        ...card,
+        bleeding: isBleeding,
+      };
+    } else return card;
+  });
+};
+
 const poisonCardInAHand = (
   arr: IAnimal[],
   poisoned: Poisoned,
@@ -155,6 +170,23 @@ const withaniaFn = (state: IHandsState, hand: HandKey): IHandsState => {
   } else return state;
 };
 
+const cactusFn = (state: IHandsState, hand: HandKey): IHandsState => {
+  const { animalToTreat, hands } = state;
+  if (hands[hand].includes(animalToTreat!)) {
+    const newHand = updateCardBleeding(hands[hand], animalToTreat!, true);
+    return setHandInState(state, hand, newHand);
+  } else return state;
+};
+
+const horsetailFn = (state: IHandsState, hand: HandKey): IHandsState => {
+  const { animalToTreat, hands } = state;
+  const otherHand = hand === "pc" ? "user" : "pc";
+  if (hands[otherHand].includes(animalToTreat!) && animalToTreat!.bleeding) {
+    const newHand = updateCardBleeding(hands[otherHand], animalToTreat!, false);
+    return setHandInState(state, otherHand, newHand);
+  } else return state;
+};
+
 export default function getPlantFn(name: string) {
   switch (name) {
     case "Ricinum":
@@ -169,6 +201,10 @@ export default function getPlantFn(name: string) {
       return coffeeFn;
     case "Withania":
       return withaniaFn;
+    case "Cactus":
+      return cactusFn;
+    case "Horsetail":
+      return horsetailFn;
     default:
       return (state: IHandsState, hand: HandKey) => state;
   }

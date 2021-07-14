@@ -128,4 +128,5 @@ export const audioFiles = {
   healing: new Audio("/audio/healing-sound-effect.mp3"),
   paralyze: new Audio("/audio/paralyze-sound-effect.mp3"),
   poison: new Audio("/audio/poison-sound-effect.mp3"),
+  puncture: new Audio("/audio/claw-sound-effect.mp3"),
 };

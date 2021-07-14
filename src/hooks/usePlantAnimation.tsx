@@ -10,6 +10,7 @@ import {
   audioFiles,
 } from "../animations/plant-animations";
 import { useContext } from "react";
+import { injuryAnimation } from "../animations/card-animations";
 
 interface IProps {
   name: string;
@@ -67,11 +68,22 @@ const plantsAnimationsData: PlantsData = {
     animation: healingAnimation,
     img: "/images/plants/yellow-flash.png",
   },
+  Cactus: {
+    audio: audioFiles.puncture,
+    animation: injuryAnimation,
+    img: "/images/svg/blood-splatter.svg",
+  },
+  Horsetail: {
+    audio: audioFiles.healing,
+    animation: cleaningAnimation,
+    img: "/images/plants/yellow-stars.png",
+  },
 };
 
 export default function usePlantAnimation({ name, soundState }: IProps) {
-  const [animationProps, setAnimationProps] =
-    useState<AnimationProps | undefined>();
+  const [animationProps, setAnimationProps] = useState<
+    AnimationProps | undefined
+  >();
   const [state] = useContext(HandsContext);
 
   useEffect(() => {

@@ -48,7 +48,7 @@ export default function NavBar({
   };
 
   const handleLogin = () => {
-    const guest = localStorage.getItem("guest");
+    const guest = localStorage.getItem("ac-guest-name");
     const currentUtm = getUtm(location.search);
     const visit = {
       ...(auth_id ? { auth_id } : {}),

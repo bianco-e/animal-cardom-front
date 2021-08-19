@@ -11,6 +11,7 @@ import { trackAction } from "../queries/tracking";
 import { getUtm } from "../utils";
 
 export default function WelcomePage() {
+  const userAgent = navigator.userAgent;
   const { user, isAuthenticated, isLoading } = useAuth0();
   const location = useLocation();
   const history = useHistory();
@@ -21,7 +22,7 @@ export default function WelcomePage() {
   const isMobile = () => {
     if (
       /Android|webOS|iPhone|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-        navigator.userAgent
+        userAgent
       )
     ) {
       setModal("mobileDetected");
@@ -30,17 +31,16 @@ export default function WelcomePage() {
 
   useEffect(() => {
     isMobile();
-    const guest = localStorage.getItem("guest");
+    const guest = localStorage.getItem("ac-guest-name");
     if (guest) {
       setInputValue(guest);
     }
-  }, []);
+  }, []); //eslint-disable-line
 
   useEffect(() => {
     if (!isLoading) {
       const currentUtm = getUtm(location.search);
-      const guest = localStorage.getItem("guest");
-      const userAgent = navigator.userAgent;
+      const guest = localStorage.getItem("ac-guest-name");
       const visit = {
         action: "visit-landing",
         ...(user?.sub ? { auth_id: user.sub } : {}),
@@ -54,11 +54,14 @@ export default function WelcomePage() {
 
   const goToPlay = () => {
     if (inputValue !== "") {
-      localStorage.setItem("guest", inputValue);
+      localStorage.setItem("ac-guest-name", inputValue);
+      const currentUtm = getUtm(location.search);
       trackAction({
         action: "play-as-guest-button",
         guest_name: inputValue,
         ...(user?.sub ? { auth_id: user.sub } : {}),
+        ...(userAgent ? { user_agent: userAgent } : {}),
+        ...(currentUtm ? { utm: currentUtm } : {}),
       });
       history.push(`/play`);
       setInputValue("");

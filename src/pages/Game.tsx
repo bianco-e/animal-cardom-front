@@ -62,7 +62,7 @@ export default function App() {
     setIsLoading(true);
     if (!pathname.startsWith("/game")) {
       // is game for guests
-      const guest = localStorage.getItem("guest");
+      const guest = localStorage.getItem("ac-guest-name");
       guest ? setUserName(guest) : history.push("/");
       newTerrain().then((terrainRes) => {
         if (terrainRes && terrainRes.name) {

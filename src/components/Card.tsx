@@ -109,13 +109,19 @@ export default function Card({
         <span>{species}</span>
       </CornerIconContainer>
       {!targeteable && (
-        <CornerIconContainer className="animal-status">
+        <CornerIconContainer
+          className="animal-status"
+          title="This animal is untargeteable"
+        >
           <span>{`\u{1F6AB}`}</span>
         </CornerIconContainer> //unicode for emoji
       )}
       {bleeding && (
-        <CornerIconContainer className="animal-status">
-          <Image className="bleeding-drop" src={utilitiesIcons.blood} />
+        <CornerIconContainer
+          className="animal-status"
+          title="This animal is bleeding"
+        >
+          <Image className="blood-drop" src={utilitiesIcons.blood} />
         </CornerIconContainer>
       )}
 
@@ -394,7 +400,7 @@ const CornerIconContainer = styled.div`
   }
 `;
 const Image = styled.img`
-  &.bleeding-drop {
+  &.blood-drop {
     height: 20px;
     width: 20px;
     @media (${SMALL_RESPONSIVE_BREAK}) {

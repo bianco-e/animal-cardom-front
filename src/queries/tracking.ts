@@ -2,6 +2,7 @@ import { API_BASE_URL, IS_PRODUCTION } from "../utils/constants";
 import { ACPost } from "./user";
 interface Visit {
   auth_id?: string;
+  user_agent?: string;
   utm?: string;
   guest_name?: string;
   action: string;

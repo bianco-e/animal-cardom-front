@@ -40,11 +40,13 @@ export default function WelcomePage() {
     if (!isLoading) {
       const currentUtm = getUtm(location.search);
       const guest = localStorage.getItem("guest");
+      const userAgent = navigator.userAgent;
       const visit = {
         action: "visit-landing",
         ...(user?.sub ? { auth_id: user.sub } : {}),
         ...(currentUtm ? { utm: currentUtm } : {}),
         ...(guest ? { guest_name: guest } : {}),
+        ...(userAgent ? { user_agent: userAgent } : {}),
       };
       trackAction(visit);
     }

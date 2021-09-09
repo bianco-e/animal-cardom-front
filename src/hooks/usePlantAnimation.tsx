@@ -17,7 +17,7 @@ interface IProps {
   soundState: string | null;
 }
 
-interface AnimationProps {
+export interface AnimationProps {
   animation: FlattenSimpleInterpolation;
   src: string;
   fullWidth?: boolean;
@@ -85,6 +85,14 @@ export default function usePlantAnimation({ name, soundState }: IProps) {
     AnimationProps | undefined
   >();
   const [state] = useContext(HandsContext);
+
+  useEffect(() => {
+    if (animationProps) {
+      setTimeout(() => {
+        setAnimationProps(undefined);
+      }, 910);
+    }
+  }, [animationProps]);
 
   useEffect(() => {
     if (state.treatedAnimal?.name === name && state.usedPlants.length > 0) {

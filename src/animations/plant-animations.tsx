@@ -107,19 +107,19 @@ const healing = keyframes`
 `;
 
 export const poisonAnimation = css`
-  animation: 0.85s ${poison} linear;
+  animation: 0.9s ${poison} linear;
 `;
 export const paralyzeAnimation = css`
-  animation: 0.85s ${paralyze} linear;
+  animation: 0.9s ${paralyze} linear;
 `;
 export const buffAnimation = css`
-  animation: 0.85s ${buff} linear;
+  animation: 0.9s ${buff} linear;
 `;
 export const cleaningAnimation = css`
-  animation: 1s ${cleaning} linear;
+  animation: 0.9s ${cleaning} linear;
 `;
 export const healingAnimation = css`
-  animation: 1s ${healing} linear;
+  animation: 0.9s ${healing} linear;
 `;
 
 export const audioFiles = {

@@ -123,6 +123,21 @@ const OptionsContainer = styled.div`
   top: 105%;
   width: 100%;
   z-index: 10;
+
+  ::-webkit-scrollbar {
+    width: 5px;
+  }
+  ::-webkit-scrollbar-track {
+    background: ${({ theme }) => theme.light_brown};
+    border-radius: 0 5px 5px 0;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: ${({ theme }) => theme.xp_secondary_violet};
+    border-radius: 0 5px 5px 0;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: ${({ theme }) => theme.xp_primary_violet};
+  }
 `;
 const StyledOption = styled.span`
   align-items: center;

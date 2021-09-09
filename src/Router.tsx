@@ -7,10 +7,12 @@ import Menu from "./pages/Menu";
 import Profile from "./pages/Profile";
 import WelcomePage from "./pages/WelcomePage";
 import FeedbackPage from "./pages/FeedbackPage";
+import ScrollToTop from "./ScrollToTop";
 
 const MainRouter = () => {
   return (
     <BrowserRouter>
+      <ScrollToTop />
       <Route exact path="/" render={() => <WelcomePage />} />
       <Route exact path="/play" render={() => <Game />} />
       <Route exact path="/game" render={() => <Game />} />

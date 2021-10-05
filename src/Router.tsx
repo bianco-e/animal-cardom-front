@@ -2,6 +2,7 @@ import { BrowserRouter, Route } from "react-router-dom";
 import Campaign from "./pages/Campaign";
 import Collection from "./pages/Collection";
 import ErrorPage from "./pages/ErrorPage";
+import Analytics from "./pages/Analytics";
 import Game from "./pages/Game";
 import Menu from "./pages/Menu";
 import Profile from "./pages/Profile";
@@ -14,8 +15,8 @@ const MainRouter = () => {
     <BrowserRouter>
       <ScrollToTop />
       <Route exact path="/" render={() => <WelcomePage />} />
-      <Route exact path="/play" render={() => <Game />} />
-      <Route exact path="/game" render={() => <Game />} />
+      <Route exact path="/analytics" render={() => <Analytics />} />
+      <Route exact path={["/play", "/game"]} render={() => <Game />} />
       <Route exact path="/menu" render={() => <Menu />} />
       <Route exact path="/campaign" render={() => <Campaign />} />
       <Route exact path="/profile" render={() => <Profile />} />

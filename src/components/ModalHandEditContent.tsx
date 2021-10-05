@@ -57,6 +57,23 @@ export default function ModalHandEditContent({
         <Spinner />
       ) : (
         <>
+          <Container>
+            <Card
+              attack={enteringAnimal.attack}
+              belongsToUser={false}
+              bleeding={enteringAnimal.bleeding}
+              species={enteringAnimal.species}
+              image={enteringAnimal.image}
+              key={enteringAnimal.name}
+              life={enteringAnimal.life}
+              opacityForPreview="1"
+              paralyzed={enteringAnimal.paralyzed}
+              poisoned={enteringAnimal.poisoned}
+              skill={enteringAnimal.skill}
+              name={enteringAnimal.name}
+              targeteable={enteringAnimal.targeteable}
+            />
+          </Container>
           <Text>
             Select an animal to switch for <b>{enteringAnimal.name}</b>
           </Text>
@@ -94,23 +111,6 @@ export default function ModalHandEditContent({
               );
             })}
           </Container>
-          <Container>
-            <Card
-              attack={enteringAnimal.attack}
-              belongsToUser={false}
-              bleeding={enteringAnimal.bleeding}
-              species={enteringAnimal.species}
-              image={enteringAnimal.image}
-              key={enteringAnimal.name}
-              life={enteringAnimal.life}
-              opacityForPreview="1"
-              paralyzed={enteringAnimal.paralyzed}
-              poisoned={enteringAnimal.poisoned}
-              skill={enteringAnimal.skill}
-              name={enteringAnimal.name}
-              targeteable={enteringAnimal.targeteable}
-            />
-          </Container>
         </>
       )}
       <ACButton fWeight="bold" onClick={handleConfirm}>
@@ -135,7 +135,6 @@ const Container = styled.div`
   align-items: center;
   display: flex;
   justify-content: space-around;
-  margin-top: 20px;
   width: 100%;
   > button {
     cursor: default;
@@ -174,5 +173,6 @@ const Container = styled.div`
   }
 `;
 const Text = styled.span`
+  margin: 20px 0;
   font-size: 18px;
 `;

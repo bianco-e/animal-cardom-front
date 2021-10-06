@@ -59,6 +59,9 @@ export const ACButton = styled.button`
   &:active:enabled {
     box-shadow: inset 0px 0px 3px black;
   }
+  &:hover:enabled {
+    background-color: #d4a257;
+  }
   &:disabled {
     background: rgba(185, 147, 90, 0.3);
     box-shadow: inset 0px 0px 3px black;

@@ -4,26 +4,26 @@ import { useAuth0 } from "@auth0/auth0-react";
 import { useEffect, useState } from "react";
 import { getAllActionStats, Visit } from "../queries/tracking";
 import { capitalize } from "../utils";
+import Spinner from "../components/Spinner";
 
 export interface ActionsStats {
   _id: string;
   actions: Visit[];
 }
 
+const getActionTitle = (actionName: string): string =>
+  actionName
+    .split("-")
+    .map((w, idx) => (idx === 0 ? capitalize(w) : w))
+    .join(" ");
+
 export default function Analytics() {
   const { user, isAuthenticated } = useAuth0();
   const [actions, setActions] = useState<ActionsStats[]>([]);
 
-  const getActionTitle = (actionName: string) => {
-    return actionName
-      .split("-")
-      .map((w, idx) => (idx === 0 ? capitalize(w) : w))
-      .join(" ");
-  };
-
   useEffect(() => {
     getAllActionStats().then((res) => {
-      if (res) {
+      if (res && res.length) {
         setActions(res);
       }
     });
@@ -39,48 +39,52 @@ export default function Analytics() {
         picture={user && user.picture && user.picture}
       />
       <Title>Analytics</Title>
-      {actions.map(({ _id, actions }) => {
-        return (
-          <Container>
-            <ActionName>{getActionTitle(_id)}</ActionName>{" "}
-            <span>{actions.length}</span>
-            {actions.map((currentAction: Visit) => {
-              return (
-                <ActionContainer>
-                  <ul>
-                    {currentAction.guest_name ? (
-                      <li>
-                        <b>Guest name:</b> {currentAction.guest_name}
-                      </li>
-                    ) : null}
-                    {currentAction.auth_id ? (
-                      <li>
-                        <b>Google ID:</b> {currentAction.auth_id}
-                      </li>
-                    ) : null}
-                    {currentAction.utm ? (
-                      <li>
-                        <b>UTM:</b> {currentAction.utm}
-                      </li>
-                    ) : null}
-                    {currentAction.user_agent ? (
-                      <li>
-                        <b>User agent:</b> {currentAction.user_agent}
-                      </li>
-                    ) : null}
-                    {currentAction.created_at ? (
-                      <li>
-                        <b>Date:</b>
-                        {new Date(currentAction.created_at!).toString()}
-                      </li>
-                    ) : null}
-                  </ul>
-                </ActionContainer>
-              );
-            })}
-          </Container>
-        );
-      })}
+      {actions.length > 0 ? (
+        actions.map(({ _id, actions }) => {
+          return (
+            <Container>
+              <ActionName>{getActionTitle(_id)}</ActionName>{" "}
+              <span>{actions.length}</span>
+              {actions.map((currentAction: Visit) => {
+                return (
+                  <ActionContainer>
+                    <ul>
+                      {currentAction.guest_name ? (
+                        <li>
+                          <b>Guest name:</b> {currentAction.guest_name}
+                        </li>
+                      ) : null}
+                      {currentAction.auth_id ? (
+                        <li>
+                          <b>Google ID:</b> {currentAction.auth_id}
+                        </li>
+                      ) : null}
+                      {currentAction.utm ? (
+                        <li>
+                          <b>UTM:</b> {currentAction.utm}
+                        </li>
+                      ) : null}
+                      {currentAction.user_agent ? (
+                        <li>
+                          <b>User agent:</b> {currentAction.user_agent}
+                        </li>
+                      ) : null}
+                      {currentAction.created_at ? (
+                        <li>
+                          <b>Date:</b>
+                          {new Date(currentAction.created_at!).toString()}
+                        </li>
+                      ) : null}
+                    </ul>
+                  </ActionContainer>
+                );
+              })}
+            </Container>
+          );
+        })
+      ) : (
+        <Spinner />
+      )}
     </Wrapper>
   );
 }

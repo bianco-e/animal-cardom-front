@@ -6,15 +6,13 @@ import { getAllActionStats, Visit } from "../queries/tracking";
 import { capitalize } from "../utils";
 
 export interface ActionsStats {
-  "visit-landing": Visit[];
-  "play-as-guest-button": Visit[];
-  "sign-in-button": Visit[];
-  "you-are-allowed-button": Visit[];
+  _id: string;
+  actions: Visit[];
 }
 
 export default function Analytics() {
   const { user, isAuthenticated } = useAuth0();
-  const [actions, setActions] = useState<ActionsStats>();
+  const [actions, setActions] = useState<ActionsStats[]>([]);
 
   const getActionTitle = (actionName: string) => {
     return actionName
@@ -41,50 +39,48 @@ export default function Analytics() {
         picture={user && user.picture && user.picture}
       />
       <Title>Analytics</Title>
-      {actions
-        ? Object.entries(actions).map(([currentActionName, currentActions]) => {
-            return (
-              <Container>
-                <ActionName>{getActionTitle(currentActionName)}</ActionName>{" "}
-                <span>{currentActions.length}</span>
-                {currentActions.map((currentAction: Visit) => {
-                  return (
-                    <ActionContainer>
-                      <ul>
-                        {currentAction.guest_name ? (
-                          <li>
-                            <b>Guest name:</b> {currentAction.guest_name}
-                          </li>
-                        ) : null}
-                        {currentAction.auth_id ? (
-                          <li>
-                            <b>Google ID:</b> {currentAction.auth_id}
-                          </li>
-                        ) : null}
-                        {currentAction.utm ? (
-                          <li>
-                            <b>UTM:</b> {currentAction.utm}
-                          </li>
-                        ) : null}
-                        {currentAction.user_agent ? (
-                          <li>
-                            <b>User agent:</b> {currentAction.user_agent}
-                          </li>
-                        ) : null}
-                        {currentAction.created_at ? (
-                          <li>
-                            <b>Date:</b>
-                            {new Date(currentAction.created_at!).toString()}
-                          </li>
-                        ) : null}
-                      </ul>
-                    </ActionContainer>
-                  );
-                })}
-              </Container>
-            );
-          })
-        : null}
+      {actions.map(({ _id, actions }) => {
+        return (
+          <Container>
+            <ActionName>{getActionTitle(_id)}</ActionName>{" "}
+            <span>{actions.length}</span>
+            {actions.map((currentAction: Visit) => {
+              return (
+                <ActionContainer>
+                  <ul>
+                    {currentAction.guest_name ? (
+                      <li>
+                        <b>Guest name:</b> {currentAction.guest_name}
+                      </li>
+                    ) : null}
+                    {currentAction.auth_id ? (
+                      <li>
+                        <b>Google ID:</b> {currentAction.auth_id}
+                      </li>
+                    ) : null}
+                    {currentAction.utm ? (
+                      <li>
+                        <b>UTM:</b> {currentAction.utm}
+                      </li>
+                    ) : null}
+                    {currentAction.user_agent ? (
+                      <li>
+                        <b>User agent:</b> {currentAction.user_agent}
+                      </li>
+                    ) : null}
+                    {currentAction.created_at ? (
+                      <li>
+                        <b>Date:</b>
+                        {new Date(currentAction.created_at!).toString()}
+                      </li>
+                    ) : null}
+                  </ul>
+                </ActionContainer>
+              );
+            })}
+          </Container>
+        );
+      })}
     </Wrapper>
   );
 }

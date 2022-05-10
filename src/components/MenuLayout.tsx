@@ -17,24 +17,23 @@ export default function MenuLayout({ children }: { children: JSX.Element }) {
   const { push } = useHistory();
 
   useEffect(() => {
-    if (isAuthenticated && user) {
-      document.cookie = `auth=${user.sub}; max-age=43200; path=/;`;
-      getUserMe(user.sub).then((res) => {
-        if (res) {
-          if (res.error && res.error === "user_not_found") {
-            const userTemplate = getNewUserTemplate(user);
-            createUser(userTemplate).then((userRes) => {
-              if (!userRes && !userRes.auth_id) {
-                push("/error");
-              }
-            });
+    if (!isAuthenticated || !user) return;
+    if (!user.sub) return;
+    document.cookie = `auth=${user.sub}; max-age=43200; path=/;`;
+    getUserMe(user.sub).then((res) => {
+      if (!res) return;
+      if (res.error && res.error === "user_not_found") {
+        const userTemplate = getNewUserTemplate(user);
+        createUser(userTemplate).then((userRes) => {
+          if (!userRes && !userRes.auth_id) {
+            push("/error");
           }
-          if (res.coins !== undefined) {
-            dispatch({ type: SET_COINS, payload: res.coins });
-          }
-        }
-      });
-    }
+        });
+      }
+      if (res.coins !== undefined) {
+        dispatch({ type: SET_COINS, payload: res.coins });
+      }
+    });
   }, [isAuthenticated, user]); //eslint-disable-line
 
   return isLoading ? (
@@ -43,7 +42,7 @@ export default function MenuLayout({ children }: { children: JSX.Element }) {
     <Redirect to="/" />
   ) : (
     <Wrapper>
-      <SideMenu username={user.given_name} avatar={user.picture} />
+      <SideMenu username={user!.given_name!} avatar={user!.picture!} />
       <ChildrenContainer>
         <CoinsViewer coins={state.coins} />
         {children}

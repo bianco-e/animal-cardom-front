@@ -75,13 +75,13 @@ export interface Game {
 export interface UserTemplate {
   sub?: string;
   auth_id?: string;
-  picture: string;
-  email: string;
+  picture?: string;
+  email?: string;
   given_name?: string;
   first_name?: string;
   family_name?: string;
   last_name?: string;
-  locale: string;
+  locale?: string;
 }
 
 export interface User {

@@ -125,8 +125,10 @@ const ErrorMessage = styled.span`
   position: absolute;
   left: 50%;
   -webkit-transform: translateX(-50%);
+  text-align: center;
   transform: translateX(-50%);
   top: 60px;
+  width: 100%;
 `;
 const Wrapper = styled.div`
   align-items: center;

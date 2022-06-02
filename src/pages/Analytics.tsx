@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { getAllActionStats } from "../queries/tracking";
 import { capitalize } from "../utils";
 import Spinner from "../components/Spinner";
-import { Action } from "../interfaces";
+import { Action, AuthUser } from "../interfaces";
 
 export interface ActionsStats {
   _id: string;
@@ -19,7 +19,7 @@ const getActionTitle = (actionName: string): string =>
     .join(" ");
 
 export default function Analytics() {
-  const { user, isAuthenticated } = useAuth0();
+  const { user, isAuthenticated } = useAuth0<AuthUser>();
   const [actions, setActions] = useState<ActionsStats[]>([]);
 
   useEffect(() => {

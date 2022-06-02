@@ -10,9 +10,10 @@ import { getUserMe, createUser } from "../queries/user";
 import { getNewUserTemplate } from "../utils";
 import { BREAKPOINTS } from "../utils/constants";
 import { SET_COINS } from "../context/UserContext/types";
+import { AuthUser } from "../interfaces";
 
 export default function MenuLayout({ children }: { children: JSX.Element }) {
-  const { user, isAuthenticated, isLoading } = useAuth0();
+  const { user, isAuthenticated, isLoading } = useAuth0<AuthUser>();
   const [state, dispatch] = useContext<IUserContext>(UserContext);
   const { push } = useHistory();
 

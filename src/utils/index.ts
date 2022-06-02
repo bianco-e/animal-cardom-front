@@ -1,5 +1,4 @@
-import { IAnimal } from "../interfaces";
-import { User } from "@auth0/auth0-react";
+import { AuthUser, IAnimal } from "../interfaces";
 
 export const cardSpeciesToLowerCase = (species: string): string => {
   const splittedSpecies = species.split(" ");
@@ -37,7 +36,7 @@ export const getCookie = (name: string) => {
     ?.substring(5);
 };
 
-export const getNewUserTemplate = (user: User) => {
+export const getNewUserTemplate = (user: AuthUser) => {
   const { sub, picture, email, given_name, family_name, locale } = user;
   return {
     ...(sub ? { auth_id: sub } : {}),

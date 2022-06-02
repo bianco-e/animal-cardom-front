@@ -84,6 +84,15 @@ export interface UserTemplate {
   locale?: string;
 }
 
+export interface AuthUser {
+  email: string;
+  sub: string;
+  given_name: string;
+  picture: string;
+  family_name: string;
+  locale?: string;
+}
+
 export interface User {
   auth_id: string;
   picture: string;

@@ -6,7 +6,7 @@ import { ACButton } from "./styled-components";
 import { updateHand } from "../queries/user";
 import { getCookie } from "../utils";
 import Spinner from "./Spinner";
-import { SMALL_RESPONSIVE_BREAK } from "../utils/constants";
+import { BREAKPOINTS } from "../utils/constants";
 
 interface IProps {
   hand: IAnimal[];
@@ -125,7 +125,7 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   padding: 5px 30px;
-  width: 100%;
+  width: 950px;
   > button {
     margin-top: 30px;
     width: 50%;
@@ -160,12 +160,7 @@ const Container = styled.div`
       transform: none;
     }
   }
-  &.current-hand {
-    > button {
-      cursor: pointer;
-    }
-  }
-  @media (${SMALL_RESPONSIVE_BREAK}) {
+  ${BREAKPOINTS.MOBILE} {
     > button {
       height: 200px;
       width: 20%;

@@ -1,4 +1,4 @@
-import { IAnimal, UserTemplate } from "../interfaces";
+import { AuthUser, IAnimal } from "../interfaces";
 
 export const cardSpeciesToLowerCase = (species: string): string => {
   const splittedSpecies = species.split(" ");
@@ -36,15 +36,15 @@ export const getCookie = (name: string) => {
     ?.substring(5);
 };
 
-export const getNewUserTemplate = (user: UserTemplate) => {
+export const getNewUserTemplate = (user: AuthUser) => {
   const { sub, picture, email, given_name, family_name, locale } = user;
   return {
-    auth_id: sub,
-    picture,
-    email,
-    first_name: given_name,
-    last_name: family_name,
-    locale,
+    ...(sub ? { auth_id: sub } : {}),
+    ...(picture ? { picture } : {}),
+    ...(email ? { email } : {}),
+    ...(locale ? { locale } : {}),
+    ...(given_name ? { first_name: given_name } : {}),
+    ...(family_name ? { last_name: family_name } : {}),
   };
 };
 

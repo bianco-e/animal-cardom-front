@@ -1,7 +1,7 @@
 import { ThemeProvider } from "styled-components";
-import theme from "./styles/globalColors";
+import theme, { GlobalStyle } from "./styles";
 import Router from "./Router";
-import CustomModal from "./components/CustomModal";
+import Modal from "./components/Common/Modal";
 import ModalScreenWidthContent from "./components/ModalScreenWidthContent";
 import { HandsContext } from "./context/HandsContext";
 import { UserContext } from "./context/UserContext";
@@ -16,16 +16,13 @@ const Main = () => {
         <HandsContext>
           <UserContext>
             <>
-              <Router></Router>
-              {dimensions && dimensions.width <= 415 && (
-                <CustomModal
-                  closeModal={() => {}}
-                  contentWidth="100%"
-                  withCloseButton={false}
-                >
+              <GlobalStyle />
+              {dimensions && dimensions.width <= 512 && (
+                <Modal closeModal={() => {}} withCloseButton={false}>
                   <ModalScreenWidthContent />
-                </CustomModal>
+                </Modal>
               )}
+              <Router></Router>
             </>
           </UserContext>
         </HandsContext>

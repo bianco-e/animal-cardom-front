@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { Link, useHistory, useLocation } from "react-router-dom";
 import { useAuth0 } from "@auth0/auth0-react";
 import { LogButton } from "../components/styled-components";
-import { SMALL_RESPONSIVE_BREAK } from "../utils/constants";
+import { BREAKPOINTS } from "../utils/constants";
 import { trackAction } from "../queries/tracking";
 import { getUtm } from "../utils";
 
@@ -50,20 +50,20 @@ export default function NavBar({
   const handleLogin = () => {
     const guest = localStorage.getItem("ac-guest-name");
     const currentUtm = getUtm(location.search);
-    const visit = {
+    const action = {
       ...(auth_id ? { auth_id } : {}),
       ...(currentUtm ? { utm: currentUtm } : {}),
       ...(guest ? { guest_name: guest } : {}),
     };
     if (isAuthenticated && username) {
       trackAction({
-        ...visit,
+        ...action,
         action: "you-are-allowed-button",
       });
       history.push("/menu");
     } else {
       trackAction({
-        ...visit,
+        ...action,
         action: "sign-in-button",
       });
       loginWithRedirect();
@@ -138,7 +138,7 @@ const Container = styled.div`
       transform: translateX(-50%);
     }
   }
-  @media (${SMALL_RESPONSIVE_BREAK}) {
+  ${BREAKPOINTS.MOBILE} {
     > .logo-link {
       > img {
         display: none;
@@ -166,7 +166,6 @@ const FeedbackButton = styled.button`
   border-top: 0;
   border-radius: 0 0 5px 5px;
   box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.3);
-  cursor: pointer;
   font-weight: bold;
   padding: 5px 10px;
   position: absolute;

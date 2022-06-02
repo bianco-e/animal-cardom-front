@@ -3,11 +3,7 @@ import styled from "styled-components";
 import { utilitiesIcons } from "../data/data";
 import HandsContext from "../context/HandsContext";
 import { SELECT_CARD } from "../context/HandsContext/types";
-import {
-  LARGE_RESPONSIVE_BREAK,
-  MEDIUM_RESPONSIVE_BREAK,
-  SMALL_RESPONSIVE_BREAK,
-} from "../utils/constants";
+import { BREAKPOINTS } from "../utils/constants";
 import { Poisoned, Skill, Stat } from "../interfaces";
 import {
   attackAnimation,
@@ -147,6 +143,9 @@ export default function Card({
           >
             {skill.name}
           </Text>
+          {paralyzed > 0 ? (
+            <span className="paralyzed">({paralyzed})</span>
+          ) : null}
         </FlexSection>
         <Text
           className="skill"
@@ -186,12 +185,9 @@ export default function Card({
           >
             {life.current}
           </Text>
-          {paralyzed > 0 && (
-            <span className="negative-stats paralyze-stats">{paralyzed}</span>
-          )}
           {poisoned.rounds > 0 && (
             <span className="negative-stats poison-stats">
-              {poisoned.damage}/{poisoned.rounds}
+              {poisoned.damage} ({poisoned.rounds})
             </span>
           )}
         </FlexSection>
@@ -321,7 +317,7 @@ export const AnimalCard = styled.button`
     transform: translateX(-50%);
     height: calc(100% - 16px);
     width: calc(100% - 16px);
-    background: #d4a257;
+    background: ${({ theme }) => theme.primary_brown};
     z-index: -1;
     background-size: 300% 300%;
   }
@@ -330,11 +326,11 @@ export const AnimalCard = styled.button`
     `
     transform: ${p.transform};
   `}
-  @media (${MEDIUM_RESPONSIVE_BREAK}) {
+  ${BREAKPOINTS.TABLET} {
     max-width: 170px;
     padding: 9px;
   }
-  @media (${SMALL_RESPONSIVE_BREAK}) {
+  ${BREAKPOINTS.MOBILE} {
     max-width: 125px;
     padding: 6px;
   }
@@ -356,7 +352,7 @@ const StatsContainer = styled.div`
   transition: all 0.4s ease;
   width: 130px;
   bottom: 0;
-  @media (${SMALL_RESPONSIVE_BREAK}) {
+  ${BREAKPOINTS.MOBILE} {
     height: 22px;
     width: 90%;
   }
@@ -367,35 +363,34 @@ const CornerIconContainer = styled.div`
   border-radius: 50%;
   border: 2px solid ${({ theme }) => theme.secondary_brown};
   box-shadow: inset 0px 0px 10px rgba(0, 0, 0, 0.6);
-  height: 60px;
-  left: -30px;
+  font-size: 20px;
+  height: 48px;
+  left: -24px;
   position: absolute;
-  top: -30px;
-  width: 60px;
+  top: -24px;
+  width: 48px;
   > span {
-    font-size: 14px;
+    font-size: 12px;
+    line-height: 16px;
     position: absolute;
-    left: 32px;
-    top: 32px;
+    left: 24px;
+    top: 24px;
   }
   &.animal-status {
     left: auto;
-    right: -30px;
+    right: -24px;
     > img {
       position: absolute;
-      right: 30px;
-      top: 30px;
+      right: 24px;
+      top: 24px;
     }
     > span {
       left: auto;
-      right: 32px;
-      top: 32px;
+      right: 24px;
+      top: 24px;
     }
   }
-  @media (${MEDIUM_RESPONSIVE_BREAK}) {
-    font-size: 20px;
-  }
-  @media (${SMALL_RESPONSIVE_BREAK}) {
+  ${BREAKPOINTS.MOBILE} {
     font-size: 16px;
   }
 `;
@@ -403,7 +398,7 @@ const Image = styled.img`
   &.blood-drop {
     height: 20px;
     width: 20px;
-    @media (${SMALL_RESPONSIVE_BREAK}) {
+    ${BREAKPOINTS.MOBILE} {
       height: 17px;
       width: 17px;
     }
@@ -412,72 +407,55 @@ const Image = styled.img`
     border-radius: 120px;
     box-shadow: 0px 0px 9px rgba(0, 0, 0, 0.6);
     height: 45%;
+    margin: 4px 0;
+    object-fit: cover;
     width: 80%;
     position: relative;
-    @media (${LARGE_RESPONSIVE_BREAK}) {
-      min-height: 50px;
-      width: 85%;
-    }
   }
   &.small-icon {
-    height: 20px;
-    width: 20px;
-    @media (${MEDIUM_RESPONSIVE_BREAK}) {
-      height: 17px;
-      width: 17px;
-    }
-    @media (${SMALL_RESPONSIVE_BREAK}) {
-      height: 15px;
-      width: 15px;
+    height: 16px;
+    margin-right: 4px;
+    width: 16px;
+    ${BREAKPOINTS.MOBILE} {
+      height: 12px;
+      width: 12px;
     }
   }
 `;
 const Text = styled.span`
   &.life-heart {
+    font-size: 16px;
     margin-left: 10px;
-    @media (${MEDIUM_RESPONSIVE_BREAK}) {
-      font-size: 13px;
-    }
-    @media (${SMALL_RESPONSIVE_BREAK}) {
+    ${BREAKPOINTS.TABLET} {
       font-size: 12px;
     }
   }
   &.stats {
     margin-left: 3px;
     font-size: 16px;
-    @media (${MEDIUM_RESPONSIVE_BREAK}) {
+    ${BREAKPOINTS.TABLET} {
       font-size: 13px;
     }
-    @media (${SMALL_RESPONSIVE_BREAK}) {
+    ${BREAKPOINTS.MOBILE} {
       font-size: 12px;
     }
   }
   &.skill {
-    font-size: 12px;
-    @media (${LARGE_RESPONSIVE_BREAK}) {
-      font-size: 9px;
-    }
-    @media (${MEDIUM_RESPONSIVE_BREAK}) {
-      font-size: 8px;
-    }
-    @media (${SMALL_RESPONSIVE_BREAK}) {
+    font-size: 10px;
+    ${BREAKPOINTS.MOBILE} {
       font-size: 7px;
     }
   }
   &.animal-name {
-    font-size: 22px;
-    @media (${LARGE_RESPONSIVE_BREAK}) {
-      font-size: 18px;
+    font-size: 20px;
+    ${BREAKPOINTS.TABLET} {
+      font-size: 16px;
     }
-    @media (${MEDIUM_RESPONSIVE_BREAK}) {
-      font-size: 15px;
-    }
-    @media (${SMALL_RESPONSIVE_BREAK}) {
-      font-size: 13px;
+    ${BREAKPOINTS.MOBILE} {
+      font-size: 12px;
     }
   }
   color: ${(p: TextProps) => p.color};
-  font-size: 14px;
   font-weight: ${(p: TextProps) => p.fWeight || "bold"};
   margin: ${(p: TextProps) => p.margin};
   text-align: center;
@@ -491,28 +469,29 @@ const FlexSection = styled.div`
   position: relative;
   > span.negative-stats {
     background: ${({ theme }) => theme.primary_brown};
-    border-radius: 5px;
+    border-radius: 4px;
     border: 2px solid ${({ theme }) => theme.secondary_brown};
     box-shadow: inset 0px 0px 1px rgba(0, 0, 0, 0.5);
-    font-size: 11px;
+    font-size: 12px;
     font-weight: bold;
     position: absolute;
-    top: -5px;
-    transform: rotate(30deg);
-    padding: 1px 2px;
+    top: -12px;
+    transform: rotate(36deg);
+    padding: 2px 4px;
+  }
+  > span.paralyzed {
+    color: ${({ theme }) => theme.primary_red};
+    font-size: 12px;
+    font-weight: bold;
+    margin-left: 4px;
   }
   > span.poison-stats {
     color: ${({ theme }) => theme.primary_green};
     right: -25px;
   }
-  > span.paralyze-stats {
-    color: ${({ theme }) => theme.primary_red};
-    left: -20px;
-    transform: rotate(-30deg);
-  }
-  @media (${SMALL_RESPONSIVE_BREAK}) {
+  ${BREAKPOINTS.MOBILE} {
     > span.negative-stats {
-      font-size: 9px;
+      font-size: 8px;
     }
   }
 `;

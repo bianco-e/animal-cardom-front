@@ -75,13 +75,22 @@ export interface Game {
 export interface UserTemplate {
   sub?: string;
   auth_id?: string;
-  picture: string;
-  email: string;
+  picture?: string;
+  email?: string;
   given_name?: string;
   first_name?: string;
   family_name?: string;
   last_name?: string;
-  locale: string;
+  locale?: string;
+}
+
+export interface AuthUser {
+  email: string;
+  sub: string;
+  given_name: string;
+  picture: string;
+  family_name: string;
+  locale?: string;
 }
 
 export interface User {
@@ -97,4 +106,13 @@ export interface User {
   xp: number;
   owned_cards: string[];
   hand: string[];
+}
+
+export interface Action {
+  auth_id?: string;
+  user_agent?: string;
+  utm?: string;
+  guest_name?: string;
+  created_at?: string;
+  action: string;
 }

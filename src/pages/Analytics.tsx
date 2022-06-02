@@ -2,13 +2,14 @@ import styled from "styled-components";
 import NavBar from "../components/NavBar";
 import { useAuth0 } from "@auth0/auth0-react";
 import { useEffect, useState } from "react";
-import { getAllActionStats, Visit } from "../queries/tracking";
+import { getAllActionStats } from "../queries/tracking";
 import { capitalize } from "../utils";
 import Spinner from "../components/Spinner";
+import { Action, AuthUser } from "../interfaces";
 
 export interface ActionsStats {
   _id: string;
-  actions: Visit[];
+  actions: Action[];
 }
 
 const getActionTitle = (actionName: string): string =>
@@ -18,7 +19,7 @@ const getActionTitle = (actionName: string): string =>
     .join(" ");
 
 export default function Analytics() {
-  const { user, isAuthenticated } = useAuth0();
+  const { user, isAuthenticated } = useAuth0<AuthUser>();
   const [actions, setActions] = useState<ActionsStats[]>([]);
 
   useEffect(() => {
@@ -45,7 +46,7 @@ export default function Analytics() {
             <Container>
               <ActionName>{getActionTitle(_id)}</ActionName>{" "}
               <span>{actions.length}</span>
-              {actions.map((currentAction: Visit) => {
+              {actions.map((currentAction: Action) => {
                 return (
                   <ActionContainer>
                     <ul>

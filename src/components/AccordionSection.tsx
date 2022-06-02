@@ -57,9 +57,6 @@ const Wrapper = styled.div`
   width: 100%;
   > button.accordion-handler {
     align-items: center;
-    background: none;
-    border: 0;
-    cursor: pointer;
     display: flex;
     justify-content: space-between;
     width: 100%;

@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useLocation, useHistory } from "react-router-dom";
-import { ACButton, LogButton } from "../components/styled-components";
+import { ACButton } from "../components/styled-components";
 import { useAuth0 } from "@auth0/auth0-react";
 import AnimatedPlaceholder from "./AnimatedPlaceholder";
 import { getCurrentSection } from "../utils";
-import { SMALL_RESPONSIVE_BREAK } from "../utils/constants";
+import { BREAKPOINTS } from "../utils/constants";
+import HowToPlay from "./HowToPlay";
 
 interface IProps {
   avatar: string;
@@ -63,7 +64,7 @@ export default function SideMenu({ avatar, username }: IProps) {
         className="logo"
         alt="animal-cardom"
         src="/images/animal-cardom-logo.png"
-        width={60}
+        width={56}
         onClick={() => history.push("/")}
       />
       {username ? (
@@ -90,11 +91,9 @@ export default function SideMenu({ avatar, username }: IProps) {
           </ACButton>
         );
       })}
-      {/*  <ACButton disabled fWeight="bold">
-        <ComingSoon>Coming soon!</ComingSoon>
-        PvP
-      </ACButton> */}
-      <LogButton onClick={handleLogout}>Log out</LogButton>
+      <LogoutButton onClick={handleLogout}>Sign out</LogoutButton>
+
+      <HowToPlay />
     </Wrapper>
   );
 }
@@ -110,16 +109,15 @@ interface CloseButtonProps {
 const UserInfoContainer = styled.div`
   align-items: center;
   display: flex;
-  flex-direction: column;
   > .avatar {
     border-radius: 50%;
-    height: 40px;
-    margin-bottom: 5px;
-    width: 40px;
+    height: 32px;
+    margin-right: 8px;
+    width: 32px;
   }
   > span {
-    font-size: 20px;
-    @media (${SMALL_RESPONSIVE_BREAK}) {
+    font-size: 16px;
+    ${BREAKPOINTS.MOBILE} {
       display: none;
     }
   }
@@ -127,7 +125,7 @@ const UserInfoContainer = styled.div`
 
 const CloseButton = styled.div`
   display: none;
-  @media (${SMALL_RESPONSIVE_BREAK}) {
+  ${BREAKPOINTS.MOBILE} {
     background: #f4e4bc;
     border-radius: 0 5px 5px 0;
     display: flex;
@@ -151,7 +149,6 @@ const Wrapper = styled.div`
   box-shadow: 0 0 5px 5px rgba(95, 57, 0, 0.2);
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
   height: 100%;
   left: 0;
   padding: 0 20px;
@@ -159,17 +156,14 @@ const Wrapper = styled.div`
   top: 0;
   width: 250px;
   z-index: 5;
-
+  & > *:not(:last-child) {
+    margin-bottom: ${({ theme }) => theme.$2};
+  }
   > .logo {
     cursor: pointer;
     margin-top: 60px;
   }
-  > button {
-    &:last-child {
-      margin-bottom: 60px;
-    }
-  }
-  @media (${SMALL_RESPONSIVE_BREAK}) {
+  ${BREAKPOINTS.MOBILE} {
     transition: all 0.4s ease;
     width: ${(p: WrapperProps) => p.width};
     ${(p: WrapperProps) =>
@@ -195,4 +189,19 @@ const Wrapper = styled.div`
             }
           }`}
   }
+`;
+
+const LogoutButton = styled.button`
+  background: ${({ theme }) => theme.light_brown};
+  border-radius: 0 0 4px 4px;
+  border: 1px solid ${({ theme }) => theme.secondary_brown};
+  border-top: 0;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
+  color: ${({ theme }) => theme.primary_red};
+  font-size: ${({ theme }) => theme.$4};
+  padding: ${({ theme }) => `${theme.$7} ${theme.$5}`};
+  position: absolute;
+  right: calc(50% - 44px);
+  top: 0;
+  width: 88x;
 `;

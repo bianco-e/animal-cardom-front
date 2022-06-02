@@ -143,6 +143,9 @@ export default function Card({
           >
             {skill.name}
           </Text>
+          {paralyzed > 0 ? (
+            <span className="paralyzed">({paralyzed})</span>
+          ) : null}
         </FlexSection>
         <Text
           className="skill"
@@ -182,12 +185,9 @@ export default function Card({
           >
             {life.current}
           </Text>
-          {paralyzed > 0 && (
-            <span className="negative-stats paralyze-stats">{paralyzed}</span>
-          )}
           {poisoned.rounds > 0 && (
             <span className="negative-stats poison-stats">
-              {poisoned.damage}/{poisoned.rounds}
+              {poisoned.damage} ({poisoned.rounds})
             </span>
           )}
         </FlexSection>
@@ -363,33 +363,32 @@ const CornerIconContainer = styled.div`
   border-radius: 50%;
   border: 2px solid ${({ theme }) => theme.secondary_brown};
   box-shadow: inset 0px 0px 10px rgba(0, 0, 0, 0.6);
-  height: 60px;
-  left: -30px;
+  font-size: 20px;
+  height: 48px;
+  left: -24px;
   position: absolute;
-  top: -30px;
-  width: 60px;
+  top: -24px;
+  width: 48px;
   > span {
-    font-size: 14px;
+    font-size: 12px;
+    line-height: 16px;
     position: absolute;
-    left: 32px;
-    top: 32px;
+    left: 24px;
+    top: 24px;
   }
   &.animal-status {
     left: auto;
-    right: -30px;
+    right: -24px;
     > img {
       position: absolute;
-      right: 30px;
-      top: 30px;
+      right: 24px;
+      top: 24px;
     }
     > span {
       left: auto;
-      right: 32px;
-      top: 32px;
+      right: 24px;
+      top: 24px;
     }
-  }
-  ${BREAKPOINTS.TABLET} {
-    font-size: 20px;
   }
   ${BREAKPOINTS.MOBILE} {
     font-size: 16px;
@@ -408,30 +407,26 @@ const Image = styled.img`
     border-radius: 120px;
     box-shadow: 0px 0px 9px rgba(0, 0, 0, 0.6);
     height: 45%;
-    min-height: 50px;
+    margin: 4px 0;
+    object-fit: cover;
     width: 80%;
     position: relative;
   }
   &.small-icon {
-    height: 20px;
-    width: 20px;
-    ${BREAKPOINTS.TABLET} {
-      height: 17px;
-      width: 17px;
-    }
+    height: 16px;
+    margin-right: 4px;
+    width: 16px;
     ${BREAKPOINTS.MOBILE} {
-      height: 15px;
-      width: 15px;
+      height: 12px;
+      width: 12px;
     }
   }
 `;
 const Text = styled.span`
   &.life-heart {
+    font-size: 16px;
     margin-left: 10px;
     ${BREAKPOINTS.TABLET} {
-      font-size: 13px;
-    }
-    ${BREAKPOINTS.MOBILE} {
       font-size: 12px;
     }
   }
@@ -446,25 +441,21 @@ const Text = styled.span`
     }
   }
   &.skill {
-    font-size: 9px;
-    ${BREAKPOINTS.TABLET} {
-      font-size: 8px;
-    }
+    font-size: 10px;
     ${BREAKPOINTS.MOBILE} {
       font-size: 7px;
     }
   }
   &.animal-name {
-    font-size: 18px;
+    font-size: 20px;
     ${BREAKPOINTS.TABLET} {
-      font-size: 15px;
+      font-size: 16px;
     }
     ${BREAKPOINTS.MOBILE} {
-      font-size: 13px;
+      font-size: 12px;
     }
   }
   color: ${(p: TextProps) => p.color};
-  font-size: 14px;
   font-weight: ${(p: TextProps) => p.fWeight || "bold"};
   margin: ${(p: TextProps) => p.margin};
   text-align: center;
@@ -478,28 +469,29 @@ const FlexSection = styled.div`
   position: relative;
   > span.negative-stats {
     background: ${({ theme }) => theme.primary_brown};
-    border-radius: 5px;
+    border-radius: 4px;
     border: 2px solid ${({ theme }) => theme.secondary_brown};
     box-shadow: inset 0px 0px 1px rgba(0, 0, 0, 0.5);
-    font-size: 11px;
+    font-size: 12px;
     font-weight: bold;
     position: absolute;
-    top: -5px;
-    transform: rotate(30deg);
-    padding: 1px 2px;
+    top: -12px;
+    transform: rotate(36deg);
+    padding: 2px 4px;
+  }
+  > span.paralyzed {
+    color: ${({ theme }) => theme.primary_red};
+    font-size: 12px;
+    font-weight: bold;
+    margin-left: 4px;
   }
   > span.poison-stats {
     color: ${({ theme }) => theme.primary_green};
     right: -25px;
   }
-  > span.paralyze-stats {
-    color: ${({ theme }) => theme.primary_red};
-    left: -20px;
-    transform: rotate(-30deg);
-  }
   ${BREAKPOINTS.MOBILE} {
     > span.negative-stats {
-      font-size: 9px;
+      font-size: 8px;
     }
   }
 `;

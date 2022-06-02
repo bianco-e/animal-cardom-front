@@ -102,7 +102,7 @@ export default function History({ lastGames }: IProps) {
           );
         })
       ) : (
-        <Message>Mmm... Looks like you still didn't finish any game</Message>
+        <Message>Mmm... Looks like you still haven't finished any game</Message>
       )}
     </Wrapper>
   );

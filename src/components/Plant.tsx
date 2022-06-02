@@ -3,10 +3,7 @@ import styled from "styled-components";
 import HandsContext from "../context/HandsContext";
 import { SELECT_PLANT } from "../context/HandsContext/types";
 import { IPlant } from "../interfaces";
-import {
-  LARGE_RESPONSIVE_BREAK,
-  MEDIUM_RESPONSIVE_BREAK,
-} from "../utils/constants";
+import { BREAKPOINTS } from "../utils/constants";
 import PlantTooltip from "./PlantTooltip";
 import { selectionAnimation } from "../animations/card-animations";
 
@@ -73,15 +70,13 @@ export const PlantCard = styled.button`
   display: flex;
   flex-direction: column;
   height: 100%;
+  max-width: 55px;
   opacity: ${(p: PlantCardProps) => p.opacity};
   overflow: hidden;
   padding: 3px 3px 5px 3px;
   width: 100%;
   transition: transform 0.2s ease;
   transform: ${(p: PlantCardProps) => p.transform};
-  @media (${LARGE_RESPONSIVE_BREAK}) {
-    max-width: 55px;
-  }
   > img {
     border-radius: 5px;
     height: 80%;
@@ -90,14 +85,11 @@ export const PlantCard = styled.button`
   > span {
     font-size: 11px;
     font-weight: bold;
-    @media (${LARGE_RESPONSIVE_BREAK}) {
-      font-size: 10px;
-    }
-    @media (${MEDIUM_RESPONSIVE_BREAK}) {
+    ${BREAKPOINTS.TABLET} {
       font-size: 8px;
     }
   }
-  @media (${MEDIUM_RESPONSIVE_BREAK}) {
+  ${BREAKPOINTS.TABLET} {
     height: 45px;
     margin-bottom: 0;
     width: 45px;

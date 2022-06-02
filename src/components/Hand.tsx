@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { IAnimal } from "../interfaces";
-import { SMALL_RESPONSIVE_BREAK } from "../utils/constants";
+import { BREAKPOINTS } from "../utils/constants";
 import Card from "./Card";
 
 interface IProps {
@@ -51,7 +51,8 @@ const CardsGroup = styled.div`
   height: 37%;
   justify-content: space-between;
   width: 100%;
-  @media (${SMALL_RESPONSIVE_BREAK}) {
+
+  ${BREAKPOINTS.MOBILE} {
     height: 45%;
   }
 `;

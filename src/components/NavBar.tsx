@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { Link, useHistory, useLocation } from "react-router-dom";
 import { useAuth0 } from "@auth0/auth0-react";
 import { LogButton } from "../components/styled-components";
-import { SMALL_RESPONSIVE_BREAK } from "../utils/constants";
+import { BREAKPOINTS } from "../utils/constants";
 import { trackAction } from "../queries/tracking";
 import { getUtm } from "../utils";
 
@@ -138,7 +138,7 @@ const Container = styled.div`
       transform: translateX(-50%);
     }
   }
-  @media (${SMALL_RESPONSIVE_BREAK}) {
+  ${BREAKPOINTS.MOBILE} {
     > .logo-link {
       > img {
         display: none;

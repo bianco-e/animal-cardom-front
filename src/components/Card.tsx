@@ -3,11 +3,7 @@ import styled from "styled-components";
 import { utilitiesIcons } from "../data/data";
 import HandsContext from "../context/HandsContext";
 import { SELECT_CARD } from "../context/HandsContext/types";
-import {
-  LARGE_RESPONSIVE_BREAK,
-  MEDIUM_RESPONSIVE_BREAK,
-  SMALL_RESPONSIVE_BREAK,
-} from "../utils/constants";
+import { BREAKPOINTS } from "../utils/constants";
 import { Poisoned, Skill, Stat } from "../interfaces";
 import {
   attackAnimation,
@@ -330,11 +326,11 @@ export const AnimalCard = styled.button`
     `
     transform: ${p.transform};
   `}
-  @media (${MEDIUM_RESPONSIVE_BREAK}) {
+  ${BREAKPOINTS.TABLET} {
     max-width: 170px;
     padding: 9px;
   }
-  @media (${SMALL_RESPONSIVE_BREAK}) {
+  ${BREAKPOINTS.MOBILE} {
     max-width: 125px;
     padding: 6px;
   }
@@ -356,7 +352,7 @@ const StatsContainer = styled.div`
   transition: all 0.4s ease;
   width: 130px;
   bottom: 0;
-  @media (${SMALL_RESPONSIVE_BREAK}) {
+  ${BREAKPOINTS.MOBILE} {
     height: 22px;
     width: 90%;
   }
@@ -392,10 +388,10 @@ const CornerIconContainer = styled.div`
       top: 32px;
     }
   }
-  @media (${MEDIUM_RESPONSIVE_BREAK}) {
+  ${BREAKPOINTS.TABLET} {
     font-size: 20px;
   }
-  @media (${SMALL_RESPONSIVE_BREAK}) {
+  ${BREAKPOINTS.MOBILE} {
     font-size: 16px;
   }
 `;
@@ -403,7 +399,7 @@ const Image = styled.img`
   &.blood-drop {
     height: 20px;
     width: 20px;
-    @media (${SMALL_RESPONSIVE_BREAK}) {
+    ${BREAKPOINTS.MOBILE} {
       height: 17px;
       width: 17px;
     }
@@ -412,21 +408,18 @@ const Image = styled.img`
     border-radius: 120px;
     box-shadow: 0px 0px 9px rgba(0, 0, 0, 0.6);
     height: 45%;
+    min-height: 50px;
     width: 80%;
     position: relative;
-    @media (${LARGE_RESPONSIVE_BREAK}) {
-      min-height: 50px;
-      width: 85%;
-    }
   }
   &.small-icon {
     height: 20px;
     width: 20px;
-    @media (${MEDIUM_RESPONSIVE_BREAK}) {
+    ${BREAKPOINTS.TABLET} {
       height: 17px;
       width: 17px;
     }
-    @media (${SMALL_RESPONSIVE_BREAK}) {
+    ${BREAKPOINTS.MOBILE} {
       height: 15px;
       width: 15px;
     }
@@ -435,44 +428,38 @@ const Image = styled.img`
 const Text = styled.span`
   &.life-heart {
     margin-left: 10px;
-    @media (${MEDIUM_RESPONSIVE_BREAK}) {
+    ${BREAKPOINTS.TABLET} {
       font-size: 13px;
     }
-    @media (${SMALL_RESPONSIVE_BREAK}) {
+    ${BREAKPOINTS.MOBILE} {
       font-size: 12px;
     }
   }
   &.stats {
     margin-left: 3px;
     font-size: 16px;
-    @media (${MEDIUM_RESPONSIVE_BREAK}) {
+    ${BREAKPOINTS.TABLET} {
       font-size: 13px;
     }
-    @media (${SMALL_RESPONSIVE_BREAK}) {
+    ${BREAKPOINTS.MOBILE} {
       font-size: 12px;
     }
   }
   &.skill {
-    font-size: 12px;
-    @media (${LARGE_RESPONSIVE_BREAK}) {
-      font-size: 9px;
-    }
-    @media (${MEDIUM_RESPONSIVE_BREAK}) {
+    font-size: 9px;
+    ${BREAKPOINTS.TABLET} {
       font-size: 8px;
     }
-    @media (${SMALL_RESPONSIVE_BREAK}) {
+    ${BREAKPOINTS.MOBILE} {
       font-size: 7px;
     }
   }
   &.animal-name {
-    font-size: 22px;
-    @media (${LARGE_RESPONSIVE_BREAK}) {
-      font-size: 18px;
-    }
-    @media (${MEDIUM_RESPONSIVE_BREAK}) {
+    font-size: 18px;
+    ${BREAKPOINTS.TABLET} {
       font-size: 15px;
     }
-    @media (${SMALL_RESPONSIVE_BREAK}) {
+    ${BREAKPOINTS.MOBILE} {
       font-size: 13px;
     }
   }
@@ -510,7 +497,7 @@ const FlexSection = styled.div`
     left: -20px;
     transform: rotate(-30deg);
   }
-  @media (${SMALL_RESPONSIVE_BREAK}) {
+  ${BREAKPOINTS.MOBILE} {
     > span.negative-stats {
       font-size: 9px;
     }

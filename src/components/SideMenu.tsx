@@ -5,7 +5,7 @@ import { ACButton, LogButton } from "../components/styled-components";
 import { useAuth0 } from "@auth0/auth0-react";
 import AnimatedPlaceholder from "./AnimatedPlaceholder";
 import { getCurrentSection } from "../utils";
-import { SMALL_RESPONSIVE_BREAK } from "../utils/constants";
+import { BREAKPOINTS } from "../utils/constants";
 
 interface IProps {
   avatar: string;
@@ -119,7 +119,7 @@ const UserInfoContainer = styled.div`
   }
   > span {
     font-size: 20px;
-    @media (${SMALL_RESPONSIVE_BREAK}) {
+    ${BREAKPOINTS.MOBILE} {
       display: none;
     }
   }
@@ -127,7 +127,7 @@ const UserInfoContainer = styled.div`
 
 const CloseButton = styled.div`
   display: none;
-  @media (${SMALL_RESPONSIVE_BREAK}) {
+  ${BREAKPOINTS.MOBILE} {
     background: #f4e4bc;
     border-radius: 0 5px 5px 0;
     display: flex;
@@ -169,7 +169,7 @@ const Wrapper = styled.div`
       margin-bottom: 60px;
     }
   }
-  @media (${SMALL_RESPONSIVE_BREAK}) {
+  ${BREAKPOINTS.MOBILE} {
     transition: all 0.4s ease;
     width: ${(p: WrapperProps) => p.width};
     ${(p: WrapperProps) =>

@@ -1,12 +1,9 @@
 import { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
 import Hand from "../components/Hand";
-import CustomModal from "../components/CustomModal";
+import Modal from "../components/Common/Modal";
 import { useLocation, useHistory } from "react-router-dom";
-import {
-  MEDIUM_RESPONSIVE_BREAK,
-  SMALL_RESPONSIVE_BREAK,
-} from "../utils/constants";
+import { BREAKPOINTS } from "../utils/constants";
 import HandsContext, { IHandsContext } from "../context/HandsContext";
 import {
   COMPUTER_PLAY,
@@ -145,7 +142,7 @@ export default function App() {
         <SidePanel plants={plants} terrain={terrain!} userName={userName} />
         <Board>
           {modal && (
-            <CustomModal closeModal={() => {}} withCloseButton={false}>
+            <Modal closeModal={() => {}} withCloseButton={false}>
               <ModalResultContent
                 closeModal={() => setModal("")}
                 modal={modal}
@@ -153,7 +150,7 @@ export default function App() {
                 setTerrain={setTerrain}
                 currentXp={currentXp}
               />
-            </CustomModal>
+            </Modal>
           )}
           <Hand hand={hands.pc} belongsToUser={false} />
           <BoardText>{pcPlay}</BoardText>
@@ -161,9 +158,9 @@ export default function App() {
         </Board>
       </Wrapper>
       {isLoading && (
-        <CustomModal closeModal={() => {}} forSpinner={true}>
+        <Modal closeModal={() => {}} forSpinner={true}>
           <Spinner />
-        </CustomModal>
+        </Modal>
       )}
     </>
   );
@@ -180,7 +177,7 @@ const Wrapper = styled.div`
   flex-start: left;
   height: 100vh;
   width: 100%;
-  @media (${MEDIUM_RESPONSIVE_BREAK}) {
+  ${BREAKPOINTS.TABLET} {
     flex-direction: column;
   }
 `;
@@ -191,10 +188,10 @@ const Board = styled.div`
   padding: 0px 10px;
   position: relative;
   width: 100%;
-  @media (${MEDIUM_RESPONSIVE_BREAK}) {
+  ${BREAKPOINTS.TABLET} {
     padding: 21px 0 0 0;
   }
-  @media (${SMALL_RESPONSIVE_BREAK}) {
+  ${BREAKPOINTS.MOBILE} {
     min-height: 285px;
   }
 `;
@@ -208,10 +205,10 @@ const BoardText = styled.h4`
   justify-content: center;
   margin: 0;
   text-shadow: rgba(255, 255, 255, 0.8) 2px 2px 3px;
-  @media (${MEDIUM_RESPONSIVE_BREAK}) {
+  ${BREAKPOINTS.TABLET} {
     font-size: 15px;
   }
-  @media (${SMALL_RESPONSIVE_BREAK}) {
+  ${BREAKPOINTS.MOBILE} {
     font-size: 12px;
   }
 `;

@@ -2,7 +2,7 @@ import { useRef, useEffect, useState } from "react";
 import styled from "styled-components";
 import { useHistory } from "react-router-dom";
 import { terrains } from "../data/data";
-import { SMALL_RESPONSIVE_BREAK } from "../utils/constants";
+import { BREAKPOINTS } from "../utils/constants";
 
 const ANGLE = 360 / (terrains.length - 1);
 interface IProps {
@@ -56,7 +56,7 @@ const Wrapper = styled.div`
   margin: 120px 0 0 0;
   position: relative;
   width: 450px;
-  @media (${SMALL_RESPONSIVE_BREAK}) {
+  ${BREAKPOINTS.MOBILE} {
     margin: 90px 0 0 0;
     height: 270px;
     width: 270px;
@@ -97,7 +97,7 @@ const TerrainContainer = styled.div`
     padding: 4px 2px;
     width: 14px;
   }
-  @media (${SMALL_RESPONSIVE_BREAK}) {
+  ${BREAKPOINTS.MOBILE} {
     height: 80px;
     width: 80px;
   }

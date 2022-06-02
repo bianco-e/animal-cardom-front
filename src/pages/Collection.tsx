@@ -12,11 +12,11 @@ import MenuLayout from "../components/MenuLayout";
 import CollectionFilter from "../components/CollectionFilter";
 import Spinner from "../components/Spinner";
 import Card from "../components/Card";
-import CustomModal from "../components/CustomModal";
+import Modal from "../components/Common/Modal";
 import ModalHandEditContent from "../components/ModalHandEditContent";
 import ModalCardPurchaseContent from "../components/ModalCardPurchaseContent";
 import AccordionSection from "../components/AccordionSection";
-import { SMALL_RESPONSIVE_BREAK } from "../utils/constants";
+import { BREAKPOINTS } from "../utils/constants";
 import UserContext, { IUserContext } from "../context/UserContext";
 
 const getCardOpacityForPreview = (cards: string[], name: string): string => {
@@ -207,32 +207,24 @@ export default function Collection() {
           )}
         </AccordionSection>
         {modal === "editHand" ? (
-          <CustomModal
-            closeModal={() => setModal("")}
-            contentWidth="950px"
-            withCloseButton={false}
-          >
+          <Modal closeModal={() => setModal("")} withCloseButton={false}>
             <ModalHandEditContent
               closeModal={() => setModal("")}
               hand={hand}
               animalToAdd={animalToAdd!}
               handSetter={setCurrentHand}
             />
-          </CustomModal>
+          </Modal>
         ) : (
           modal === "cardPurchase" && (
-            <CustomModal
-              closeModal={() => setModal("")}
-              contentWidth="600px"
-              withCloseButton={false}
-            >
+            <Modal closeModal={() => setModal("")} withCloseButton={false}>
               <ModalCardPurchaseContent
                 closeModal={() => setModal("")}
                 setOwnedCards={setOwnedCards}
                 ownedCards={ownedCards}
                 animalToBuy={animalToBuy!}
               />
-            </CustomModal>
+            </Modal>
           )
         )}
       </>
@@ -305,7 +297,7 @@ const SingleCardContainer = styled.div`
       transform: none;
     }
   }
-  @media (${SMALL_RESPONSIVE_BREAK}) {
+  ${BREAKPOINTS.MOBILE} {
     width: 93%;
     > button.card {
       height: 180px;

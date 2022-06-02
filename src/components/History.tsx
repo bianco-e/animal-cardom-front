@@ -4,7 +4,7 @@ import PlantThumbnail from "./PlantThumbnail";
 import { cardSpeciesToLowerCase } from "../utils";
 import { Game } from "../interfaces";
 import { Message } from "./styled-components";
-import { SMALL_RESPONSIVE_BREAK } from "../utils/constants";
+import { BREAKPOINTS } from "../utils/constants";
 
 interface IProps {
   lastGames: Game[];
@@ -165,7 +165,7 @@ const DetailsPanel = styled.div`
       margin-bottom: 0;
     }
   }
-  @media (${SMALL_RESPONSIVE_BREAK}) {
+  ${BREAKPOINTS.MOBILE} {
     height: 30px;
   }
 `;
@@ -177,7 +177,7 @@ const PlayerStats = styled.div`
   > b {
     margin-bottom: 10px;
   }
-  @media (${SMALL_RESPONSIVE_BREAK}) {
+  ${BREAKPOINTS.MOBILE} {
     margin: 0 auto;
     width: 47%;
     &:first-child {
@@ -194,7 +194,7 @@ const CardsContainer = styled.div`
   margin-bottom: 10px;
   justify-content: space-around;
   width: 85%;
-  @media (${SMALL_RESPONSIVE_BREAK}) {
+  ${BREAKPOINTS.MOBILE} {
     justify-content: space-between;
     &:last-child {
       padding-bottom: 20px;

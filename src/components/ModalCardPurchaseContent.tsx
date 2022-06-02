@@ -6,7 +6,7 @@ import { ACButton } from "./styled-components";
 import { animalPurchase } from "../queries/user";
 import { getCookie } from "../utils";
 import Spinner from "./Spinner";
-import { SMALL_RESPONSIVE_BREAK } from "../utils/constants";
+import { BREAKPOINTS } from "../utils/constants";
 import UserContext, { IUserContext } from "../context/UserContext";
 import { SET_COINS } from "../context/UserContext/types";
 
@@ -100,7 +100,7 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   padding: 5px 30px;
-  width: 100%;
+  width: 600px;
   > button {
     margin-top: 30px;
     width: 50%;
@@ -136,7 +136,8 @@ const Container = styled.div`
       transform: none;
     }
   }
-  @media (${SMALL_RESPONSIVE_BREAK}) {
+
+  ${BREAKPOINTS.MOBILE} {
     > button {
       height: 200px;
       width: 20%;

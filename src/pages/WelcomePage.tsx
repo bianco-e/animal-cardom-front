@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 import { useHistory, useLocation } from "react-router-dom";
 import styled from "styled-components";
-import CustomModal from "../components/CustomModal";
+import Modal from "../components/Common/Modal";
 import NavBar from "../components/NavBar";
 import ModalWelcomeContent from "../components/ModalWelcomeContent";
-import { SMALL_RESPONSIVE_BREAK } from "../utils/constants";
+import { BREAKPOINTS } from "../utils/constants";
 import { ACButton, ACInput, ComingSoon } from "../components/styled-components";
 import { useAuth0 } from "@auth0/auth0-react";
 import { trackAction } from "../queries/tracking";
@@ -85,9 +85,9 @@ export default function WelcomePage() {
       />
       <Title>Welcome to Animal Cardom!</Title>
       {modal && (
-        <CustomModal closeModal={() => setModal("")}>
+        <Modal closeModal={() => setModal("")}>
           <ModalWelcomeContent modal={modal} />
-        </CustomModal>
+        </Modal>
       )}
       <Container>
         {showErrorMessage && (
@@ -138,16 +138,14 @@ const Wrapper = styled.div`
   flex-direction: column;
   height: 100vh;
   justify-content: space-around;
-  @media (${SMALL_RESPONSIVE_BREAK}) {
-  }
 `;
 const Title = styled.h4`
-  font-size: 30px;
+  font-size: ${({ theme }) => theme.title};
   text-align: center;
   padding-top: 60px;
-  @media (${SMALL_RESPONSIVE_BREAK}) {
+  ${BREAKPOINTS.MOBILE} {
     margin-bottom: 5px;
-    font-size: 24px;
+    font-size: ${({ theme }) => theme.subtitle};
   }
 `;
 const Container = styled.div`
@@ -159,7 +157,7 @@ const Container = styled.div`
   margin: auto;
   position: relative;
   width: 40%;
-  @media (${SMALL_RESPONSIVE_BREAK}) {
+  ${BREAKPOINTS.MOBILE} {
     height: 65vh;
     width: 60%;
   }

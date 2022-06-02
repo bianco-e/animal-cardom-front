@@ -8,7 +8,7 @@ import { Redirect, useHistory } from "react-router-dom";
 import { useAuth0 } from "@auth0/auth0-react";
 import { getUserMe, createUser } from "../queries/user";
 import { getNewUserTemplate } from "../utils";
-import { SMALL_RESPONSIVE_BREAK } from "../utils/constants";
+import { BREAKPOINTS } from "../utils/constants";
 import { SET_COINS } from "../context/UserContext/types";
 
 export default function MenuLayout({ children }: { children: JSX.Element }) {
@@ -53,7 +53,7 @@ export default function MenuLayout({ children }: { children: JSX.Element }) {
 
 const Wrapper = styled.div`
   margin-left: 290px;
-  @media (${SMALL_RESPONSIVE_BREAK}) {
+  ${BREAKPOINTS.MOBILE} {
     margin-left: 0;
   }
 `;

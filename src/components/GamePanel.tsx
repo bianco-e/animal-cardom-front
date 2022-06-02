@@ -2,12 +2,8 @@ import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useHistory } from "react-router-dom";
 import Plant from "./Plant";
-import CustomModal from "./CustomModal";
-import {
-  LARGE_RESPONSIVE_BREAK,
-  MEDIUM_RESPONSIVE_BREAK,
-  SMALL_RESPONSIVE_BREAK,
-} from "../utils/constants";
+import Modal from "./Common/Modal";
+import { BREAKPOINTS } from "../utils/constants";
 import { ACButton, ModalTitle, Text, Tooltip } from "./styled-components";
 import { IPlants, ITerrain } from "../interfaces/index";
 
@@ -89,7 +85,7 @@ export default function SidePanel({ plants, terrain, userName }: IProps) {
         })}
       </HalfPanel>
       {showExitModal && (
-        <CustomModal
+        <Modal
           closeModal={() => setShowExitModal(false)}
           withCloseButton={false}
         >
@@ -108,7 +104,7 @@ export default function SidePanel({ plants, terrain, userName }: IProps) {
             </ACButton>
             <ACButton onClick={() => history.push("/menu")}>Leave</ACButton>
           </>
-        </CustomModal>
+        </Modal>
       )}
     </LeftPanel>
   );
@@ -128,10 +124,10 @@ const PlayerNameTab = styled.div`
   padding: 1px 12px;
   position: absolute;
   transform: translate(-50%, -50%);
-  @media (${MEDIUM_RESPONSIVE_BREAK}) {
+  ${BREAKPOINTS.TABLET} {
     display: flex;
   }
-  @media (${SMALL_RESPONSIVE_BREAK}) {
+  ${BREAKPOINTS.MOBILE} {
     bottom: -42px;
     font-size: 14px;
   }
@@ -146,7 +142,7 @@ const LeftPanel = styled.div`
   display: flex;
   flex-direction: column;
   width: 110px;
-  @media (${MEDIUM_RESPONSIVE_BREAK}) {
+  ${BREAKPOINTS.TABLET} {
     align-items: center;
     background: url(${({ bgImage }) => bgImage});
     background-position: center;
@@ -165,12 +161,10 @@ const HalfPanel = styled.div`
   display: flex;
   flex-direction: column;
   height: 33%;
-  @media (${LARGE_RESPONSIVE_BREAK}) {
-    > span {
-      font-size: 13px;
-    }
+  > span {
+    font-size: 13px;
   }
-  @media (${MEDIUM_RESPONSIVE_BREAK}) {
+  ${BREAKPOINTS.TABLET} {
     flex-direction: row;
     justify-content: space-between;
     position: relative;
@@ -180,7 +174,7 @@ const HalfPanel = styled.div`
       display: none;
     }
   }
-  @media (${SMALL_RESPONSIVE_BREAK}) {
+  ${BREAKPOINTS.MOBILE} {
     width: 40%;
   }
 `;
@@ -193,12 +187,12 @@ const TerrainName = styled.h3`
   justify-content: center;
   position: relative;
   text-shadow: rgba(10, 10, 10, 0.6) 0px 1px 5px;
-  @media (${MEDIUM_RESPONSIVE_BREAK}) {
+  ${BREAKPOINTS.TABLET} {
     width: 90px;
     min-height: auto;
     height: 100%;
   }
-  @media (${SMALL_RESPONSIVE_BREAK}) {
+  ${BREAKPOINTS.MOBILE} {
     font-size: 14px;
   }
 `;
@@ -232,7 +226,7 @@ const OptionsPanel = styled.div`
       width: 100%;
     }
   }
-  @media (${SMALL_RESPONSIVE_BREAK}) {
+  ${BREAKPOINTS.MOBILE} {
     border: 2px solid ${({ theme }) => theme.secondary_brown};
     border-top: 0;
     border-radius: 0 0 50px 50px;

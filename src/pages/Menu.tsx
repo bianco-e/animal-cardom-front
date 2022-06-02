@@ -7,7 +7,7 @@ import Rules from "../components/Rules";
 import Spinner from "../components/Spinner";
 import { IAnimal } from "../interfaces";
 import { getNewestAnimals } from "../queries/animalsCards";
-import { SMALL_RESPONSIVE_BREAK } from "../utils/constants";
+import { BREAKPOINTS } from "../utils/constants";
 
 export default function Menu() {
   const [newestAnimals, setNewestAnimals] = useState<IAnimal[]>([]);
@@ -135,7 +135,7 @@ const Wrapper = styled.div`
       }
     }
   }
-  @media (${SMALL_RESPONSIVE_BREAK}) {
+  ${BREAKPOINTS.MOBILE} {
     > div {
       width: 100%;
       > button {

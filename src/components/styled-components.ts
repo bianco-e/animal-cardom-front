@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { SMALL_RESPONSIVE_BREAK } from "../utils/constants";
+import { BREAKPOINTS } from "../utils/constants";
 
 interface LogButtonProps {
   overflow?: string;
@@ -146,7 +146,7 @@ export const ACInput = styled.input`
   &::placeholder {
     color: #000;
   }
-  @media (${SMALL_RESPONSIVE_BREAK}) {
+  ${BREAKPOINTS.MOBILE} {
     margin-bottom: 10px;
   }
 `;
@@ -171,7 +171,7 @@ export const ACTextArea = styled.textarea`
     color: #404040;
     font-size: 11px;
   }
-  @media (${SMALL_RESPONSIVE_BREAK}) {
+  ${BREAKPOINTS.MOBILE} {
     margin-bottom: 10px;
   }
 `;

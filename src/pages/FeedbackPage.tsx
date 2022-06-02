@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
-import { SMALL_RESPONSIVE_BREAK } from "../utils/constants";
+import { BREAKPOINTS } from "../utils/constants";
 import { ACButton, ACInput, ACTextArea } from "../components/styled-components";
 import { useAuth0 } from "@auth0/auth0-react";
 import NavBar from "../components/NavBar";
@@ -75,7 +75,7 @@ const Container = styled.div`
   width: 700px;
   padding-top: 120px;
   margin: 0 auto;
-  @media (${SMALL_RESPONSIVE_BREAK}) {
+  ${BREAKPOINTS.MOBILE} {
     width: calc(100% - 40px);
   }
 `;

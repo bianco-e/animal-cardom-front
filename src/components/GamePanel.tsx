@@ -90,9 +90,9 @@ export default function SidePanel({ plants, terrain, userName }: IProps) {
           withCloseButton={false}
         >
           <>
-            <ModalTitle>You are about to exit the app</ModalTitle>
-            <Text margin="15px 0">
-              All this game progress is going to be lost.
+            <ModalTitle>You are about to exit</ModalTitle>
+            <Text margin="10px 0 5px">
+              Current game progress will get lost.
             </Text>
             <Text>Are you sure?</Text>
             <ACButton
@@ -212,9 +212,6 @@ const OptionsPanel = styled.div`
   top: calc(50% - 55);
   width: 25px;
   > button {
-    background: none;
-    border: 0;
-    cursor: pointer;
     height: 15px;
     margin-bottom: 25px;
     z-index: 1;

@@ -98,3 +98,12 @@ export interface User {
   owned_cards: string[];
   hand: string[];
 }
+
+export interface Action {
+  auth_id?: string;
+  user_agent?: string;
+  utm?: string;
+  guest_name?: string;
+  created_at?: string;
+  action: string;
+}

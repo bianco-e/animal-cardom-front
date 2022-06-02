@@ -20,13 +20,16 @@ interface ContentProps {
 
 export const ModalContainer = styled.div<ContentProps>`
   align-items: center;
-  background: ${({ forSpinner }) => !forSpinner && "#d4a257"};
-  border: ${({ forSpinner }) => !forSpinner && "2px solid #b9935a"};
+  background: ${({ forSpinner, theme }) =>
+    !forSpinner ? theme.primary_brown : ""};
+  border: ${({ forSpinner, theme }) =>
+    !forSpinner && `2px solid ${theme.secondary_brown}`};
   border-radius: 5px;
   box-shadow: ${({ forSpinner }) => !forSpinner && "inset 0px 0px 10px black"};
   display: flex;
   flex-direction: column;
   padding: 30px;
+  position: relative;
   z-index: 30;
   ${BREAKPOINTS.MOBILE} {
     width: 87%;
@@ -34,10 +37,8 @@ export const ModalContainer = styled.div<ContentProps>`
 `;
 
 export const CloseButton = styled.button`
-  border: none;
-  background: none;
-  color: black;
-  cursor: pointer;
-  font-size: 10px;
-  margin: 10px 0;
+  font-size: ${({ theme }) => theme.$3};
+  position: absolute;
+  right: ${({ theme }) => theme.$1};
+  top: ${({ theme }) => theme.$1};
 `;

@@ -317,7 +317,7 @@ export const AnimalCard = styled.button`
     transform: translateX(-50%);
     height: calc(100% - 16px);
     width: calc(100% - 16px);
-    background: #d4a257;
+    background: ${({ theme }) => theme.primary_brown};
     z-index: -1;
     background-size: 300% 300%;
   }

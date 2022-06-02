@@ -40,18 +40,18 @@ export const Image = styled.img`
   width: ${(p: ImageProps) => p.width};
 `;
 
-export const ACButton = styled.button`
-  background-color: ${(p: ButtonProps) => (p.selected ? "#d4a257" : "#b9935a")};
+export const ACButton = styled.button<ButtonProps>`
+  background-color: ${({ selected, theme }) =>
+    selected ? theme.primary_brown : theme.secondary_brown};
   border: 2px solid ${({ theme }) => theme.secondary_brown};
   border-radius: 5px;
   box-shadow: inset 0px 0px 3px rgba(0, 0, 0, 0.5),
     1px 1px 5px rgba(0, 0, 0, 0.5);
   color: black;
-  cursor: pointer;
   height: 60px;
   font-size: 20px;
-  font-weight: ${(p: ButtonProps) => p.fWeight};
-  margin: ${(p: ButtonProps) => p.margin};
+  font-weight: ${({ fWeight }) => fWeight};
+  margin: ${({ margin }) => margin};
   overflow: hidden;
   padding: 6px 10px;
   position: relative;
@@ -60,7 +60,7 @@ export const ACButton = styled.button`
     box-shadow: inset 0px 0px 3px black;
   }
   &:hover:enabled {
-    background-color: #d4a257;
+    background-color: ${({ theme }) => theme.primary_brown};
   }
   &:disabled {
     background: rgba(185, 147, 90, 0.3);
@@ -71,10 +71,10 @@ export const ACButton = styled.button`
 `;
 
 export const LogButton = styled.button`
+  background: ${({ theme }) => theme.light_brown};
   border: 2px solid ${({ theme }) => theme.secondary_brown};
   border-radius: 5px;
   box-shadow: inset 0px 0px 3px black;
-  cursor: pointer;
   font-size: 18px;
   margin-right: 20px;
   overflow: ${(p: LogButtonProps) => p.overflow || "hidden"};
@@ -129,14 +129,18 @@ export const ModalTitle = styled.span`
   margin: 10px 0;
 `;
 
-export const ACInput = styled.input`
+interface ACInputProps {
+  marginBottom?: string;
+}
+
+export const ACInput = styled.input<ACInputProps>`
   background: ${({ theme }) => theme.light_brown};
   border: 2px solid ${({ theme }) => theme.secondary_brown};
   border-radius: 5px;
   box-shadow: inset 0px 0px 3px black;
   font-size: 18px;
   height: 30px;
-  margin-bottom: 40px;
+  margin-bottom: ${({ marginBottom = "40px" }) => marginBottom};
   padding: 6px 10px;
   text-align: center;
   width: 96%;

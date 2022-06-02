@@ -238,7 +238,6 @@ const BuyButton = styled.button`
   border: 2px solid ${({ theme }) => theme.primary_brown};
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
   color: ${({ theme }) => theme.primary_yellow};
-  cursor: pointer;
   font-size: 16px;
   font-weight: bold;
   height: 50px;

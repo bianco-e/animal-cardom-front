@@ -1,52 +1,43 @@
 import { useState, useEffect } from "react";
 import { useHistory, useLocation } from "react-router-dom";
 import styled from "styled-components";
-import Modal from "../components/Common/Modal";
 import NavBar from "../components/NavBar";
-import ModalWelcomeContent from "../components/ModalWelcomeContent";
 import { BREAKPOINTS } from "../utils/constants";
-import { ACButton, ACInput, ComingSoon } from "../components/styled-components";
+import { ACButton, ACInput } from "../components/styled-components";
 import { useAuth0 } from "@auth0/auth0-react";
 import { trackAction } from "../queries/tracking";
 import { getUtm } from "../utils";
+import HowToPlay from "../components/HowToPlay";
 
 export default function WelcomePage() {
   const userAgent = navigator.userAgent;
-  const { user, isAuthenticated, isLoading } = useAuth0();
+  const { loginWithRedirect, user, isAuthenticated, isLoading } = useAuth0();
   const location = useLocation();
   const history = useHistory();
   const [inputValue, setInputValue] = useState<string>("");
-  const [modal, setModal] = useState<string>("");
   const [showErrorMessage, setShowErrorMessage] = useState<boolean>(false);
 
-  const isMobile = () => {
-    if (
-      /Android|webOS|iPhone|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-        userAgent
-      )
-    ) {
-      setModal("mobileDetected");
-    }
+  const guestName = localStorage.getItem("ac-guest-name");
+  const currentUtm = getUtm(location.search);
+  const baseAction = {
+    guest_name: inputValue,
+    ...(user?.sub ? { auth_id: user.sub } : {}),
+    ...(userAgent ? { user_agent: userAgent } : {}),
+    ...(currentUtm ? { utm: currentUtm } : {}),
+    ...(guestName ? { guest_name: guestName } : {}),
   };
 
   useEffect(() => {
-    isMobile();
-    const guest = localStorage.getItem("ac-guest-name");
-    if (guest) {
-      setInputValue(guest);
+    if (guestName) {
+      setInputValue(guestName);
     }
   }, []); //eslint-disable-line
 
   useEffect(() => {
     if (!isLoading) {
-      const currentUtm = getUtm(location.search);
-      const guest = localStorage.getItem("ac-guest-name");
       const visit = {
+        ...baseAction,
         action: "visit-landing",
-        ...(user?.sub ? { auth_id: user.sub } : {}),
-        ...(currentUtm ? { utm: currentUtm } : {}),
-        ...(guest ? { guest_name: guest } : {}),
-        ...(userAgent ? { user_agent: userAgent } : {}),
       };
       trackAction(visit);
     }
@@ -55,13 +46,9 @@ export default function WelcomePage() {
   const goToPlay = () => {
     if (inputValue !== "") {
       localStorage.setItem("ac-guest-name", inputValue);
-      const currentUtm = getUtm(location.search);
       trackAction({
+        ...baseAction,
         action: "play-as-guest-button",
-        guest_name: inputValue,
-        ...(user?.sub ? { auth_id: user.sub } : {}),
-        ...(userAgent ? { user_agent: userAgent } : {}),
-        ...(currentUtm ? { utm: currentUtm } : {}),
       });
       history.push(`/play`);
       setInputValue("");
@@ -70,7 +57,27 @@ export default function WelcomePage() {
 
   const onKeyDownFn = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
+      trackAction({
+        ...baseAction,
+        action: "play-as-guest-enter",
+      });
       goToPlay();
+    }
+  };
+
+  const playCampaign = () => {
+    if (isAuthenticated && user?.given_name) {
+      trackAction({
+        ...baseAction,
+        action: "continue-campaign-button",
+      });
+      history.push("/menu");
+    } else {
+      trackAction({
+        ...baseAction,
+        action: "start-campaign-button",
+      });
+      loginWithRedirect();
     }
   };
 
@@ -79,41 +86,44 @@ export default function WelcomePage() {
       <NavBar
         isHome={true}
         isAuthenticated={isAuthenticated}
-        username={user && user.given_name && user.given_name}
-        auth_id={user && user.sub && user.sub}
-        picture={user && user.picture && user.picture}
+        username={user?.given_name ? user.given_name : undefined}
+        auth_id={user?.sub ? user.sub : undefined}
+        picture={user?.picture ? user.picture : undefined}
       />
       <Title>Welcome to Animal Cardom!</Title>
-      {modal && (
-        <Modal closeModal={() => setModal("")}>
-          <ModalWelcomeContent modal={modal} />
-        </Modal>
-      )}
+
       <Container>
+        <ACButton
+          fWeight="bold"
+          margin="0 0 48px !important"
+          onClick={playCampaign}
+        >
+          {isAuthenticated && user?.given_name ? "Continue" : "Start"} campaign
+        </ACButton>
+        <ACInput
+          onChange={(e) =>
+            e.target.value.length < 8 && setInputValue(e.target.value)
+          }
+          onKeyDown={onKeyDownFn}
+          placeholder="Enter your name to play as a guest"
+          type="text"
+          value={inputValue}
+        />
+        <ACButton fWeight="bold" onClick={goToPlay}>
+          Play as a guest
+        </ACButton>
         {showErrorMessage && (
           <ErrorMessage>
             Nameless people are not allowed in Animal Cardom!
           </ErrorMessage>
         )}
-        <ACInput
-          type="text"
-          placeholder="Enter your name to play as guest"
-          value={inputValue}
-          onChange={(e) =>
-            e.target.value.length < 8 && setInputValue(e.target.value)
-          }
-          onKeyDown={onKeyDownFn}
-        />
-        <ACButton fWeight="bold" onClick={goToPlay}>
-          Play as guest
-        </ACButton>
-        <ACButton disabled fWeight="bold" onClick={() => {}}>
-          <ComingSoon>Coming soon!</ComingSoon>
-          PvP
-        </ACButton>
-        <ACButton onClick={() => setModal("rules")}>Rules</ACButton>
-        <ACButton onClick={() => setModal("terrains")}>See Terrains</ACButton>
       </Container>
+      <HowToPlay
+        action={{
+          ...baseAction,
+          action: "how-to-play-button",
+        }}
+      />
     </Wrapper>
   );
 }
@@ -127,7 +137,7 @@ const ErrorMessage = styled.span`
   -webkit-transform: translateX(-50%);
   text-align: center;
   transform: translateX(-50%);
-  top: 60px;
+  top: 240px;
   width: 100%;
 `;
 const Wrapper = styled.div`
@@ -140,12 +150,12 @@ const Wrapper = styled.div`
   justify-content: space-around;
 `;
 const Title = styled.h4`
-  font-size: ${({ theme }) => theme.title};
+  font-size: ${({ theme }) => theme.$2};
   text-align: center;
-  padding-top: 60px;
+  padding-top: 64px;
   ${BREAKPOINTS.MOBILE} {
     margin-bottom: 5px;
-    font-size: ${({ theme }) => theme.subtitle};
+    font-size: ${({ theme }) => theme.$3};
   }
 `;
 const Container = styled.div`
@@ -153,10 +163,12 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   height: 50vh;
-  justify-content: space-around;
   margin: auto;
   position: relative;
   width: 40%;
+  & > *:not(:last-child) {
+    margin-bottom: ${({ theme }) => theme.$5};
+  }
   ${BREAKPOINTS.MOBILE} {
     height: 65vh;
     width: 60%;

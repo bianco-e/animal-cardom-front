@@ -60,6 +60,7 @@ const Wrapper = styled.div`
 const ChildrenContainer = styled.div`
   align-items: center;
   background: rgba(95, 57, 0, 0.3);
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
   min-height: 100vh;

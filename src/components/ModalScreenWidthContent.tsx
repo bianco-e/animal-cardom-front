@@ -5,10 +5,17 @@ export default function ModalScreenWidthContent() {
     <Wrapper>
       <Title>We are sorry :(</Title>
       <div>
-        <Text>Animal Cardom cannot be used from a vertical phone.</Text>
         <Text>
-          Please rotate your phone to have a better experience and keep enjoying
-          Animal Cardom.
+          In the future, we’re going to support mobile and smaller screen
+          experiences, for now, please{" "}
+          <b>
+            use a device of at least the size of a phone in landscape mode (512
+            px)
+          </b>
+        </Text>
+        <Text>
+          Rotate your phone to have a better experience and keep enjoying Animal
+          Cardom.
         </Text>
         <Text>Thanks!</Text>
       </div>
@@ -26,9 +33,9 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-around;
-  height: 85vh;
+  height: 95vh;
   text-align: center;
-  width: 100vw;
+  width: 95vw;
   > div {
     display: flex;
     flex-direction: column;

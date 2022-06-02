@@ -55,7 +55,7 @@ export default function Modal({
           <ModalContainer forSpinner={forSpinner} ref={contentRef}>
             {children}
             {!forSpinner && withCloseButton ? (
-              <CloseButton onClick={closeModal}>Close</CloseButton>
+              <CloseButton onClick={closeModal}>x</CloseButton>
             ) : null}
           </ModalContainer>
         </ModalOverlay>,

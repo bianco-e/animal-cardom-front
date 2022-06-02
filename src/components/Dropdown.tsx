@@ -101,6 +101,7 @@ const Wrapper = styled.div`
   width: ${(p: WrapperProps) => p.width};
   > button {
     align-items: center;
+    background: #f9f9f9;
     display: flex;
     justify-content: space-around;
     width: 100%;

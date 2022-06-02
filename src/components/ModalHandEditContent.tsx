@@ -160,11 +160,6 @@ const Container = styled.div`
       transform: none;
     }
   }
-  &.current-hand {
-    > button {
-      cursor: pointer;
-    }
-  }
   ${BREAKPOINTS.MOBILE} {
     > button {
       height: 200px;

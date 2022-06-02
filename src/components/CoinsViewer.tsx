@@ -7,7 +7,7 @@ interface IProps {
 export default function CoinsViewer({ coins }: IProps) {
   return (
     <Wrapper>
-      <img alt="coins" src="/images/icons/coins.png" width={25} />
+      <img alt="coins" src="/images/icons/coins.png" width={24} />
       <span>{coins && coins}</span>
     </Wrapper>
   );
@@ -16,7 +16,7 @@ export default function CoinsViewer({ coins }: IProps) {
 const Wrapper = styled.div`
   align-items: center;
   background: ${({ theme }) => theme.primary_brown};
-  border-radius: 0 0 50px 50px;
+  border-radius: 0 0 56px 56px;
   border: 2px solid ${({ theme }) => theme.secondary_brown};
   border-top: 0;
   box-shadow: inset 0px 0px 10px rgba(0, 0, 0, 0.6);

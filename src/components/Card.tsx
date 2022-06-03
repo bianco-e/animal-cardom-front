@@ -159,7 +159,7 @@ export default function Card({
         <div className="stats-container">
           <Image className="small-icon" src={utilitiesIcons.attack} />
           <Text
-            className="stats"
+            className="stats spaced-title"
             color={`${
               attack.current > attack.initial
                 ? "#0B8A37"
@@ -175,7 +175,7 @@ export default function Card({
             src={utilitiesIcons[poisoned.rounds > 0 ? "poison" : "life"]}
           />
           <Text
-            className="stats"
+            className="stats spaced-title"
             color={`${
               life.current > life.initial
                 ? "#0B8A37"
@@ -356,7 +356,7 @@ const StatsWrapper = styled.div`
     display: flex;
     height: 32px;
     justify-content: center;
-    width: calc(50% - 32px);
+    width: calc(50% - 16px);
     > span.poison-stats {
       background: ${({ theme }) => theme.primary_brown};
       border-radius: 4px;
@@ -457,8 +457,7 @@ const Text = styled.span`
   }
   &.stats {
     margin: 0 4px;
-    font-weight: 500;
-    font-size: 16px;
+    font-size: 14px;
     ${BREAKPOINTS.TABLET} {
       font-size: 13px;
     }

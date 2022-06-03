@@ -37,7 +37,7 @@ export default function CampaignCircuit({ xp }: IProps) {
             level={idx + 1}
             onClick={() => !isDisabled && handleCampaignGame(requiredXp)}
             title={isDisabled ? "Locked" : name}
-          ></TerrainContainer>
+          />
         );
       })}
     </Wrapper>

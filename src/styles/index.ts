@@ -7,6 +7,12 @@ export const GlobalStyle = createGlobalStyle`
     cursor: pointer;
   }
 
+  .spaced-title {
+    text-transform: uppercase;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+  }
+
   ::-webkit-scrollbar {
     width: 4px;
   }
@@ -33,6 +39,7 @@ const styles = {
   primary_red: "#dd5540",
   primary_green: "#0B8A37",
   primary_yellow: "#ffdf0f",
+  poison_green: "#23954B",
 
   //sizes
   $1: "40px",

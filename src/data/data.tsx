@@ -5,6 +5,8 @@ export const utilitiesIcons = {
   defense: "/images/icons/defense-icon.png",
   fury: "/images/icons/fury-icon.png",
   blood: "/images/icons/blood-icon.png",
+  life: "/images/svg/life-icon.svg",
+  poison: "/images/svg/poison-icon.svg",
 };
 
 export const terrains: ITerrain[] = [

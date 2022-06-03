@@ -12,7 +12,5 @@ export const trackAction = (action: Action) => {
 };
 
 export const getAllActionStats = () => {
-  return fetch(`${API_BASE_URL}tracking/all_stats`)
-    .then((res) => res.json())
-    .catch((err) => console.error(err));
+  return fetch(`${API_BASE_URL}tracking/all_actions_stats?sort_by=actions`);
 };

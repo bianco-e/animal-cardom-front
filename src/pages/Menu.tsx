@@ -88,7 +88,7 @@ const Wrapper = styled.div`
       cursor: default;
       height: 280px;
       margin-bottom: 16px;
-      width: 23%;
+      width: calc(30% - 32px);
       > .animal-name {
         font-size: 18px;
       }

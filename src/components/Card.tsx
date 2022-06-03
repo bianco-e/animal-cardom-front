@@ -121,7 +121,7 @@ export default function Card({
         </CornerIconContainer>
       )}
 
-      <Text className="animal-name">{name}</Text>
+      <Text className="animal-name spaced-title">{name}</Text>
 
       <Image className="animal-picture" draggable="false" src={image} />
 
@@ -138,7 +138,7 @@ export default function Card({
             />
           )}
           <Text
-            className="skill"
+            className="skill-name spaced-title"
             textDeco={`${paralyzed > 0 && "line-through 2px #dd5540"}`}
           >
             {skill.name}
@@ -155,8 +155,8 @@ export default function Card({
           {skill.description}
         </Text>
       </DescriptionContainer>
-      <StatsContainer>
-        <FlexSection>
+      <StatsWrapper>
+        <div className="stats-container">
           <Image className="small-icon" src={utilitiesIcons.attack} />
           <Text
             className="stats"
@@ -168,13 +168,12 @@ export default function Card({
           >
             {attack.current}
           </Text>
-          <Text className="life-heart" margin="2px">
-            {
-              poisoned.rounds === 0
-                ? `\u{1F5A4}` /* unicode for black heart emoji */
-                : `\u{1F49A}` /* unicode for green heart emoji */
-            }
-          </Text>
+        </div>
+        <div className="stats-container">
+          <Image
+            className="small-icon"
+            src={utilitiesIcons[poisoned.rounds > 0 ? "poison" : "life"]}
+          />
           <Text
             className="stats"
             color={`${
@@ -186,12 +185,15 @@ export default function Card({
             {life.current}
           </Text>
           {poisoned.rounds > 0 && (
-            <span className="negative-stats poison-stats">
+            <span
+              className="poison-stats"
+              title={`${poisoned.damage} damage poison - ${poisoned.rounds} rounds left`}
+            >
               {poisoned.damage} ({poisoned.rounds})
             </span>
           )}
-        </FlexSection>
-      </StatsContainer>
+        </div>
+      </StatsWrapper>
     </AnimalCard>
   );
 }
@@ -270,7 +272,7 @@ export const AnimalCard = styled.button`
   background: ${({ theme }) => theme.primary_brown};
   border: 2px solid ${({ theme }) => theme.secondary_brown};
   box-shadow: inset 0px 0px 10px rgba(0, 0, 0, 0.6);
-  border-radius: 5px;
+  border-radius: 8px;
   cursor: ${(p: AnimalCardProps) => p.cursor};
   display: flex;
   flex-direction: column;
@@ -281,7 +283,7 @@ export const AnimalCard = styled.button`
   padding: 12px;
   position: relative;
   transition: transform 0.15s ease;
-  width: 17%;
+  width: calc(20% - 32px);
   &:hover {
     box-shadow: 4px 4px 4px ${({ theme }) => theme.secondary_brown},
       inset 0px 0px 10px black;
@@ -335,26 +337,50 @@ export const AnimalCard = styled.button`
     padding: 6px;
   }
 `;
-const StatsContainer = styled.div`
+const StatsWrapper = styled.div`
   align-items: center;
-  background: ${({ theme }) => theme.primary_brown};
-  border-radius: 50px 50px 0 0;
-  border: 2px solid ${({ theme }) => theme.secondary_brown};
-  border-bottom: 0;
-  box-shadow: inset 0px 0px 10px rgba(0, 0, 0, 0.6);
   display: flex;
-  height: 30px;
-  justify-content: space-around;
+  justify-content: space-between;
   position: absolute;
-  left: 50%;
-  -webkit-transform: translateX(-50%);
-  transform: translateX(-50%);
+  left: 10%;
   transition: all 0.4s ease;
-  width: 130px;
+  width: 80%;
   bottom: 0;
+  > div.stats-container {
+    align-items: center;
+    background: ${({ theme }) => theme.primary_brown};
+    border-radius: 8px 8px 0 0;
+    border: 2px solid ${({ theme }) => theme.secondary_brown};
+    border-bottom: 0;
+    box-shadow: inset 0px 0px 8px rgba(0, 0, 0, 0.4);
+    display: flex;
+    height: 32px;
+    justify-content: center;
+    width: calc(50% - 32px);
+    > span.poison-stats {
+      background: ${({ theme }) => theme.primary_brown};
+      border-radius: 4px;
+      border: 2px solid ${({ theme }) => theme.secondary_brown};
+      box-shadow: inset 0px 0px 4px rgba(0, 0, 0, 0.2);
+      font-size: 12px;
+      font-weight: bold;
+      position: absolute;
+      right: -12px;
+      top: -8px;
+      transform: rotate(36deg);
+      padding: 2px 4px;
+      color: ${({ theme }) => theme.poison_green};
+    }
+  }
   ${BREAKPOINTS.MOBILE} {
-    height: 22px;
+    left: 5%;
     width: 90%;
+    > div.container {
+      height: 20px;
+      > span.poison-stats {
+        font-size: 8px;
+      }
+    }
   }
 `;
 
@@ -424,14 +450,14 @@ const Image = styled.img`
 `;
 const Text = styled.span`
   &.life-heart {
-    font-size: 16px;
-    margin-left: 10px;
+    font-size: 15px;
     ${BREAKPOINTS.TABLET} {
       font-size: 12px;
     }
   }
   &.stats {
-    margin-left: 3px;
+    margin: 0 4px;
+    font-weight: 500;
     font-size: 16px;
     ${BREAKPOINTS.TABLET} {
       font-size: 13px;
@@ -443,14 +469,15 @@ const Text = styled.span`
   &.skill {
     font-size: 10px;
     ${BREAKPOINTS.MOBILE} {
-      font-size: 7px;
+      font-size: 8px;
     }
   }
+  &.skill-name {
+    font-size: 8px;
+  }
   &.animal-name {
-    font-size: 20px;
-    ${BREAKPOINTS.TABLET} {
-      font-size: 16px;
-    }
+    font-size: 16px;
+    white-space: nowrap;
     ${BREAKPOINTS.MOBILE} {
       font-size: 12px;
     }
@@ -467,32 +494,11 @@ const FlexSection = styled.div`
   justify-content: center;
   margin-bottom: ${(p: FlexSectionProps) => p.mBottom};
   position: relative;
-  > span.negative-stats {
-    background: ${({ theme }) => theme.primary_brown};
-    border-radius: 4px;
-    border: 2px solid ${({ theme }) => theme.secondary_brown};
-    box-shadow: inset 0px 0px 1px rgba(0, 0, 0, 0.5);
-    font-size: 12px;
-    font-weight: bold;
-    position: absolute;
-    top: -12px;
-    transform: rotate(36deg);
-    padding: 2px 4px;
-  }
   > span.paralyzed {
     color: ${({ theme }) => theme.primary_red};
     font-size: 12px;
     font-weight: bold;
     margin-left: 4px;
-  }
-  > span.poison-stats {
-    color: ${({ theme }) => theme.primary_green};
-    right: -25px;
-  }
-  ${BREAKPOINTS.MOBILE} {
-    > span.negative-stats {
-      font-size: 8px;
-    }
   }
 `;
 const DescriptionContainer = styled.div`

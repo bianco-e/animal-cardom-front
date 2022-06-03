@@ -38,7 +38,7 @@ export default function Plant({ plant }: { plant: IPlant }) {
         selectionAnimation={isPlantSelected && selectionAnimation}
         transform={isPlantSelected ? "scale(1.1);" : ""}
       >
-        <span>{name}</span>
+        <span className="spaced-title">{name}</span>
         <img alt={name} src={image} />
       </PlantCard>
     </PlantContainer>
@@ -57,7 +57,7 @@ const PlantContainer = styled.div`
   height: 25%;
   margin: 0 auto 8%;
   position: relative;
-  width: 70%;
+  width: 75%;
 `;
 
 export const PlantCard = styled.button`
@@ -69,7 +69,7 @@ export const PlantCard = styled.button`
   flex-direction: column;
   height: 100%;
   margin: 0 auto;
-  max-width: 56px;
+  max-width: 64px;
   opacity: ${(p: PlantCardProps) => p.opacity};
   overflow: hidden;
   padding: 3px 3px 5px;
@@ -77,16 +77,13 @@ export const PlantCard = styled.button`
   transition: transform 0.2s ease;
   transform: ${(p: PlantCardProps) => p.transform};
   > img {
-    border-radius: 5px;
+    border-radius: 4px;
     height: 80%;
     width: 85%;
   }
   > span {
-    font-size: 10px;
-    font-weight: bold;
-    ${BREAKPOINTS.TABLET} {
-      font-size: 8px;
-    }
+    font-size: 8px;
+    margin: 2px 0;
   }
   ${BREAKPOINTS.TABLET} {
     height: 45px;

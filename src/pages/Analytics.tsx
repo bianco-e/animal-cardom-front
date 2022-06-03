@@ -20,14 +20,17 @@ const getActionTitle = (actionName: string): string =>
 
 export default function Analytics() {
   const { user, isAuthenticated } = useAuth0<AuthUser>();
-  const [actions, setActions] = useState<ActionsStats[]>([]);
+  const [allActions, setAllActions] = useState<ActionsStats[]>([]);
 
   useEffect(() => {
-    getAllActionStats().then((res) => {
-      if (res && res.length) {
-        setActions(res);
+    (async () => {
+      const actionsRes = await getAllActionStats();
+      if (actionsRes.ok) {
+        const data = await actionsRes.json();
+        if (!data) return;
+        setAllActions(data);
       }
-    });
+    })();
   }, []);
 
   return (
@@ -40,15 +43,16 @@ export default function Analytics() {
         picture={user && user.picture && user.picture}
       />
       <Title>Analytics</Title>
-      {actions.length > 0 ? (
-        actions.map(({ _id, actions }) => {
+      {Array.isArray(allActions) && allActions.length > 0 ? (
+        allActions.map(({ _id, actions }) => {
           return (
-            <Container>
-              <ActionName>{getActionTitle(_id)}</ActionName>{" "}
-              <span>{actions.length}</span>
+            <Container key={_id}>
+              <ActionName>
+                {getActionTitle(_id)} <span>({actions.length})</span>
+              </ActionName>
               {actions.map((currentAction: Action) => {
                 return (
-                  <ActionContainer>
+                  <ActionContainer key={currentAction.created_at}>
                     <ul>
                       {currentAction.guest_name ? (
                         <li>
@@ -67,13 +71,13 @@ export default function Analytics() {
                       ) : null}
                       {currentAction.user_agent ? (
                         <li>
-                          <b>User agent:</b> {currentAction.user_agent}
+                          <b>UA:</b> {currentAction.user_agent.slice(11)}
                         </li>
                       ) : null}
                       {currentAction.created_at ? (
                         <li>
-                          <b>Date:</b>
-                          {new Date(currentAction.created_at!).toString()}
+                          <b>Date:</b>{" "}
+                          {new Date(currentAction.created_at).toLocaleString()}
                         </li>
                       ) : null}
                     </ul>
@@ -99,24 +103,27 @@ const Wrapper = styled.div`
   width: 100%;
 `;
 const Container = styled.div`
-  margin: 30px 0;
-  width: 40%;
+  margin: 0 0 32px;
+  width: 50%;
   text-align: center;
 `;
 const ActionName = styled.span`
   border: 3px solid ${({ theme }) => theme.secondary_brown};
   border-top: 0;
-  border-radius: 0 0 5px 5px;
-  font-size: 23px;
+  border-radius: 0 0 8px 8px;
+  font-size: 16px;
   font-weight: bold;
-  padding: 0 15px 5px 15px;
+  padding: 0 16px 4px;
 `;
-const Title = styled.span`
+const Title = styled.h1`
   color: #000;
-  font-size: 46px;
+  font-size: ${({ theme }) => theme.$1};
   font-weight: bold;
-  margin: 100px 0 40px 0;
+  margin: 96px 0 44px;
 `;
 const ActionContainer = styled.div`
-  margin: 20px 0;
+  margin: 16px 0;
+  li {
+    font-size: 12px;
+  }
 `;

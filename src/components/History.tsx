@@ -26,7 +26,10 @@ export default function History({ lastGames }: IProps) {
           const gameDate = new Date(created_at!);
           return (
             <HistoryCard terrain={terrain.toLowerCase()} key={idx}>
-              <Result bgColor={won ? "#0B8A37" : "#dd5540"}>
+              <Result
+                bgColor={won ? "#0B8A37" : "#dd5540"}
+                className="spaced-title"
+              >
                 {won ? "Won" : "Lost"}
               </Result>
               <PlayerStats>
@@ -131,12 +134,14 @@ const HistoryCard = styled.div`
   background-size: cover;
   border-radius: 5px;
   box-shadow: 0 0 10px 10px rgba(95, 57, 0, 0.2);
+  box-sizing: border-box;
   display: flex;
+  justify-content: space-between;
   min-height: 80px;
   margin: 15px 0;
-  padding: 15px 60px 5px 60px;
+  padding: 8px 24px;
   position: relative;
-  width: 75%;
+  width: 85%;
 `;
 const DetailsPanel = styled.div`
   align-items: center;
@@ -173,7 +178,7 @@ const PlayerStats = styled.div`
   align-items: center;
   display: flex;
   flex-direction: column;
-  width: 50%;
+  width: calc(50% - 40px);
   > b {
     margin-bottom: 10px;
   }
@@ -191,7 +196,7 @@ const PlayerStats = styled.div`
 const CardsContainer = styled.div`
   align-items: center;
   display: flex;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
   justify-content: space-around;
   width: 85%;
   ${BREAKPOINTS.MOBILE} {
@@ -206,11 +211,10 @@ const Result = styled.span`
   background: ${(p: ResultProps) => p.bgColor};
   border-radius: 5px;
   color: #fff;
-  font-size: 14px;
-  font-weight: bold;
-  padding: 2px 10px;
+  font-size: 12px;
+  padding: 4px 8px;
   position: absolute;
-  transform: rotate(-30deg);
-  left: -2px;
+  transform: rotate(-40deg);
+  left: -4px;
   top: 8px;
 `;

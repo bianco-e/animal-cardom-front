@@ -15,7 +15,7 @@ export default function CardThumbnail({ image, disabled, name }: IProps) {
       isParalyzed={false}
       opacity={disabled ? "0.5" : "1"}
     >
-      <span className="animal-name">{name}</span>
+      <span className="animal-name spaced-title">{name}</span>
       <img alt={name} className="animal-picture" src={image} />
     </Card>
   );
@@ -24,16 +24,16 @@ export default function CardThumbnail({ image, disabled, name }: IProps) {
 const Card = styled(AnimalCard)`
   cursor: default;
   height: 80px;
-  width: 16%;
+  width: calc(20% - 8px);
   > .animal-name {
-    font-size: 9px;
+    font-size: 8px;
     font-weight: bold;
     margin-bottom: 2px;
   }
   > .animal-picture {
-    border-radius: 120px;
-    height: 30px;
-    width: 90%;
+    border-radius: 16px;
+    height: 32px;
+    width: 95%;
   }
   &:hover {
     box-shadow: inset 0px 0px 10px rgba(0, 0, 0, 0.6);

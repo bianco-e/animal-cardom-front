@@ -265,13 +265,10 @@ const SingleCardContainer = styled.div`
   position: relative;
   height: 270px;
   margin-bottom: 16px;
-  width: 19%;
+  width: calc(20% - 8px);
   > button.card {
     height: 100%;
     width: 100%;
-    > .animal-name {
-      font-size: 18px;
-    }
     > .in-hand {
       background: ${({ theme }) => theme.primary_green};
       border-radius: 99px;
@@ -315,11 +312,12 @@ const SingleCardContainer = styled.div`
 const CardsContainer = styled.div`
   align-items: center;
   border-radius: 5px;
+  box-sizing: border-box;
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
   margin-top: 60px;
   min-height: 100px;
-  padding: 15px 60px;
-  width: 83%;
+  padding: 16px 0;
+  width: 85%;
 `;

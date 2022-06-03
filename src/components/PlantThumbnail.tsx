@@ -9,8 +9,8 @@ interface IProps {
 
 export default function PlantThumbnail({ disabled, image, name }: IProps) {
   return (
-    <Plant opacity={disabled ? "0.6" : "1"}>
-      <span>{name}</span>
+    <Plant opacity={disabled ? "0.5" : "1"}>
+      <span className="spaced-title">{name}</span>
       <img alt={name} src={image} />
     </Plant>
   );
@@ -21,7 +21,7 @@ const Plant = styled(PlantCard)`
   height: 55px;
   width: 60px;
   > span {
-    font-size: 10px;
+    font-size: 8px;
     margin-bottom: 2px;
   }
   > img {

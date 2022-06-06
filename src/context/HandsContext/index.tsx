@@ -67,9 +67,6 @@ const initialState = newGame();
 
 const Context = React.createContext<IHandsContext>([initialState]);
 
-const getRandomIdx = (arr: any[]) =>
-  arr[Math.floor(Math.random() * arr.length)];
-
 const getHighestAttackCard = (hand: IAnimal[]) =>
   hand.reduce((acc, value) => {
     return value.attack.current > acc.attack.current ? value : acc;
@@ -83,12 +80,12 @@ const attackAndApplySkill = (
   if (!defender || !attacker || !hands || defender.life.current === "DEAD")
     return state;
 
-  const handsAfterAttack = applyAttackDamage(state, enemyHandKey).hands;
+  const stateAfterAttack = applyAttackDamage(state, enemyHandKey);
 
   const newState = {
-    ...state,
+    ...stateAfterAttack,
     hands: passRoundAndApplyEffects(
-      applyPoisonDamage(handsAfterAttack, enemyHandKey),
+      applyPoisonDamage(stateAfterAttack.hands, enemyHandKey),
       enemyHandKey
     ),
   };
@@ -130,21 +127,23 @@ const checkWhatPlantToUse = (state: IHandsState): IHandsState => {
     (card: IAnimal) => card.poisoned.rounds > 0
   );
   const paralyzedCard = pcLiveCards.find((card: IAnimal) => card.paralyzed > 0);
+  const blindCard = pcLiveCards.find((card: IAnimal) => card.missing_chance);
 
-  const findAPlant = (plantName: string) => {
-    return plants.pc.find(
+  const findAPlant = (plantName: string) =>
+    plants.pc.find(
       (plant: IPlant) => plant.name === plantName && !usedPlants.includes(plant)
     );
-  };
+
   const aloePlant = findAPlant("Aloe");
   const jewelweedPlant = findAPlant("Jewelweed");
   const coffeePlant = findAPlant("Coffee");
   const withaniaPlant = findAPlant("Withania");
   const peyotePlant = findAPlant("Peyote");
   const ricinumPlant = findAPlant("Ricinum");
-  const randomBoolean = Math.floor(Math.random() * 10) > 3;
-  const randomAlly = getRandomIdx(pcLiveCards);
-  const randomEnemy = getRandomIdx(userLiveCards);
+  const marigoldPlant = findAPlant("Marigold");
+  const randomBoolean = getRandomChance(70);
+  const randomAlly = getRandomFromArr(pcLiveCards);
+  const randomEnemy = getRandomFromArr(userLiveCards);
 
   if (damagedCard && aloePlant) {
     return applyPlantToCard(aloePlant, damagedCard, state, "user");
@@ -152,6 +151,8 @@ const checkWhatPlantToUse = (state: IHandsState): IHandsState => {
     return applyPlantToCard(jewelweedPlant, poisonedCard, state, "user");
   } else if (paralyzedCard && coffeePlant) {
     return applyPlantToCard(coffeePlant, paralyzedCard, state, "user");
+  } else if (blindCard && marigoldPlant) {
+    return applyPlantToCard(marigoldPlant, blindCard, state, "user");
   } else if (randomBoolean && withaniaPlant && randomAlly) {
     return applyPlantToCard(withaniaPlant, randomAlly, state, "user");
   } else if (randomBoolean && peyotePlant && randomEnemy) {

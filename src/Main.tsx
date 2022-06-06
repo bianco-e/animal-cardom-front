@@ -1,6 +1,7 @@
+import { BrowserRouter } from "react-router-dom";
+import Router from "./Router";
 import { ThemeProvider } from "styled-components";
 import theme, { GlobalStyle } from "./styles";
-import Router from "./Router";
 import Modal from "./components/Common/Modal";
 import ModalScreenWidthContent from "./components/ModalScreenWidthContent";
 import { HandsContext } from "./context/HandsContext";
@@ -22,7 +23,9 @@ const Main = () => {
                   <ModalScreenWidthContent />
                 </Modal>
               )}
-              <Router></Router>
+              <BrowserRouter>
+                <Router />
+              </BrowserRouter>
             </>
           </UserContext>
         </HandsContext>

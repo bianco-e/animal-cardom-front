@@ -1,4 +1,4 @@
-import { BrowserRouter, Route } from "react-router-dom";
+import { Route } from "react-router-dom";
 import Campaign from "./pages/Campaign";
 import Collection from "./pages/Collection";
 import ErrorPage from "./pages/ErrorPage";
@@ -8,12 +8,12 @@ import Menu from "./pages/Menu";
 import Profile from "./pages/Profile";
 import WelcomePage from "./pages/WelcomePage";
 import FeedbackPage from "./pages/FeedbackPage";
-import ScrollToTop from "./ScrollToTop";
+import useScrollToTop from "./hooks/useScrollToTop";
 
 const MainRouter = () => {
+  useScrollToTop();
   return (
-    <BrowserRouter>
-      <ScrollToTop />
+    <>
       <Route exact path="/" render={() => <WelcomePage />} />
       <Route exact path="/analytics" render={() => <Analytics />} />
       <Route exact path={["/play", "/game"]} render={() => <Game />} />
@@ -23,7 +23,7 @@ const MainRouter = () => {
       <Route exact path="/collection" render={() => <Collection />} />
       <Route exact path="/error" render={() => <ErrorPage />} />
       <Route exact path="/give-feedback" render={() => <FeedbackPage />} />
-    </BrowserRouter>
+    </>
   );
 };
 

@@ -16,6 +16,24 @@ const updateCardBleeding = (
   });
 };
 
+const reduceMissingChanceCard = (
+  arr: IAnimal[],
+  chanceToReduce: number,
+  animalToTreat: IAnimal
+): IAnimal[] => {
+  return arr.map((card) => {
+    if (card.name !== animalToTreat.name || !card.missing_chance) return card;
+    const newMissingChance =
+      card.missing_chance - chanceToReduce < 0
+        ? undefined
+        : card.missing_chance - chanceToReduce;
+    return {
+      ...card,
+      missing_chance: newMissingChance,
+    };
+  });
+};
+
 const poisonCardInAHand = (
   arr: IAnimal[],
   poisoned: Poisoned,
@@ -87,7 +105,7 @@ const setCardAttackInAHand = (
 
 const setHandInState = (
   state: IHandsState,
-  hand: HandKey,
+  enemyHandKey: HandKey,
   newHand: IAnimal[]
 ): IHandsState => {
   const { hands, usedPlants, selectedPlant, animalToTreat } = state;
@@ -98,7 +116,7 @@ const setHandInState = (
     ...state,
     hands: {
       ...hands,
-      [hand]: newHand,
+      [enemyHandKey]: newHand,
     },
     selectedPlant: undefined,
     animalToTreat: undefined,
@@ -107,105 +125,147 @@ const setHandInState = (
   };
 };
 
-const ricinumFn = (state: IHandsState, hand: HandKey): IHandsState => {
+const ricinumFn = (state: IHandsState, enemyHandKey: HandKey): IHandsState => {
   const { animalToTreat, hands } = state;
   const poison = { damage: 1, rounds: 3 };
-  if (hands[hand].includes(animalToTreat!)) {
-    const newHand = poisonCardInAHand(hands[hand], poison, animalToTreat!);
-    return setHandInState(state, hand, newHand);
+  if (hands[enemyHandKey].includes(animalToTreat!)) {
+    const newHand = poisonCardInAHand(
+      hands[enemyHandKey],
+      poison,
+      animalToTreat!
+    );
+    return setHandInState(state, enemyHandKey, newHand);
   } else return state;
 };
 
-const aloeFn = (state: IHandsState, hand: HandKey): IHandsState => {
+const aloeFn = (state: IHandsState, enemyHandKey: HandKey): IHandsState => {
   const { animalToTreat, hands } = state;
-  const otherHand = hand === "pc" ? "user" : "pc";
+  const allyHandKey = enemyHandKey === "pc" ? "user" : "pc";
   if (
-    hands[otherHand].includes(animalToTreat!) &&
+    hands[allyHandKey].includes(animalToTreat!) &&
     animalToTreat!.life.current < animalToTreat!.life.initial
   ) {
-    const newHand = healCardInAHand(hands[otherHand], 2, animalToTreat!);
-    return setHandInState(state, otherHand, newHand);
+    const newHand = healCardInAHand(hands[allyHandKey], 2, animalToTreat!);
+    return setHandInState(state, allyHandKey, newHand);
   } else return state;
 };
 
-const peyoteFn = (state: IHandsState, hand: HandKey): IHandsState => {
+const cactusFn = (state: IHandsState, enemyHandKey: HandKey): IHandsState => {
   const { animalToTreat, hands } = state;
-  if (hands[hand].includes(animalToTreat!) && animalToTreat!.paralyzed === 0) {
-    const newHand = paralyzeCardInAHand(hands[hand], 2, animalToTreat!);
-    return setHandInState(state, hand, newHand);
+  if (hands[enemyHandKey].includes(animalToTreat!)) {
+    const newHand = updateCardBleeding(
+      hands[enemyHandKey],
+      animalToTreat!,
+      true
+    );
+    return setHandInState(state, enemyHandKey, newHand);
   } else return state;
 };
 
-const jewelweedFn = (state: IHandsState, hand: HandKey): IHandsState => {
+const coffeeFn = (state: IHandsState, enemyHandKey: HandKey): IHandsState => {
   const { animalToTreat, hands } = state;
-  const poison = { damage: 0, rounds: 0 };
-  const otherHand = hand === "pc" ? "user" : "pc";
+  const allyHandKey = enemyHandKey === "pc" ? "user" : "pc";
   if (
-    hands[otherHand].includes(animalToTreat!) &&
-    animalToTreat!.poisoned.rounds > 0
-  ) {
-    const newHand = poisonCardInAHand(hands[otherHand], poison, animalToTreat!);
-    return setHandInState(state, otherHand, newHand);
-  } else return state;
-};
-
-const coffeeFn = (state: IHandsState, hand: HandKey): IHandsState => {
-  const { animalToTreat, hands } = state;
-  const otherHand = hand === "pc" ? "user" : "pc";
-  if (
-    hands[otherHand].includes(animalToTreat!) &&
+    hands[allyHandKey].includes(animalToTreat!) &&
     animalToTreat!.paralyzed > 0
   ) {
-    const newHand = paralyzeCardInAHand(hands[otherHand], 0, animalToTreat!);
-    return setHandInState(state, otherHand, newHand);
+    const newHand = paralyzeCardInAHand(hands[allyHandKey], 0, animalToTreat!);
+    return setHandInState(state, allyHandKey, newHand);
   } else return state;
 };
 
-const withaniaFn = (state: IHandsState, hand: HandKey): IHandsState => {
+const horsetailFn = (
+  state: IHandsState,
+  enemyHandKey: HandKey
+): IHandsState => {
   const { animalToTreat, hands } = state;
-  const otherHand = hand === "pc" ? "user" : "pc";
-  if (hands[otherHand].includes(animalToTreat!)) {
-    const newHand = setCardAttackInAHand(hands[otherHand], 1, animalToTreat!);
-    return setHandInState(state, otherHand, newHand);
+  const allyHandKey = enemyHandKey === "pc" ? "user" : "pc";
+  if (hands[allyHandKey].includes(animalToTreat!) && animalToTreat!.bleeding) {
+    const newHand = updateCardBleeding(
+      hands[allyHandKey],
+      animalToTreat!,
+      false
+    );
+    return setHandInState(state, allyHandKey, newHand);
   } else return state;
 };
 
-const cactusFn = (state: IHandsState, hand: HandKey): IHandsState => {
+const jewelweedFn = (
+  state: IHandsState,
+  enemyHandKey: HandKey
+): IHandsState => {
   const { animalToTreat, hands } = state;
-  if (hands[hand].includes(animalToTreat!)) {
-    const newHand = updateCardBleeding(hands[hand], animalToTreat!, true);
-    return setHandInState(state, hand, newHand);
+  const poison = { damage: 0, rounds: 0 };
+  const allyHandKey = enemyHandKey === "pc" ? "user" : "pc";
+  if (
+    hands[allyHandKey].includes(animalToTreat!) &&
+    animalToTreat!.poisoned.rounds > 0
+  ) {
+    const newHand = poisonCardInAHand(
+      hands[allyHandKey],
+      poison,
+      animalToTreat!
+    );
+    return setHandInState(state, allyHandKey, newHand);
   } else return state;
 };
 
-const horsetailFn = (state: IHandsState, hand: HandKey): IHandsState => {
+const marigoldFn = (state: IHandsState, enemyHandKey: HandKey): IHandsState => {
   const { animalToTreat, hands } = state;
-  const otherHand = hand === "pc" ? "user" : "pc";
-  if (hands[otherHand].includes(animalToTreat!) && animalToTreat!.bleeding) {
-    const newHand = updateCardBleeding(hands[otherHand], animalToTreat!, false);
-    return setHandInState(state, otherHand, newHand);
+  const allyHandKey = enemyHandKey === "pc" ? "user" : "pc";
+  if (
+    hands[allyHandKey].includes(animalToTreat!) &&
+    animalToTreat!.missing_chance
+  ) {
+    const newHand = reduceMissingChanceCard(
+      hands[allyHandKey],
+      20,
+      animalToTreat!
+    );
+    return setHandInState(state, allyHandKey, newHand);
   } else return state;
 };
 
+const peyoteFn = (state: IHandsState, enemyHandKey: HandKey): IHandsState => {
+  const { animalToTreat, hands } = state;
+  if (
+    hands[enemyHandKey].includes(animalToTreat!) &&
+    animalToTreat!.paralyzed === 0
+  ) {
+    const newHand = paralyzeCardInAHand(hands[enemyHandKey], 2, animalToTreat!);
+    return setHandInState(state, enemyHandKey, newHand);
+  } else return state;
+};
+
+const withaniaFn = (state: IHandsState, enemyHandKey: HandKey): IHandsState => {
+  const { animalToTreat, hands } = state;
+  const allyHandKey = enemyHandKey === "pc" ? "user" : "pc";
+  if (hands[allyHandKey].includes(animalToTreat!)) {
+    const newHand = setCardAttackInAHand(hands[allyHandKey], 1, animalToTreat!);
+    return setHandInState(state, allyHandKey, newHand);
+  } else return state;
+};
 export default function getPlantFn(name: string) {
   switch (name) {
-    case "Ricinum":
-      return ricinumFn;
     case "Aloe":
       return aloeFn;
-    case "Peyote":
-      return peyoteFn;
-    case "Jewelweed":
-      return jewelweedFn;
-    case "Coffee":
-      return coffeeFn;
-    case "Withania":
-      return withaniaFn;
     case "Cactus":
       return cactusFn;
+    case "Coffee":
+      return coffeeFn;
     case "Horsetail":
       return horsetailFn;
+    case "Jewelweed":
+      return jewelweedFn;
+    case "Marigold":
+      return marigoldFn;
+    case "Peyote":
+      return peyoteFn;
+    case "Ricinum":
+      return ricinumFn;
+    case "Withania":
+      return withaniaFn;
     default:
-      return (state: IHandsState, hand: HandKey) => state;
+      return (state: IHandsState, enemyHandKey: HandKey) => state;
   }
 }

@@ -15,13 +15,14 @@ export default function Hand({ hand, belongsToUser }: IProps) {
         const {
           attack,
           bleeding,
-          species,
           image,
           life,
+          missing_chance,
+          name,
           paralyzed,
           poisoned,
           skill,
-          name,
+          species,
           targeteable,
         } = animal;
         return (
@@ -29,10 +30,11 @@ export default function Hand({ hand, belongsToUser }: IProps) {
             attack={attack}
             belongsToUser={belongsToUser}
             bleeding={bleeding}
-            name={name}
             image={image}
             key={name}
             life={life}
+            missingChance={missing_chance}
+            name={name}
             paralyzed={paralyzed}
             poisoned={poisoned}
             skill={skill}

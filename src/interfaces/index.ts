@@ -46,6 +46,7 @@ export interface IAnimal {
   targeteable: boolean;
   bleeding: boolean;
   price: number;
+  missing_chance?: number;
 }
 
 export interface ITerrain {

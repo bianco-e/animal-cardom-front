@@ -21,6 +21,7 @@ interface IProps {
   species: string;
   image: string;
   life: Stat<number | string>;
+  missingChance?: number;
   onPreviewClick?: (name: string) => void;
   opacityForPreview?: string;
   paralyzed: number;
@@ -38,6 +39,7 @@ export default function Card({
   species,
   image,
   skill,
+  missingChance,
   name,
   onPreviewClick,
   opacityForPreview,
@@ -49,11 +51,13 @@ export default function Card({
   const [state, dispatch] = useContext(HandsContext);
   const isCardSelected = state.attacker?.name === name;
   const isCardUnderAttack = state.underAttack === name;
+  const hasCondition = !targeteable || missingChance;
   const soundState = localStorage.getItem("sound");
   const [animationProps] = usePlantAnimation({ name, soundState });
   useEffect(() => {
     isCardUnderAttack && soundState === "on" && attackAudio.play();
   }, [isCardUnderAttack, soundState]);
+
   const isForPreview = !!opacityForPreview;
   const cardProps = isForPreview
     ? {
@@ -104,22 +108,20 @@ export default function Card({
       <CornerIconContainer>
         <span>{species}</span>
       </CornerIconContainer>
-      {!targeteable && (
-        <CornerIconContainer
-          className="animal-status"
-          title="This animal is untargeteable"
-        >
-          <span>{`\u{1F6AB}`}</span>
-        </CornerIconContainer> //unicode for emoji
-      )}
-      {bleeding && (
-        <CornerIconContainer
-          className="animal-status"
-          title="This animal is bleeding"
-        >
-          <Image className="blood-drop" src={utilitiesIcons.blood} />
+      {hasCondition ? (
+        <CornerIconContainer className="animal-condition">
+          {!targeteable ? (
+            <span title={`${name} is untargeteable`}>{`\u{1F6AB}`}</span>
+          ) : null}
+          {missingChance ? (
+            <Image
+              className="missing-chance-icon"
+              src={utilitiesIcons.missing}
+              title={`${name} has ${missingChance}% chance of missing the attack`}
+            />
+          ) : null}
         </CornerIconContainer>
-      )}
+      ) : null}
 
       <Text className="animal-name spaced-title">{name}</Text>
 
@@ -159,7 +161,7 @@ export default function Card({
         <div className="stats-container">
           <Image className="small-icon" src={utilitiesIcons.attack} />
           <Text
-            className="stats"
+            className="stats spaced-title"
             color={`${
               attack.current > attack.initial
                 ? "#0B8A37"
@@ -169,13 +171,16 @@ export default function Card({
             {attack.current}
           </Text>
         </div>
+        {bleeding ? (
+          <Image className="blood-drop" src={utilitiesIcons.blood} />
+        ) : null}
         <div className="stats-container">
           <Image
             className="small-icon"
-            src={utilitiesIcons[poisoned.rounds > 0 ? "poison" : "life"]}
+            src={utilitiesIcons[poisoned.rounds > 0 ? "poisonLife" : "life"]}
           />
           <Text
-            className="stats"
+            className="stats spaced-title"
             color={`${
               life.current > life.initial
                 ? "#0B8A37"
@@ -356,7 +361,7 @@ const StatsWrapper = styled.div`
     display: flex;
     height: 32px;
     justify-content: center;
-    width: calc(50% - 32px);
+    width: calc(50% - 16px);
     > span.poison-stats {
       background: ${({ theme }) => theme.primary_brown};
       border-radius: 4px;
@@ -402,7 +407,10 @@ const CornerIconContainer = styled.div`
     left: 24px;
     top: 24px;
   }
-  &.animal-status {
+  &.animal-condition {
+    > * {
+      cursor: help;
+    }
     left: auto;
     right: -24px;
     > img {
@@ -457,8 +465,7 @@ const Text = styled.span`
   }
   &.stats {
     margin: 0 4px;
-    font-weight: 500;
-    font-size: 16px;
+    font-size: 14px;
     ${BREAKPOINTS.TABLET} {
       font-size: 13px;
     }

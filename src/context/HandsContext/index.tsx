@@ -21,6 +21,7 @@ import {
   SELECT_PLANT,
   SET_CARDS,
 } from "./types";
+import { getLiveCards, getRandomChance, getRandomFromArr } from "../../utils";
 export interface IHandsAction {
   hands: IHands;
   plants: IPlants;
@@ -69,37 +70,31 @@ const Context = React.createContext<IHandsContext>([initialState]);
 const getRandomIdx = (arr: any[]) =>
   arr[Math.floor(Math.random() * arr.length)];
 
-const getLiveCards = (arr: IAnimal[]) =>
-  arr.filter((card) => card.life.current !== "DEAD");
-
 const getHighestAttackCard = (hand: IAnimal[]) =>
   hand.reduce((acc, value) => {
     return value.attack.current > acc.attack.current ? value : acc;
   });
 
-const attackAndApplySkill = (state: IHandsState, enemyHandKey: HandKey) => {
+const attackAndApplySkill = (
+  state: IHandsState,
+  enemyHandKey: HandKey
+): IHandsState => {
   const { defender, attacker, hands } = state;
-  if (
-    defender &&
-    attacker &&
-    hands &&
-    typeof defender.life.current === "number"
-  ) {
-    const newState = {
-      ...state,
-      underAttack: defender.name,
-      hands: passRoundAndApplyEffects(
-        applyPoisonDamage(
-          applyAttackDamage(hands, attacker, defender!, enemyHandKey),
-          enemyHandKey
-        ),
-        enemyHandKey
-      ),
-    };
-    return attacker.paralyzed > 0
-      ? newState
-      : getOffensiveSkillFn(attacker.name)(newState, enemyHandKey);
-  } else return state;
+  if (!defender || !attacker || !hands || defender.life.current === "DEAD")
+    return state;
+
+  const handsAfterAttack = applyAttackDamage(state, enemyHandKey).hands;
+
+  const newState = {
+    ...state,
+    hands: passRoundAndApplyEffects(
+      applyPoisonDamage(handsAfterAttack, enemyHandKey),
+      enemyHandKey
+    ),
+  };
+  return attacker.paralyzed > 0
+    ? newState
+    : getOffensiveSkillFn(attacker.name)(newState, enemyHandKey);
 };
 
 const applyPlantToCard = (
@@ -170,16 +165,15 @@ const computerDamage = (state: IHandsState) => {
   const { defender, attacker, pcTurn, hands } = state;
   const pcAnswer = `${attacker!.name} attacked ${defender!.name}`;
   const newState = attackAndApplySkill(state, "user");
-  if (getLiveCards(hands.user).length > 0) {
-    return checkWhatPlantToUse({
-      ...newState,
-      attacker: undefined,
-      defender: undefined,
-      pcTurn: !pcTurn,
-      triggerPcAttack: false,
-      pcPlay: pcAnswer,
-    });
-  } else return state;
+  if (!getLiveCards(hands.user).length) return state;
+  return checkWhatPlantToUse({
+    ...newState,
+    attacker: undefined,
+    defender: undefined,
+    pcTurn: !pcTurn,
+    triggerPcAttack: false,
+    pcPlay: pcAnswer,
+  });
 };
 
 const computerPlay = (state: IHandsState) => {
@@ -188,10 +182,16 @@ const computerPlay = (state: IHandsState) => {
   const userLiveCards = getLiveCards(hands.user).filter(
     (card: IAnimal) => card.targeteable
   );
+  const pcAttacker = getRandomChance(90)
+    ? getHighestAttackCard(pcLiveCards)
+    : getRandomFromArr(pcLiveCards);
+  const userDefender = getRandomChance(85)
+    ? getHighestAttackCard(userLiveCards)
+    : getRandomFromArr(userLiveCards);
   return computerDamage({
     ...state,
-    attacker: getHighestAttackCard(pcLiveCards),
-    defender: getHighestAttackCard(userLiveCards),
+    attacker: pcAttacker,
+    defender: userDefender,
   });
 };
 
@@ -294,24 +294,37 @@ const passRoundAndApplyEffects = (hands: IHands, enemyHandKey: HandKey) => {
   };
 };
 
-const applyAttackDamage = (
-  hands: IHands,
+const getAttackStatsDiff = (
   attacker: IAnimal,
-  defender: IAnimal,
-  enemyHandKey: HandKey
-) => {
-  const statsDiff =
-    typeof defender.life.current === "number"
-      ? defender.life.current -
-        (attacker.attack.current + getExtraDamageIfApplies(attacker, defender))
-      : undefined;
-  return getDefensiveSkillFn(defender.name)(
-    hands,
-    attacker,
-    defender,
-    enemyHandKey,
-    statsDiff!
+  defender: IAnimal
+): number | undefined => {
+  if (typeof defender.life.current !== "number") return undefined;
+  if (attacker.missing_chance && getRandomChance(attacker.missing_chance))
+    return undefined;
+  return (
+    defender.life.current -
+    (attacker.attack.current + getExtraDamageIfApplies(attacker, defender))
   );
+};
+
+const applyAttackDamage = (
+  state: IHandsState,
+  enemyHandKey: HandKey
+): IHandsState => {
+  const statsDiff = getAttackStatsDiff(state.attacker!, state.defender!);
+  return !statsDiff
+    ? state
+    : {
+        ...state,
+        underAttack: state.defender!.name,
+        hands: getDefensiveSkillFn(state.defender!.name)(
+          state.hands,
+          state.attacker!,
+          state.defender!,
+          enemyHandKey,
+          statsDiff
+        ),
+      };
 };
 
 const applyPoisonDamage = (hands: IHands, enemyHandKey: HandKey): IHands => {

@@ -56,3 +56,14 @@ export const getUtm = (search?: string) => {
     "utm_source"
   )}&utm_medium=${searchParams.get("utm_medium")}`;
 };
+
+export const getRandomChance = (percent: number) =>
+  Math.random() < percent / 100;
+
+export const getLiveCards = (hand: IAnimal[]): IAnimal[] =>
+  hand.filter((card) => card.life.current !== "DEAD");
+
+export const getRandomFromArr = (arr: any[]) => {
+  const randomIdx = Math.floor(Math.random() * arr.length);
+  return arr[randomIdx];
+};

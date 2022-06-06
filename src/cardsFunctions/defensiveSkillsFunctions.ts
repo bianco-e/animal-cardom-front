@@ -1,4 +1,5 @@
 import { HandKey, IAnimal, IHands } from "../interfaces";
+import { getRandomChance } from "../utils";
 
 const BUTTERFLY_ANIMAL: IAnimal = {
   skill: {
@@ -28,7 +29,6 @@ const BUTTERFLY_ANIMAL: IAnimal = {
   price: 45,
 };
 
-const getRandomChance = (percent: number) => Math.random() < percent / 100;
 const applyDmg = (animal: IAnimal, statsDiff: number): IAnimal => ({
   ...animal,
   life: {

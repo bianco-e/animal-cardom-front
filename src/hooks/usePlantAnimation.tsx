@@ -78,6 +78,11 @@ const plantsAnimationsData: PlantsData = {
     animation: cleaningAnimation,
     img: "/images/plants/yellow-stars.png",
   },
+  Marigold: {
+    audio: audioFiles.healing,
+    animation: cleaningAnimation,
+    img: "/images/plants/yellow-stars.png",
+  },
 };
 
 export default function usePlantAnimation({ name, soundState }: IProps) {

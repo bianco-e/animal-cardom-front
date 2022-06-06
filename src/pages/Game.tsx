@@ -16,7 +16,7 @@ import { getUserMe } from "../queries/user";
 import { newTerrain, newCampaignGame, newRandomGame } from "../queries/games";
 import Spinner from "../components/Spinner";
 import ModalResultContent from "../components/ModalResultContent";
-import { getCookie } from "../utils";
+import { getCookie, getLiveCards } from "../utils";
 
 const emptyTerrain = {
   name: "",
@@ -105,9 +105,6 @@ export default function App() {
       }
     }
   };
-
-  const getLiveCards = (hand: IAnimal[]) =>
-    hand.filter((card) => card.life.current !== "DEAD");
 
   useEffect(() => {
     checkUserAndStartGame();

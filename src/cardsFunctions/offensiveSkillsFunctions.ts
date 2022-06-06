@@ -501,101 +501,103 @@ export const getExtraDamageIfApplies = (
   attacker: IAnimal,
   defender: IAnimal
 ): number => {
-  const isNotParalyzed = attacker.paralyzed === 0;
+  if (attacker.paralyzed > 0) return 0;
   switch (attacker.name) {
     case "Alligator":
-      return isNotParalyzed ? 1 : 0;
-    case "Crocodile":
-      return isNotParalyzed ? 2 : 0;
-    case "Komodo Dragon":
-      return isNotParalyzed ? 1 : 0;
-    case "Eagle":
-      return isNotParalyzed && defender.species !== "🦂" ? 2 : 0;
-    case "Hyena":
-      return isNotParalyzed && defender.life.current < defender.life.initial
-        ? 2
-        : 0;
-    case "Pelican":
-      return isNotParalyzed && defender.species === "🦈" ? 2 : 0;
+      return 1;
     case "Bee":
-      return isNotParalyzed ? 3 : 0;
+      return 3;
+    case "Crocodile":
+      return 2;
+    case "Eagle":
+      return defender.species !== "🦂" ? 2 : 0;
+    case "Komodo Dragon":
+      return 1;
+    case "Hyena":
+      return defender.life.current < defender.life.initial ? 2 : 0;
+    case "Mole":
+      return defender.species === "🦂" ? 1 : 0;
+    case "Pelican":
+      return defender.species === "🦈" ? 2 : 0;
     default:
       return 0;
   }
 };
 
-export default function getSkillFn(name: string) {
+export default function getSkillFn(
+  name: string
+): (state: IHandsState, hand: HandKey) => IHandsState {
   switch (name) {
     case "Alligator":
       return alligatorFn;
-    case "Crocodile":
-      return crocodileFn;
-    case "Tortoise":
-      return tortoiseFn;
-    case "Snake":
-      return snakeFn;
-    case "Komodo Dragon":
-      return komododragonFn;
-    case "Chameleon":
-      return chameleonFn;
-    case "Horned Lizard":
-      return hornedLizardFn;
-    case "Frog":
-      return toadAndFrogFn;
-    case "Toad":
-      return toadAndFrogFn;
-    case "Salamander":
-      return salamanderFn;
-    case "Shark":
-      return sharkFn;
-    case "Stingray":
-      return stingrayFn;
-    case "Swordfish":
-      return swordfishFn;
-    case "Octopus":
-      return octopusFn;
-    case "Orc":
-      return orcFn;
-    case "Blowfish":
-      return blowfishFn;
-    case "Electric Eel":
-      return electriceelFn;
-    case "Eagle":
-      return eagleFn;
-    case "Vulture":
-      return vultureFn;
-    case "Cassowary":
-      return cassowaryFn;
-    case "Parrot":
-      return parrotFn;
-    case "Pelican":
-      return pelicanFn;
-    case "Mosquito":
-      return mosquitoFn;
-    case "Scorpion":
-      return scorpionFn;
-    case "Bee":
-      return beeFn;
-    case "Spider":
-      return spiderFn;
-    case "Leech":
-      return leechFn;
     case "Bat":
       return batFn;
     case "Bear":
       return bearFn;
+    case "Bee":
+      return beeFn;
+    case "Blowfish":
+      return blowfishFn;
+    case "Cassowary":
+      return cassowaryFn;
+    case "Chameleon":
+      return chameleonFn;
+    case "Cheetah":
+      return cheetahFn;
+    case "Crocodile":
+      return crocodileFn;
+    case "Eagle":
+      return eagleFn;
+    case "Electric Eel":
+      return electriceelFn;
+    case "Elephant":
+      return elephantFn;
+    case "Frog":
+      return toadAndFrogFn;
+    case "Gorilla":
+      return gorillaFn;
+    case "Horned Lizard":
+      return hornedLizardFn;
+    case "Hyena":
+      return hyenaFn;
+    case "Komodo Dragon":
+      return komododragonFn;
+    case "Leech":
+      return leechFn;
     case "Lion":
       return lionFn;
     case "Little Lion":
       return littleLionFn;
-    case "Gorilla":
-      return gorillaFn;
-    case "Cheetah":
-      return cheetahFn;
-    case "Hyena":
-      return hyenaFn;
-    case "Elephant":
-      return elephantFn;
+    case "Mosquito":
+      return mosquitoFn;
+    case "Octopus":
+      return octopusFn;
+    case "Orc":
+      return orcFn;
+    case "Parrot":
+      return parrotFn;
+    case "Pelican":
+      return pelicanFn;
+    case "Salamander":
+      return salamanderFn;
+    case "Scorpion":
+      return scorpionFn;
+    case "Shark":
+      return sharkFn;
+    case "Snake":
+      return snakeFn;
+    case "Spider":
+      return spiderFn;
+    case "Stingray":
+      return stingrayFn;
+    case "Swordfish":
+      return swordfishFn;
+    case "Toad":
+      return toadAndFrogFn;
+    case "Tortoise":
+      return tortoiseFn;
+    case "Vulture":
+      return vultureFn;
     case "Wolf":
       return wolfFn;
     default:

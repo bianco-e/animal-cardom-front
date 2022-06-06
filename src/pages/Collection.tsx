@@ -195,6 +195,11 @@ export default function Collection() {
                         disabled={state.coins < price}
                         onClick={() => handlePurchaseClick(card)}
                       >
+                        <img
+                          alt="coins"
+                          src="/images/icons/coins.png"
+                          width={16}
+                        />
                         {price}
                       </BuyButton>
                     )}
@@ -233,21 +238,26 @@ export default function Collection() {
 }
 
 const BuyButton = styled.button`
+  align-items: center;
   background: ${({ theme }) => theme.secondary_brown};
-  border-radius: 99px;
+  border-radius: 8px;
   border: 2px solid ${({ theme }) => theme.primary_brown};
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
   color: ${({ theme }) => theme.primary_yellow};
+  display: flex;
   font-size: 16px;
   font-weight: bold;
-  height: 50px;
-  left: 50%;
-  margin-left: -40px;
+  justify-content: center;
+  height: 40px;
+  left: calc(50% - 40px);
   position: absolute;
-  top: 35%;
+  top: calc(50% - 20px);
   transition: all 0.1s linear;
   width: 80px;
-  z-index: 30;
+  z-index: 1;
+  > img {
+    margin-right: 4px;
+  }
   &:hover:enabled {
     background: ${({ theme }) => theme.primary_brown};
   }
@@ -271,22 +281,21 @@ const SingleCardContainer = styled.div`
     width: 100%;
     > .in-hand {
       background: ${({ theme }) => theme.primary_green};
-      border-radius: 99px;
+      border-radius: 6px;
       border: 1px solid ${({ theme }) => theme.secondary_brown};
       display: flex;
       justify-content: center;
       align-items: center;
       color: #fff;
-      font-size: 16px;
+      font-size: 12px;
       font-weight: bold;
-      height: 45px;
-      left: 50%;
-      margin-left: -40px;
+      height: 32px;
+      left: calc(50% - 24px);
       position: absolute;
       text-align: center;
-      top: 35%;
-      width: 80px;
-      z-index: 30;
+      top: calc(50% - 16px);
+      width: 56px;
+      z-index: 2;
     }
     &:hover {
       box-shadow: inset 0px 0px 10px rgba(0, 0, 0, 0.6);

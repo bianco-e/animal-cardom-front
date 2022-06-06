@@ -6,6 +6,7 @@ import { getAllActionStats } from "../queries/tracking";
 import { capitalize } from "../utils";
 import Spinner from "../components/Spinner";
 import { Action, AuthUser } from "../interfaces";
+import { BREAKPOINTS } from "../utils/constants";
 
 export interface ActionsStats {
   _id: string;
@@ -106,6 +107,9 @@ const Container = styled.div`
   margin: 0 0 32px;
   width: 50%;
   text-align: center;
+  ${BREAKPOINTS.MOBILE} {
+    width: 100%;
+  }
 `;
 const ActionName = styled.span`
   border: 3px solid ${({ theme }) => theme.secondary_brown};
@@ -120,9 +124,16 @@ const Title = styled.h1`
   font-size: ${({ theme }) => theme.$1};
   font-weight: bold;
   margin: 96px 0 44px;
+  ${BREAKPOINTS.MOBILE} {
+    margin: 96px 0 32px;
+    font-size: ${({ theme }) => theme.$2};
+  }
 `;
 const ActionContainer = styled.div`
   margin: 16px 0;
+  ${BREAKPOINTS.MOBILE} {
+    margin: 8px 0;
+  }
   li {
     font-size: 12px;
   }

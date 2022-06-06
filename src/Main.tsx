@@ -2,15 +2,11 @@ import { BrowserRouter } from "react-router-dom";
 import Router from "./Router";
 import { ThemeProvider } from "styled-components";
 import theme, { GlobalStyle } from "./styles";
-import Modal from "./components/Common/Modal";
-import ModalScreenWidthContent from "./components/ModalScreenWidthContent";
 import { HandsContext } from "./context/HandsContext";
 import { UserContext } from "./context/UserContext";
 import AuthProvider from "./0auth/Provider";
-import useWindowDimensions from "./hooks/useWindowDimensions";
 
 const Main = () => {
-  const dimensions = useWindowDimensions();
   return (
     <ThemeProvider theme={theme}>
       <AuthProvider>
@@ -18,11 +14,6 @@ const Main = () => {
           <UserContext>
             <>
               <GlobalStyle />
-              {dimensions && dimensions.width <= 512 && (
-                <Modal closeModal={() => {}} withCloseButton={false}>
-                  <ModalScreenWidthContent />
-                </Modal>
-              )}
               <BrowserRouter>
                 <Router />
               </BrowserRouter>

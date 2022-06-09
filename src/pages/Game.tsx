@@ -17,6 +17,7 @@ import { newTerrain, newCampaignGame, newRandomGame } from "../queries/games";
 import Spinner from "../components/Spinner";
 import ModalResultContent from "../components/ModalResultContent";
 import { getCookie, getLiveCards } from "../utils";
+import { trackAction } from "../queries/tracking";
 
 const emptyTerrain = {
   name: "",
@@ -111,13 +112,26 @@ export default function App() {
   }, []); //eslint-disable-line
 
   useEffect(() => {
-    if (hands.pc.length && hands.user.length) {
-      if (getLiveCards(hands.user).length === 0) {
-        setModal("lose");
-      }
-      if (getLiveCards(hands.pc).length === 0) {
-        setModal("win");
-      }
+    if (!hands.pc.length || !hands.user.length) return;
+    const authId = getCookie("auth=");
+    const guestName = localStorage.getItem("ac-guest-name");
+    const baseAction = {
+      ...(authId ? { auth_id: authId } : {}),
+      ...(guestName ? { guest_name: guestName } : {}),
+    };
+    if (getLiveCards(hands.user).length === 0) {
+      setModal("lose");
+      trackAction({
+        ...baseAction,
+        action: "user-lost",
+      });
+    }
+    if (getLiveCards(hands.pc).length === 0) {
+      setModal("win");
+      trackAction({
+        ...baseAction,
+        action: "user-won",
+      });
     }
   }, [hands.pc, hands.user]); //eslint-disable-line
 
@@ -142,7 +156,7 @@ export default function App() {
             <Modal closeModal={() => {}} withCloseButton={false}>
               <ModalResultContent
                 closeModal={() => setModal("")}
-                modal={modal}
+                modalType={modal}
                 isCampaignGame={isCampaignGame}
                 setTerrain={setTerrain}
                 currentXp={currentXp}

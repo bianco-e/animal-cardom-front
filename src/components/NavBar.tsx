@@ -94,7 +94,7 @@ export default function NavBar({
             <>
               <UserImage src={picture} alt={username} />
               <span>
-                You are allowed, <b>{username}!</b>
+                You're allowed, <b>{username}!</b>
               </span>
             </>
           ) : (

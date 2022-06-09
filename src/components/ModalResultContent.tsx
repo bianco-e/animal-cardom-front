@@ -42,14 +42,14 @@ interface IProps {
   closeModal: () => void;
   currentXp?: number;
   isCampaignGame: boolean;
-  modal: string;
+  modalType: string;
   setTerrain: (terrain: ITerrain) => void;
 }
 export default function ModalResultContent({
   closeModal,
   currentXp,
   isCampaignGame,
-  modal,
+  modalType,
   setTerrain,
 }: IProps) {
   const [state, dispatch] = useContext<IHandsContext>(HandsContext);
@@ -118,7 +118,7 @@ export default function ModalResultContent({
   useEffect(() => {
     const authId = getCookie("auth=");
     if (isCampaignGame && authId) {
-      getStatsToSaveGame(authId, modal === "win", state);
+      getStatsToSaveGame(authId, modalType === "win", state);
     }
   }, []); //eslint-disable-line
 
@@ -151,7 +151,7 @@ export default function ModalResultContent({
 
   return (
     <Wrapper>
-      {modal === "win" ? (
+      {modalType === "win" ? (
         <>
           <ModalTitle>You won!</ModalTitle>
           <Text margin={isCampaignGame ? "0 0 20px 0" : "0"}>
@@ -159,7 +159,7 @@ export default function ModalResultContent({
           </Text>
         </>
       ) : (
-        modal === "lose" && (
+        modalType === "lose" && (
           <>
             <ModalTitle>You lost!</ModalTitle>
             <Text margin={isCampaignGame ? "0 0 20px 0" : "0"}>

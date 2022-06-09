@@ -101,7 +101,9 @@ const applyPlantToCard = (
   enemyHandKey: HandKey
 ): IHandsState => {
   const plantMessage =
-    enemyHandKey === "user" ? ` and used ${plant.name} on ${card.name}` : "";
+    enemyHandKey === "user"
+      ? ` and applied ${plant.name} on ${card.name.toUpperCase()}`
+      : "";
   if (card.targeteable) {
     return getPlantFn(plant.name)(
       {
@@ -164,7 +166,7 @@ const checkWhatPlantToUse = (state: IHandsState): IHandsState => {
 
 const computerDamage = (state: IHandsState) => {
   const { defender, attacker, pcTurn, hands } = state;
-  const pcAnswer = `${attacker!.name} attacked ${defender!.name}`;
+  const pcAnswer = `${attacker!.name.toUpperCase()} attacked ${defender!.name.toUpperCase()}`;
   const newState = attackAndApplySkill(state, "user");
   if (!getLiveCards(hands.user).length) return state;
   return checkWhatPlantToUse({
@@ -313,7 +315,7 @@ const applyAttackDamage = (
   enemyHandKey: HandKey
 ): IHandsState => {
   const statsDiff = getAttackStatsDiff(state.attacker!, state.defender!);
-  return !statsDiff
+  return statsDiff === undefined
     ? state
     : {
         ...state,

@@ -4,7 +4,13 @@ import { useHistory } from "react-router-dom";
 import { terrains } from "../data/data";
 import { BREAKPOINTS } from "../utils/constants";
 
-const ANGLE = 360 / (terrains.length - 1);
+const firstLevelGames = {
+  "450": 1,
+  "900": 2,
+  "1350": 3,
+};
+
+const ANGLE = 360 / terrains.length;
 interface IProps {
   xp: number;
 }
@@ -27,16 +33,21 @@ export default function CampaignCircuit({ xp }: IProps) {
         const { image, name, getRequiredXp } = terrain;
         const requiredXp = getRequiredXp(xp);
         const isDisabled = requiredXp > xp;
+        const level = idx + 1;
         return (
           <TerrainContainer
-            angle={`${ANGLE * idx - 40}`}
+            angle={`${ANGLE * idx + 270}`}
             bgImage={image}
             containerWidth={containerWidth}
             disabled={isDisabled}
+            games={
+              //@ts-ignore
+              level === 1 && xp > 0 ? `${firstLevelGames[xp]}/3` : undefined
+            }
             key={name}
-            level={idx + 1}
+            level={level}
             onClick={() => !isDisabled && handleCampaignGame(requiredXp)}
-            title={isDisabled ? "Locked" : name}
+            title={isDisabled ? "Locked" : `${name} terrain`}
           />
         );
       })}
@@ -49,60 +60,82 @@ interface TerrainContainerProps {
   bgImage?: string;
   containerWidth: number;
   disabled?: boolean;
+  games?: string;
   level?: number;
 }
 const Wrapper = styled.div`
-  height: 450px;
-  margin: 120px 0 0 0;
+  height: 420px;
+  margin: 100px auto 0;
   position: relative;
-  width: 450px;
+  width: 420px;
   ${BREAKPOINTS.MOBILE} {
-    margin: 90px 0 0 0;
+    margin: 90px auto 0;
     height: 270px;
     width: 270px;
   }
 `;
-const TerrainContainer = styled.div`
-  background-image: ${(p: TerrainContainerProps) => `url('${p.bgImage}')`};
+const TerrainContainer = styled.div<TerrainContainerProps>`
+  align-items: center;
+  background-image: ${({ bgImage }) => `url('${bgImage}')`};
   background-position: center;
   background-size: cover;
-  border-radius: 50%;
+  border-radius: 100%;
   box-shadow: 0 0 40px 10px rgba(0, 0, 0, 0.5), 0 0 40px 10px rgba(0, 0, 0, 0.5),
-    0 0 40px 10px rgba(0, 0, 0, 0.5), 0 0 40px 10px rgba(0, 0, 0, 0.5),
-    0 0 40px 10px rgba(0, 0, 0, 0.5);
+    0 0 40px 10px rgba(0, 0, 0, 0.5), 0 0 40px 10px rgba(0, 0, 0, 0.5);
   cursor: pointer;
   display: flex;
-  height: 140px;
-  left: 50%;
-  justify-content: center;
-  margin: calc(-100px / 2);
+  flex-direction: column;
+  height: 130px;
+  justify-content: space-between;
+  left: calc(50% - 65px);
   position: absolute;
-  top: 50%;
-  transform: ${(p: TerrainContainerProps) =>
-    `rotate(${p.angle}deg) translate(${p.containerWidth / 2}px) rotate(-${
-      p.angle
-    }deg)`};
-  width: 140px;
+  top: calc(50% - 65px);
+  transform: ${({ angle, containerWidth }) =>
+    `rotate(${angle}deg) translate(${
+      containerWidth / 2
+    }px) rotate(-${angle}deg)`};
+  width: 130px;
+  ${({ games, theme }) =>
+    games
+      ? `
+  &:after {
+    align-items: center;
+    background: ${theme.primary_brown};
+    border-radius: 5px;
+    box-shadow: inset 0px 0px 10px rgba(0, 0, 0, 0.6);
+    content: "${games}";
+    display: flex;
+    font-size: 9px;
+    font-weight: bold;
+    height: 8px;
+    justify-content: center;
+    padding: 4px;
+    width: 24px;
+  }
+  `
+      : ""};
   &:before {
     align-items: center;
     background: ${({ theme }) => theme.primary_brown};
     border-radius: 5px;
     box-shadow: inset 0px 0px 10px rgba(0, 0, 0, 0.6);
-    content: "${(p: TerrainContainerProps) => p.level}";
+    content: "${({ level }) => level}";
     display: flex;
     font-size: 9px;
     font-weight: bold;
-    height: 14px;
+    height: 8px;
     justify-content: center;
-    padding: 4px 2px;
-    width: 14px;
+    padding: 4px;
+    width: 20px;
   }
   ${BREAKPOINTS.MOBILE} {
     height: 80px;
+    left: calc(50% - 40px);
     width: 80px;
+    top: calc(50% - 40px);
   }
-  ${(p: TerrainContainerProps) =>
-    p.disabled &&
+  ${({ disabled }) =>
+    disabled &&
     `
     opacity: 0.5;
     cursor: default;

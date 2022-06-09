@@ -187,7 +187,7 @@ export default function Collection() {
                       targeteable={targeteable}
                     >
                       {currentHand.includes(name) ? (
-                        <span className="in-hand">Hand</span>
+                        <span className="in-hand spaced-title">HAND</span>
                       ) : undefined}
                     </Card>
                     {!ownedCards.includes(name) && (

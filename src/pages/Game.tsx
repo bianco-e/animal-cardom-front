@@ -203,7 +203,7 @@ const BoardText = styled.h4`
   margin: 0;
   text-shadow: rgba(255, 255, 255, 0.8) 2px 2px 3px;
   ${BREAKPOINTS.TABLET} {
-    font-size: 15px;
+    font-size: 16px;
   }
   ${BREAKPOINTS.MOBILE} {
     font-size: 12px;

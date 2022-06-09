@@ -192,7 +192,7 @@ export default function Card({
           {poisoned.rounds > 0 && (
             <span
               className="poison-stats"
-              title={`${poisoned.damage} damage poison - ${poisoned.rounds} rounds left`}
+              title={`Poison damage: ${poisoned.damage} - ${poisoned.rounds} rounds left`}
             >
               {poisoned.damage} ({poisoned.rounds})
             </span>

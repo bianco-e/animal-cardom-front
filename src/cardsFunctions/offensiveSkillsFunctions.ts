@@ -23,23 +23,6 @@ const makeEnemyBleed = (arr: IAnimal[], defender: IAnimal) => {
   });
 };
 
-const makeExtraDamage = (arr: IAnimal[], defender: IAnimal, damage: number) => {
-  return arr.map((card) => {
-    if (card.name === defender.name && typeof card.life.current === "number") {
-      return {
-        ...card,
-        life: {
-          ...card.life,
-          current:
-            card.life.current - damage < 1
-              ? "DEAD"
-              : card.life.current - damage,
-        },
-      };
-    } else return card;
-  });
-};
-
 const paralyzeEnemy = (
   arr: IAnimal[],
   defender: IAnimal,
@@ -177,13 +160,6 @@ const setHandInState = (
   };
 };
 
-const alligatorFn = (state: IHandsState, hand: HandKey): IHandsState => {
-  const { hands, defender } = state;
-  const damage = 1;
-  const newHand = makeExtraDamage(hands[hand], defender!, damage);
-  return setHandInState(state, hand, newHand);
-};
-
 const batFn = (state: IHandsState, hand: HandKey): IHandsState => {
   const { hands, defender, attacker } = state;
   const otherHand = hand === "pc" ? "user" : "pc";
@@ -205,14 +181,13 @@ const bearFn = (state: IHandsState, hand: HandKey): IHandsState => {
 };
 
 const beeFn = (state: IHandsState, hand: HandKey): IHandsState => {
-  const { hands, defender, attacker } = state;
-  const damage = 3;
+  const { hands, attacker } = state;
   const otherHand = hand === "pc" ? "user" : "pc";
   return {
     ...state,
     hands: {
+      ...hands,
       [otherHand]: killInstantly(hands[otherHand], attacker!),
-      [hand]: makeExtraDamage(hands[hand], defender!, damage),
     },
   };
 };
@@ -251,23 +226,13 @@ const cheetahFn = (state: IHandsState, hand: HandKey): IHandsState => {
   return setHandInState(state, otherHand, newHand);
 };
 
-const crocodileFn = (state: IHandsState, hand: HandKey): IHandsState => {
-  const { hands, defender } = state;
-  const damage = 2;
-  const newHand = makeExtraDamage(hands[hand], defender!, damage);
-  return setHandInState(state, hand, newHand);
-};
-
 const eagleFn = (state: IHandsState, hand: HandKey): IHandsState => {
   const { hands, defender, attacker } = state;
-  const damage = 2;
-  if (attacker!.species !== "🦂") {
-    const newHand = makeExtraDamage(hands[hand], defender!, damage);
-    return setHandInState(state, hand, newHand);
-  } else {
+  if (attacker!.species === "🦂") {
     const newHand = killInstantly(hands[hand], defender!);
     return setHandInState(state, hand, newHand);
   }
+  return state;
 };
 
 const electriceelFn = (state: IHandsState, hand: HandKey): IHandsState => {
@@ -304,22 +269,11 @@ const hornedLizardFn = (state: IHandsState, hand: HandKey): IHandsState => {
   return setHandInState(state, hand, newHand);
 };
 
-const hyenaFn = (state: IHandsState, hand: HandKey): IHandsState => {
-  const { hands, defender } = state;
-  const damage = 2;
-  if (defender!.life.current < defender!.life.initial) {
-    const newHand = makeExtraDamage(hands[hand], defender!, damage);
-    return setHandInState(state, hand, newHand);
-  } else return state;
-};
-
 const komododragonFn = (state: IHandsState, hand: HandKey): IHandsState => {
   const { hands, defender } = state;
   const poison = { damage: 1, rounds: 1 };
-  const damage = 1;
   const poisonedHand = poisonEnemy(hands[hand], defender!, poison);
-  const newHand = makeExtraDamage(poisonedHand, defender!, damage);
-  return setHandInState(state, hand, newHand);
+  return setHandInState(state, hand, poisonedHand);
 };
 
 const leechFn = (state: IHandsState, hand: HandKey): IHandsState => {
@@ -386,15 +340,6 @@ const parrotFn = (state: IHandsState, hand: HandKey): IHandsState => {
   } else return state;
 };
 
-const pelicanFn = (state: IHandsState, hand: HandKey): IHandsState => {
-  const { hands, defender } = state;
-  if (defender!.species === "🦈") {
-    const damage = 2;
-    const newHand = makeExtraDamage(hands[hand], defender!, damage);
-    return setHandInState(state, hand, newHand);
-  } else return state;
-};
-
 const salamanderFn = (state: IHandsState, hand: HandKey): IHandsState => {
   const { hands, attacker } = state;
   const healthAmount = 1;
@@ -410,21 +355,6 @@ const scorpionFn = (state: IHandsState, hand: HandKey): IHandsState => {
   const poison = { damage: 1, rounds: 3 };
   const newHand = poisonEnemy(hands[hand], defender!, poison);
   return setHandInState(state, hand, newHand);
-};
-
-const sharkFn = (state: IHandsState, hand: HandKey): IHandsState => {
-  const { hands, attacker } = state;
-  const attackAmount = 2;
-  const otherHand = hand === "pc" ? "user" : "pc";
-  if (hands[hand].concat(hands[otherHand]).some((card) => card.bleeding)) {
-    const newHand = modifyAnimalAttack(
-      hands[otherHand],
-      attacker!,
-      attackAmount,
-      "+"
-    );
-    return setHandInState(state, otherHand, newHand);
-  } else return state;
 };
 
 const snakeFn = (state: IHandsState, hand: HandKey): IHandsState => {
@@ -519,17 +449,18 @@ export const getExtraDamageIfApplies = (
       return defender.species === "🦂" ? 1 : 0;
     case "Pelican":
       return defender.species === "🦈" ? 2 : 0;
+    case "Shark":
+      return defender.bleeding ? 2 : 0;
     default:
       return 0;
   }
 };
 
+// animals that ONLY make extra damage don't have a skillFn
 export default function getSkillFn(
   name: string
 ): (state: IHandsState, hand: HandKey) => IHandsState {
   switch (name) {
-    case "Alligator":
-      return alligatorFn;
     case "Bat":
       return batFn;
     case "Bear":
@@ -544,8 +475,6 @@ export default function getSkillFn(
       return chameleonFn;
     case "Cheetah":
       return cheetahFn;
-    case "Crocodile":
-      return crocodileFn;
     case "Eagle":
       return eagleFn;
     case "Electric Eel":
@@ -558,8 +487,6 @@ export default function getSkillFn(
       return gorillaFn;
     case "Horned Lizard":
       return hornedLizardFn;
-    case "Hyena":
-      return hyenaFn;
     case "Komodo Dragon":
       return komododragonFn;
     case "Leech":
@@ -576,14 +503,10 @@ export default function getSkillFn(
       return orcFn;
     case "Parrot":
       return parrotFn;
-    case "Pelican":
-      return pelicanFn;
     case "Salamander":
       return salamanderFn;
     case "Scorpion":
       return scorpionFn;
-    case "Shark":
-      return sharkFn;
     case "Snake":
       return snakeFn;
     case "Spider":

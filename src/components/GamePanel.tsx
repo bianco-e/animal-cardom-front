@@ -223,7 +223,7 @@ const OptionsPanel = styled.div`
       width: 100%;
     }
   }
-  ${BREAKPOINTS.MOBILE} {
+  ${BREAKPOINTS.TABLET} {
     border: 2px solid ${({ theme }) => theme.secondary_brown};
     border-top: 0;
     border-radius: 0 0 50px 50px;

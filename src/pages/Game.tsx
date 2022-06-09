@@ -152,22 +152,22 @@ export default function App() {
       <Wrapper bgImg={terrain!.image}>
         <SidePanel plants={plants} terrain={terrain!} userName={userName} />
         <Board>
-          {modal && (
-            <Modal closeModal={() => {}} withCloseButton={false}>
-              <ModalResultContent
-                closeModal={() => setModal("")}
-                modalType={modal}
-                isCampaignGame={isCampaignGame}
-                setTerrain={setTerrain}
-                currentXp={currentXp}
-              />
-            </Modal>
-          )}
           <Hand hand={hands.pc} belongsToUser={false} />
           <BoardText>{pcPlay}</BoardText>
           <Hand hand={hands.user} belongsToUser={true} />
         </Board>
       </Wrapper>
+      {modal && (
+        <Modal closeModal={() => {}} withCloseButton={false}>
+          <ModalResultContent
+            closeModal={() => setModal("")}
+            modalType={modal}
+            isCampaignGame={isCampaignGame}
+            setTerrain={setTerrain}
+            currentXp={currentXp}
+          />
+        </Modal>
+      )}
       {isLoading && (
         <Modal closeModal={() => {}} forSpinner={true}>
           <Spinner />
@@ -195,6 +195,7 @@ const Wrapper = styled.div`
 const Board = styled.div`
   display: flex;
   flex-direction: column;
+  height: 100%;
   justify-content: space-between;
   padding: 0px 10px;
   position: relative;

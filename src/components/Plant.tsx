@@ -58,6 +58,10 @@ const PlantContainer = styled.div`
   margin: 0 auto 8%;
   position: relative;
   width: 75%;
+  ${BREAKPOINTS.TABLET} {
+    height: 100%;
+    width: 56px;
+  }
 `;
 
 export const PlantCard = styled.button`
@@ -70,6 +74,7 @@ export const PlantCard = styled.button`
   height: 100%;
   margin: 0 auto;
   max-width: 64px;
+  min-height: 45px;
   opacity: ${(p: PlantCardProps) => p.opacity};
   overflow: hidden;
   padding: 3px 3px 5px;
@@ -84,11 +89,6 @@ export const PlantCard = styled.button`
   > span {
     font-size: 8px;
     margin: 2px 0;
-  }
-  ${BREAKPOINTS.TABLET} {
-    height: 45px;
-    margin-bottom: 0;
-    width: 45px;
   }
   &:hover {
     ${({ theme }) => `

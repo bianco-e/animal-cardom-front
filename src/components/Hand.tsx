@@ -53,8 +53,7 @@ const CardsGroup = styled.div`
   height: 37%;
   justify-content: space-between;
   width: 100%;
-
   ${BREAKPOINTS.MOBILE} {
-    height: 45%;
+    height: 32%;
   }
 `;

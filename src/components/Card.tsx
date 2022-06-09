@@ -340,6 +340,7 @@ export const AnimalCard = styled.button`
   ${BREAKPOINTS.MOBILE} {
     max-width: 125px;
     padding: 6px;
+    width: calc(20% - 4px);
   }
 `;
 const StatsWrapper = styled.div`
@@ -380,8 +381,9 @@ const StatsWrapper = styled.div`
   ${BREAKPOINTS.MOBILE} {
     left: 5%;
     width: 90%;
-    > div.container {
+    > div.stats-container {
       height: 20px;
+      width: calc(50% - 10px);
       > span.poison-stats {
         font-size: 8px;
       }
@@ -445,6 +447,9 @@ const Image = styled.img`
     object-fit: cover;
     width: 80%;
     position: relative;
+    ${BREAKPOINTS.MOBILE} {
+      height: 36%;
+    }
   }
   &.small-icon {
     height: 16px;

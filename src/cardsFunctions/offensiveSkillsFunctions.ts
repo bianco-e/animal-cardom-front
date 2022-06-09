@@ -292,13 +292,6 @@ const lionFn = (state: IHandsState, hand: HandKey): IHandsState => {
   return setHandInState(state, hand, newHand);
 };
 
-const littleLionFn = (state: IHandsState, hand: HandKey): IHandsState => {
-  const { hands, defender } = state;
-  const roundsNumber = 3;
-  const newHand = paralyzeEnemy(hands[hand], defender!, roundsNumber);
-  return setHandInState(state, hand, newHand);
-};
-
 const mosquitoFn = (state: IHandsState, hand: HandKey): IHandsState => {
   const { hands, attacker } = state;
   const otherHand = hand === "pc" ? "user" : "pc";
@@ -493,8 +486,6 @@ export default function getSkillFn(
       return leechFn;
     case "Lion":
       return lionFn;
-    case "Little Lion":
-      return littleLionFn;
     case "Mosquito":
       return mosquitoFn;
     case "Octopus":

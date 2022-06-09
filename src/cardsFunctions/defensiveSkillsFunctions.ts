@@ -137,6 +137,31 @@ const combStarFn = (
   };
 };
 
+const grasshoperFn = (
+  hands: IHands,
+  attacker: IAnimal,
+  defender: IAnimal,
+  enemyHandKey: HandKey,
+  statsDiff: number
+): IHands => {
+  return {
+    ...hands,
+    [enemyHandKey]: hands[enemyHandKey].map((animal) => {
+      if (animal.name === defender.name) {
+        if (animal.paralyzed === 0 && getRandomChance(10)) {
+          return {
+            ...animal,
+            life: {
+              ...animal.life,
+              current: statsDiff < 1 ? "DEAD" : statsDiff,
+            },
+          };
+        } else return applyDmg(animal, statsDiff);
+      } else return animal;
+    }),
+  };
+};
+
 const hedgehogFn = (
   hands: IHands,
   attacker: IAnimal,
@@ -251,6 +276,8 @@ export default function getSkillFn(name: string) {
       return basiliskLizardFn;
     case "Comb Star":
       return combStarFn;
+    case "Grasshoper":
+      return grasshoperFn;
     case "Hedgehog":
       return hedgehogFn;
     case "Lizard":

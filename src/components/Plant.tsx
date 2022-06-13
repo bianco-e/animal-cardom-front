@@ -4,7 +4,7 @@ import HandsContext from "../context/HandsContext";
 import { SELECT_PLANT } from "../context/HandsContext/types";
 import { IPlant } from "../interfaces";
 import { BREAKPOINTS } from "../utils/constants";
-import PlantTooltip from "./PlantTooltip";
+import Tooltip from "./Tooltip";
 import { selectionAnimation } from "../animations/card-animations";
 
 export default function Plant({ plant }: { plant: IPlant }) {
@@ -19,10 +19,10 @@ export default function Plant({ plant }: { plant: IPlant }) {
   return (
     <PlantContainer>
       {showTooltip && (
-        <PlantTooltip
-          appliableOn={appliable_on}
+        <Tooltip
+          title={`Appliable on ${appliable_on}`}
           description={description}
-          belongsToUser={plantBelongsToUser}
+          direction={plantBelongsToUser ? "TOP" : "BOTTOM"}
         />
       )}
       <PlantCard
@@ -78,9 +78,9 @@ export const PlantCard = styled.button`
   opacity: ${(p: PlantCardProps) => p.opacity};
   overflow: hidden;
   padding: 3px 3px 5px;
-  width: 100%;
-  transition: transform 0.2s ease;
   transform: ${(p: PlantCardProps) => p.transform};
+  transition: transform 0.2s ease;
+  width: 100%;
   > img {
     border-radius: 4px;
     height: 80%;
@@ -93,42 +93,42 @@ export const PlantCard = styled.button`
   &:hover {
     ${({ theme }) => `
     box-shadow: 4px 4px 4px ${theme.secondary_brown}, inset 0px 0px 5px black;
-    transform: scale(1.05);
+    transform: scale(1.08);
     `};
   }
   &:active {
     box-shadow: inset 0px 0px 20px black;
   }
   &::before {
-    content: "";
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    margin-top: -85%;
-    margin-left: -25%;
-    height: 165%;
-    width: 50%;
-    z-index: -2;
     background: ${(p: PlantCardProps) =>
       p.opacity === "1" && p.belongsToUser
         ? "linear-gradient(90deg, #5f0a87, #e3cdac, #a4508b)"
         : "none"};
     background-size: 300% 300%;
+    content: "";
+    height: 165%;
+    left: 50%;
+    margin-left: -25%;
+    margin-top: -85%;
+    position: absolute;
+    top: 50%;
+    width: 50%;
+    z-index: -2;
     ${(p: PlantCardProps) => p.selectionAnimation};
   }
   &::after {
-    content: "";
-    border-radius: 5px;
-    position: absolute;
-    top: 3.5px;
-    left: 50%;
-    -webkit-transform: translateX(-50%);
-    transform: translateX(-50%);
-    height: calc(100% - 7px);
-    width: ${(p: PlantCardProps) =>
-      p.opacity === "1" ? "calc(100% - 7px);" : "auto"};
-    background: ${({ theme }) => theme.primary_brown};
-    z-index: -1;
     background-size: 300% 300%;
+    background: ${({ theme }) => theme.primary_brown};
+    border-radius: 4px;
+    content: "";
+    height: calc(100% - 6px);
+    left: 50%;
+    position: absolute;
+    top: 3px;
+    transform: translateX(-50%);
+    -webkit-transform: translateX(-50%);
+    width: ${(p: PlantCardProps) =>
+      p.opacity === "1" ? "calc(100% - 6px);" : "auto"};
+    z-index: -1;
   }
 `;

@@ -12,6 +12,7 @@ import {
   selectionAnimation,
 } from "../animations/card-animations";
 import usePlantAnimation from "../hooks/usePlantAnimation";
+import Tooltip from "./Tooltip";
 
 interface IProps {
   attack: Stat<number>;
@@ -79,7 +80,7 @@ export default function Card({
         isParalyzed: paralyzed > 0,
         onClick: () => !state.pcTurn && dispatch({ type: SELECT_CARD, name }),
         opacity: `${life.current === "DEAD" ? "0.5" : "1"}`,
-        transform: belongsToUser ? "translateY(-5px)" : "",
+        transform: belongsToUser ? "translateY(-8px)" : "",
       };
   return (
     <AnimalCard {...cardProps}>
@@ -111,14 +112,27 @@ export default function Card({
       {hasCondition ? (
         <CornerIconContainer className="animal-condition">
           {!targeteable ? (
-            <span title={`${name} is untargeteable`}>{`\u{1F6AB}`}</span>
+            <>
+              <Tooltip
+                direction="BOTTOM-LEFT"
+                title="Untargeteable"
+                description={`${name} can't be attacked until it attacks first`}
+              />
+              <span>{`\u{1F6AB}`}</span>
+            </>
           ) : null}
           {missingChance ? (
-            <Image
-              className="missing-chance-icon"
-              src={utilitiesIcons.missing}
-              title={`${name} has ${missingChance}% chance of missing the attack`}
-            />
+            <>
+              <Tooltip
+                direction="BOTTOM-LEFT"
+                title="Missing chance"
+                description={`${name} has ${missingChance}% chance of missing the attack`}
+              />
+              <Image
+                className="missing-chance-icon"
+                src={utilitiesIcons.missing}
+              />
+            </>
           ) : null}
         </CornerIconContainer>
       ) : null}
@@ -164,7 +178,7 @@ export default function Card({
             className="stats spaced-title"
             color={`${
               attack.current > attack.initial
-                ? "#0B8A37"
+                ? "#a4508b"
                 : attack.current < attack.initial && "red"
             }`}
           >
@@ -172,9 +186,26 @@ export default function Card({
           </Text>
         </div>
         {bleeding ? (
-          <Image className="blood-drop" src={utilitiesIcons.blood} />
+          <div className="statuses">
+            <Tooltip
+              title={`${name} is bleeding`}
+              description={`Every turn ${name} gets 1 damage. It can be stopped with a plant`}
+            />
+            <Image className="blood-drop" src={utilitiesIcons.blood} />
+          </div>
         ) : null}
         <div className="stats-container">
+          {poisoned.rounds > 0 && (
+            <>
+              <Tooltip
+                title={`${name} is poisoned`}
+                description={`${poisoned.damage} poison damage per round - ${poisoned.rounds} round(s) left`}
+              />
+              <span className="poison-stats">
+                {poisoned.damage} ({poisoned.rounds})
+              </span>
+            </>
+          )}
           <Image
             className="small-icon"
             src={utilitiesIcons[poisoned.rounds > 0 ? "poisonLife" : "life"]}
@@ -183,20 +214,12 @@ export default function Card({
             className="stats spaced-title"
             color={`${
               life.current > life.initial
-                ? "#0B8A37"
+                ? "#a4508b"
                 : life.current < life.initial && "red"
             }`}
           >
             {life.current}
           </Text>
-          {poisoned.rounds > 0 && (
-            <span
-              className="poison-stats"
-              title={`Poison damage: ${poisoned.damage} - ${poisoned.rounds} rounds left`}
-            >
-              {poisoned.damage} ({poisoned.rounds})
-            </span>
-          )}
         </div>
       </StatsWrapper>
     </AnimalCard>
@@ -291,11 +314,11 @@ export const AnimalCard = styled.button`
   width: calc(20% - 32px);
   &:hover {
     box-shadow: 4px 4px 4px ${({ theme }) => theme.secondary_brown},
-      inset 0px 0px 10px black;
+      inset 0px 0px 8px black;
     transform: ${(p: AnimalCardProps) => p.transform};
   }
   &:active {
-    box-shadow: inset 0px 0px 40px black;
+    box-shadow: inset 0px 0px 16px black;
   }
   &::before {
     content: "";
@@ -315,18 +338,18 @@ export const AnimalCard = styled.button`
     ${(p: AnimalCardProps) => p.selectionAnimation};
   }
   &::after {
-    content: "";
-    border-radius: 5px;
-    position: absolute;
-    top: 8px;
-    left: 50%;
     -webkit-transform: translateX(-50%);
-    transform: translateX(-50%);
-    height: calc(100% - 16px);
-    width: calc(100% - 16px);
-    background: ${({ theme }) => theme.primary_brown};
-    z-index: -1;
     background-size: 300% 300%;
+    background: ${({ theme }) => theme.primary_brown};
+    border-radius: 4px;
+    content: "";
+    height: calc(100% - 8px);
+    left: 50%;
+    position: absolute;
+    top: 4px;
+    transform: translateX(-50%);
+    width: calc(100% - 8px);
+    z-index: -1;
   }
   ${(p: AnimalCardProps) =>
     p.isCardSelected &&
@@ -344,7 +367,7 @@ export const AnimalCard = styled.button`
   }
 `;
 const StatsWrapper = styled.div`
-  align-items: center;
+  align-items: flex-end;
   display: flex;
   justify-content: space-between;
   position: absolute;
@@ -352,6 +375,25 @@ const StatsWrapper = styled.div`
   transition: all 0.4s ease;
   width: 80%;
   bottom: 0;
+  > div {
+    > div.tooltip {
+      display: none;
+    }
+    &:hover {
+      > div.tooltip {
+        display: flex;
+      }
+    }
+  }
+  > div.statuses {
+    align-items: center;
+    border-radius: 4px 4px 0 0;
+    display: flex;
+    flex-direction: column-reverse;
+    padding: 4px;
+    position: relative;
+    flex: 1;
+  }
   > div.stats-container {
     align-items: center;
     background: ${({ theme }) => theme.primary_brown};
@@ -360,22 +402,17 @@ const StatsWrapper = styled.div`
     border-bottom: 0;
     box-shadow: inset 0px 0px 8px rgba(0, 0, 0, 0.4);
     display: flex;
-    height: 32px;
+    height: 36px;
     justify-content: center;
-    width: calc(50% - 16px);
+    position: relative;
+    width: calc(50% - 24px);
     > span.poison-stats {
-      background: ${({ theme }) => theme.primary_brown};
-      border-radius: 4px;
-      border: 2px solid ${({ theme }) => theme.secondary_brown};
-      box-shadow: inset 0px 0px 4px rgba(0, 0, 0, 0.2);
-      font-size: 12px;
+      color: ${({ theme }) => theme.poison_green};
+      font-size: 10px;
       font-weight: bold;
       position: absolute;
-      right: -12px;
-      top: -8px;
-      transform: rotate(36deg);
-      padding: 2px 4px;
-      color: ${({ theme }) => theme.poison_green};
+      bottom: 2px;
+      left: 24%;
     }
   }
   ${BREAKPOINTS.MOBILE} {
@@ -410,7 +447,8 @@ const CornerIconContainer = styled.div`
     top: 24px;
   }
   &.animal-condition {
-    > * {
+    > img,
+    span {
       cursor: help;
     }
     left: auto;
@@ -424,6 +462,14 @@ const CornerIconContainer = styled.div`
       left: auto;
       right: 24px;
       top: 24px;
+    }
+    > div.tooltip {
+      display: none;
+    }
+    &:hover {
+      > div.tooltip {
+        display: flex;
+      }
     }
   }
   ${BREAKPOINTS.MOBILE} {

@@ -1,13 +1,13 @@
-import styled from "styled-components";
-import CardThumbnail from "./CardThumbnail";
-import PlantThumbnail from "./PlantThumbnail";
-import { cardSpeciesToLowerCase } from "../utils";
-import { Game } from "../interfaces";
-import { Message } from "./styled-components";
-import { BREAKPOINTS } from "../utils/constants";
+import styled from "styled-components"
+import CardThumbnail from "./Card/Thumbnail"
+import PlantThumbnail from "./PlantThumbnail"
+import { cardSpeciesToLowerCase } from "../utils"
+import { Game } from "../interfaces"
+import { Message } from "./styled-components"
+import { BREAKPOINTS } from "../utils/constants"
 
 interface IProps {
-  lastGames: Game[];
+  lastGames: Game[]
 }
 
 export default function History({ lastGames }: IProps) {
@@ -15,39 +15,28 @@ export default function History({ lastGames }: IProps) {
     <Wrapper>
       {lastGames.length > 0 ? (
         lastGames.map((game, idx) => {
-          const {
-            won,
-            usedAnimals,
-            usedPlants,
-            terrain,
-            created_at,
-            xp_earned,
-          } = game;
-          const gameDate = new Date(created_at!);
+          const { won, usedAnimals, usedPlants, terrain, created_at, xp_earned } = game
+          const gameDate = new Date(created_at!)
           return (
             <HistoryCard terrain={terrain.toLowerCase()} key={idx}>
-              <Result
-                bgColor={won ? "#0B8A37" : "#dd5540"}
-                className="spaced-title"
-              >
+              <Result bgColor={won ? "#0B8A37" : "#dd5540"} className="spaced-title">
                 {won ? "Won" : "Lost"}
               </Result>
               <PlayerStats>
                 <b>You</b>
                 <CardsContainer>
                   {usedAnimals.user.map(({ name, survived }) => {
-                    const isLittle: boolean = name.startsWith("Little");
+                    const isLittle: boolean = name.startsWith("Little")
                     const cardImage = `/images/animals/${
                       isLittle ? "" : "adult-"
-                    }${cardSpeciesToLowerCase(name)}.webp`;
+                    }${cardSpeciesToLowerCase(name)}.webp`
                     return (
                       <CardThumbnail
                         key={name}
                         disabled={!survived}
                         image={cardImage}
-                        name={name}
-                      ></CardThumbnail>
-                    );
+                        name={name}></CardThumbnail>
+                    )
                   })}
                 </CardsContainer>
                 <CardsContainer>
@@ -57,9 +46,8 @@ export default function History({ lastGames }: IProps) {
                         key={name}
                         disabled={applied}
                         image={`/images/plants/${name.toLowerCase()}.webp`}
-                        name={name}
-                      ></PlantThumbnail>
-                    );
+                        name={name}></PlantThumbnail>
+                    )
                   })}
                 </CardsContainer>
               </PlayerStats>
@@ -74,9 +62,8 @@ export default function History({ lastGames }: IProps) {
                         image={`/images/animals/adult-${cardSpeciesToLowerCase(
                           name
                         )}.webp`}
-                        name={name}
-                      ></CardThumbnail>
-                    );
+                        name={name}></CardThumbnail>
+                    )
                   })}
                 </CardsContainer>
                 <CardsContainer>
@@ -86,9 +73,8 @@ export default function History({ lastGames }: IProps) {
                         key={name}
                         disabled={applied}
                         image={`/images/plants/${name.toLowerCase()}.webp`}
-                        name={name}
-                      ></PlantThumbnail>
-                    );
+                        name={name}></PlantThumbnail>
+                    )
                   })}
                 </CardsContainer>
               </PlayerStats>
@@ -102,21 +88,21 @@ export default function History({ lastGames }: IProps) {
                 </span>
               </DetailsPanel>
             </HistoryCard>
-          );
+          )
         })
       ) : (
         <Message>Mmm... Looks like you still haven't finished any game</Message>
       )}
     </Wrapper>
-  );
+  )
 }
 
 interface ResultProps {
-  bgColor?: string;
+  bgColor?: string
 }
 
 interface HistoryCardProps {
-  terrain?: string;
+  terrain?: string
 }
 const Wrapper = styled.div`
   align-items: center;
@@ -125,7 +111,7 @@ const Wrapper = styled.div`
   margin-top: 60px;
   width: 100%;
   overflow-y: auto;
-`;
+`
 const HistoryCard = styled.div`
   align-items: center;
   background-image: ${(p: HistoryCardProps) =>
@@ -142,7 +128,7 @@ const HistoryCard = styled.div`
   padding: 8px 24px;
   position: relative;
   width: 85%;
-`;
+`
 const DetailsPanel = styled.div`
   align-items: center;
   background: ${({ theme }) => theme.primary_brown};
@@ -173,7 +159,7 @@ const DetailsPanel = styled.div`
   ${BREAKPOINTS.MOBILE} {
     height: 30px;
   }
-`;
+`
 const PlayerStats = styled.div`
   align-items: center;
   display: flex;
@@ -192,7 +178,7 @@ const PlayerStats = styled.div`
       margin-left: 2px;
     }
   }
-`;
+`
 const CardsContainer = styled.div`
   align-items: center;
   display: flex;
@@ -206,7 +192,7 @@ const CardsContainer = styled.div`
     }
     width: 100%;
   }
-`;
+`
 const Result = styled.span`
   background: ${(p: ResultProps) => p.bgColor};
   border-radius: 5px;
@@ -217,4 +203,4 @@ const Result = styled.span`
   transform: rotate(-40deg);
   left: -4px;
   top: 8px;
-`;
+`

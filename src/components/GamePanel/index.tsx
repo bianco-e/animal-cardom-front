@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import { useHistory } from "react-router-dom"
 import Plant from "../Plant"
 import Modal from "../Common/Modal"
@@ -7,6 +7,8 @@ import { IPlants, ITerrain } from "../../interfaces/index"
 import Tooltip from "../Tooltip"
 import { HalfPanel, LeftPanel, OptionsPanel, PlayerNameTab, TerrainName } from "./styled"
 import { IPlant } from "../../interfaces"
+import { EMPTY_STATE } from "../../context/HandsContext/types"
+import HandsContext, { IHandsContext } from "../../context/HandsContext"
 
 interface IProps {
   plants: IPlants
@@ -15,6 +17,7 @@ interface IProps {
 }
 
 export default function SidePanel({ plants, terrain, userName }: IProps) {
+  const [, dispatch] = useContext<IHandsContext>(HandsContext)
   const [showTerrainTooltip, setShowTerrainTooltip] = useState<boolean>(false)
   const [soundState, setSoundState] = useState<"off" | "on">("on")
   const [showExitModal, setShowExitModal] = useState<boolean>(false)
@@ -38,7 +41,11 @@ export default function SidePanel({ plants, terrain, userName }: IProps) {
     const soundToSet = soundState === "off" ? "on" : "off"
     setSoundState(soundToSet)
   }
-  const handleExit = () => setShowExitModal(true)
+
+  const handleLeave = () => {
+    dispatch({ type: EMPTY_STATE })
+    history.push("/menu")
+  }
 
   return (
     <LeftPanel bgImage={terrain.image}>
@@ -56,7 +63,7 @@ export default function SidePanel({ plants, terrain, userName }: IProps) {
           <button onClick={handleSoundButton}>
             <img alt="sound-button" src={`/icons/sound-${soundState}-icon.png`} />
           </button>
-          <button onClick={handleExit}>
+          <button onClick={() => setShowExitModal(true)}>
             <img alt="exit-button" src={`/icons/exit-icon.png`} />
           </button>
         </OptionsPanel>
@@ -99,7 +106,7 @@ export default function SidePanel({ plants, terrain, userName }: IProps) {
               onClick={() => setShowExitModal(false)}>
               Stay
             </ACButton>
-            <ACButton onClick={() => history.push("/menu")}>Leave</ACButton>
+            <ACButton onClick={handleLeave}>Leave</ACButton>
           </>
         </Modal>
       )}

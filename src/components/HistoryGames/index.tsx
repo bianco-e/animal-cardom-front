@@ -21,7 +21,7 @@ export default function History({ lastGames }: IProps) {
     <Wrapper>
       {lastGames.length > 0 ? (
         lastGames.map((game, idx) => {
-          const { won, usedAnimals, usedPlants, terrain, created_at, xp_earned } = game
+          const { won, used_animals, used_plants, terrain, created_at, earned_xp } = game
           const gameDate = new Date(created_at!)
           return (
             <HistoryCard terrain={terrain.toLowerCase()} key={idx}>
@@ -31,7 +31,7 @@ export default function History({ lastGames }: IProps) {
               <PlayerStats>
                 <b>You</b>
                 <CardsContainer>
-                  {usedAnimals.user.map(({ name, survived }) => {
+                  {used_animals.user.map(({ name, survived }) => {
                     const isLittle: boolean = name.startsWith("Little")
                     const cardImage = `/images/animals/${
                       isLittle ? "" : "adult-"
@@ -46,7 +46,7 @@ export default function History({ lastGames }: IProps) {
                   })}
                 </CardsContainer>
                 <CardsContainer>
-                  {usedPlants.user.map(({ name, applied }) => {
+                  {used_plants.user.map(({ name, applied }) => {
                     return (
                       <PlantThumbnail
                         key={name}
@@ -60,7 +60,7 @@ export default function History({ lastGames }: IProps) {
               <PlayerStats>
                 <b>PC</b>
                 <CardsContainer>
-                  {usedAnimals.pc.map(({ name, survived }) => {
+                  {used_animals.pc.map(({ name, survived }) => {
                     return (
                       <CardThumbnail
                         key={name}
@@ -73,7 +73,7 @@ export default function History({ lastGames }: IProps) {
                   })}
                 </CardsContainer>
                 <CardsContainer>
-                  {usedPlants.pc.map(({ name, applied }) => {
+                  {used_plants.pc.map(({ name, applied }) => {
                     return (
                       <PlantThumbnail
                         key={name}
@@ -85,7 +85,7 @@ export default function History({ lastGames }: IProps) {
                 </CardsContainer>
               </PlayerStats>
               <DetailsPanel>
-                <span>XP: {xp_earned}</span>
+                <span>XP: {earned_xp}</span>
                 <span>
                   {gameDate.toLocaleDateString()} - {gameDate.getHours()}:
                   {gameDate.getMinutes() < 10

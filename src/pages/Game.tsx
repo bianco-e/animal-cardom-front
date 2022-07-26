@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react"
 import styled from "styled-components"
 import Modal from "../components/Common/Modal"
-import { useLocation, useHistory } from "react-router-dom"
+import { useLocation, useHistory, useParams } from "react-router-dom"
 import { BREAKPOINTS } from "../utils/constants"
 import HandsContext, { IHandsContext } from "../context/HandsContext"
 import { COMPUTER_PLAY, COMPUTER_THINK, SET_CARDS } from "../context/HandsContext/types"
@@ -24,6 +24,10 @@ const emptyTerrain = {
   getRequiredXp: (current: number) => 0,
 }
 
+interface Params {
+  requiredXp: string
+}
+
 export default function App() {
   const [state, dispatch] = useContext<IHandsContext>(HandsContext)
   const [isCampaignGame, setIsCampaignGame] = useState<boolean>(false)
@@ -33,7 +37,8 @@ export default function App() {
   const [terrain, setTerrain] = useState<ITerrain>(emptyTerrain)
   const [modal, setModal] = useState<string>("")
   const history = useHistory()
-  const { pathname, search } = useLocation()
+  const { requiredXp } = useParams<Params>()
+  const { pathname } = useLocation()
   const { hands, plants, pcTurn, pcPlay, triggerPcAttack } = state
 
   interface Response {
@@ -53,7 +58,7 @@ export default function App() {
     }
   }
 
-  const checkUserAndStartGame = () => {
+  const checkUserAndStartGame = async () => {
     setIsLoading(true)
     if (!pathname.startsWith("/game")) {
       // is game for guests
@@ -69,31 +74,20 @@ export default function App() {
       // is campaign game
       setIsCampaignGame(true)
       const authId = getCookie("auth=")
-      if (authId) {
-        getUserMe(authId).then(userRes => {
-          if (userRes && userRes.xp !== undefined && userRes.hand && userRes.first_name) {
-            setUserName(userRes.first_name)
-            const { hand, xp } = userRes
-            const xpParam = new URLSearchParams(search).get("x")
-            const parsedXpParam = xpParam && parseInt(xpParam)
-            if (
-              (parsedXpParam || parsedXpParam === 0) &&
-              parsedXpParam <= xp &&
-              [0, 450, 900, 1350, 1800, 2250, 2700, 3150, 3600].includes(parsedXpParam)
-            ) {
-              setCurrentXp(xp)
-              newTerrain(parsedXpParam).then(terrainRes => {
-                if (terrainRes && terrainRes.name) {
-                  newCampaignGame(parsedXpParam, hand).then(gameRes =>
-                    newGameResHandler(terrainRes, gameRes)
-                  )
-                  setTerrain(terrainRes)
-                }
-              })
-            } else history.push("/menu")
-          }
-        })
-      }
+      if (!authId) return history.push("/")
+      const userRes = await getUserMe(authId)
+      if (userRes.error) return history.push("/")
+      const { first_name, hand, xp } = userRes
+      setUserName(first_name)
+      const parsedReqXp = parseInt(requiredXp)
+      if (xp < parsedReqXp) return history.push("/campaign")
+      setCurrentXp(xp)
+      const terrainRes = await newTerrain(parsedReqXp)
+      if (terrainRes.error) return history.push("/campaign")
+      newCampaignGame(parsedReqXp, hand).then(gameRes =>
+        newGameResHandler(terrainRes, gameRes)
+      )
+      setTerrain(terrainRes)
     }
   }
 

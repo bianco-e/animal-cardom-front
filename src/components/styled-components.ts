@@ -8,6 +8,7 @@ interface ButtonProps {
   fWeight?: string
   selected?: boolean
   margin?: string
+  width?: string
 }
 interface TextProps {
   color?: string
@@ -54,7 +55,7 @@ export const ACButton = styled.button<ButtonProps>`
   overflow: hidden;
   padding: 6px 10px;
   position: relative;
-  width: 100%;
+  width: ${({ width = "100%" }) => width};
   &:active:enabled {
     box-shadow: inset 0px 0px 3px black;
   }

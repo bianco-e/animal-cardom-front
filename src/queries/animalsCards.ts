@@ -6,7 +6,7 @@ export const getAllAnimalsCards = () =>
     .catch(err => console.error(err))
 
 export const getAnimalByName = (name: string) =>
-  fetch(`${API_BASE_URL}animals/${name}`)
+  fetch(`${API_BASE_URL}animals/name/${name}`)
     .then(res => res.json())
     .catch(err => console.error(err))
 

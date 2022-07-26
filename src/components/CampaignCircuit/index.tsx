@@ -25,7 +25,7 @@ export default function CampaignCircuit({ xp }: IProps) {
     }
   }, [containerRef.current]) //eslint-disable-line
 
-  const handleCampaignGame = (xp: number) => history.push(`/game?x=${xp}`)
+  const handleCampaignGame = (xp: number) => history.push(`/game/${xp}`)
 
   return (
     <>

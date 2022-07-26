@@ -1,6 +1,6 @@
 import styled from "styled-components"
 import CardThumbnail from "./Card/Thumbnail"
-import PlantThumbnail from "./PlantThumbnail"
+import PlantThumbnail from "./Plant/Thumbnail"
 import { cardSpeciesToLowerCase } from "../utils"
 import { Game } from "../interfaces"
 import { Message } from "./styled-components"

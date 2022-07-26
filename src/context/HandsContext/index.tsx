@@ -289,10 +289,11 @@ const passRoundAndApplyEffects = (hands: IHands, enemyHandKey: HandKey) => {
 const applyAttackDamage = (state: IGameState, enemyHandKey: HandKey): IGameState => {
   const attacker = state.attacker!
   const defender = state.defender!
-  if (typeof defender.life.current !== "number") return state
+  if (typeof defender.life.current !== "number")
+    return { ...state, underAttack: undefined, dodgedAttack: undefined }
 
   if (attacker.missing_chance && getRandomChance(attacker.missing_chance))
-    return { ...state, dodgedAttack: defender.name }
+    return { ...state, underAttack: undefined, dodgedAttack: defender.name }
 
   const statsDiff =
     defender.life.current -

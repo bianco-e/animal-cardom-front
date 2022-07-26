@@ -1,50 +1,21 @@
-import styled from "styled-components";
-import { IAnimal } from "../interfaces";
-import { BREAKPOINTS } from "../utils/constants";
-import Card from "./Card";
+import styled from "styled-components"
+import { IAnimal } from "../interfaces"
+import { BREAKPOINTS } from "../utils/constants"
+import Card from "./Card"
 
 interface IProps {
-  hand: IAnimal[];
-  belongsToUser: boolean;
+  hand: IAnimal[]
+  belongsToUser: boolean
 }
 
 export default function Hand({ hand, belongsToUser }: IProps) {
   return (
     <CardsGroup>
-      {hand.map((animal) => {
-        const {
-          attack,
-          bleeding,
-          image,
-          life,
-          missing_chance,
-          name,
-          paralyzed,
-          poisoned,
-          skill,
-          species,
-          targeteable,
-        } = animal;
-        return (
-          <Card
-            attack={attack}
-            belongsToUser={belongsToUser}
-            bleeding={bleeding}
-            image={image}
-            key={name}
-            life={life}
-            missingChance={missing_chance}
-            name={name}
-            paralyzed={paralyzed}
-            poisoned={poisoned}
-            skill={skill}
-            species={species}
-            targeteable={targeteable}
-          />
-        );
-      })}
+      {hand.map(animal => (
+        <Card {...animal} belongsToUser={belongsToUser} />
+      ))}
     </CardsGroup>
-  );
+  )
 }
 
 const CardsGroup = styled.div`
@@ -56,4 +27,4 @@ const CardsGroup = styled.div`
   ${BREAKPOINTS.MOBILE} {
     height: 32%;
   }
-`;
+`

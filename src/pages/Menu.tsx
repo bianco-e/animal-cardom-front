@@ -1,21 +1,21 @@
-import { useEffect, useState } from "react";
-import styled from "styled-components";
-import Card from "../components/Card";
-import MenuLayout from "../components/MenuLayout";
-import Spinner from "../components/Spinner";
-import { IAnimal } from "../interfaces";
-import { getNewestAnimals } from "../queries/animalsCards";
-import { BREAKPOINTS } from "../utils/constants";
+import { useEffect, useState } from "react"
+import styled from "styled-components"
+import Card from "../components/Card"
+import MenuLayout from "../components/MenuLayout"
+import Spinner from "../components/Spinner"
+import { IAnimal } from "../interfaces"
+import { getNewestAnimals } from "../queries/animalsCards"
+import { BREAKPOINTS } from "../utils/constants"
 
 export default function Menu() {
-  const [newestAnimals, setNewestAnimals] = useState<IAnimal[]>([]);
+  const [newestAnimals, setNewestAnimals] = useState<IAnimal[]>([])
   useEffect(() => {
-    getNewestAnimals().then((res) => {
+    getNewestAnimals().then(res => {
       if (res && res.animals) {
-        setNewestAnimals(res.animals);
+        setNewestAnimals(res.animals)
       }
-    });
-  }, []);
+    })
+  }, [])
   return (
     <MenuLayout>
       <>
@@ -25,7 +25,7 @@ export default function Menu() {
             <Spinner />
           ) : (
             <div>
-              {newestAnimals.map((card) => {
+              {newestAnimals.map(card => {
                 const {
                   attack,
                   bleeding,
@@ -37,7 +37,7 @@ export default function Menu() {
                   skill,
                   species,
                   targeteable,
-                } = card;
+                } = card
                 return (
                   <Card
                     attack={attack}
@@ -53,15 +53,15 @@ export default function Menu() {
                     skill={skill}
                     name={name}
                     targeteable={targeteable}
-                  ></Card>
-                );
+                  />
+                )
               })}
             </div>
           )}
         </Wrapper>
       </>
     </MenuLayout>
-  );
+  )
 }
 
 const Wrapper = styled.div`
@@ -110,10 +110,10 @@ const Wrapper = styled.div`
       }
     }
   }
-`;
+`
 
 const Title = styled.h2`
   font-weight: bold;
   font-size: 24px;
   margin: 0;
-`;
+`

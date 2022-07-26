@@ -1,14 +1,14 @@
-import { ITerrain } from "../interfaces";
+import { ITerrain } from "../interfaces"
 
-export const utilitiesIcons = {
-  attack: "/images/icons/attack-icon.png",
-  defense: "/images/icons/defense-icon.png",
-  fury: "/images/icons/fury-icon.png",
-  blood: "/images/icons/blood-icon.png",
-  life: "/images/svg/life-icon.svg",
-  poisonLife: "/images/svg/poison-life-icon.svg",
-  missing: "/images/svg/missing-chance-icon.svg",
-};
+export const CARD_ICONS = {
+  ATTACK: "/images/icons/attack-icon.png",
+  DEFENSE: "/images/icons/defense-icon.png",
+  FURY: "/images/icons/fury-icon.png",
+  BLOOD: "/images/icons/blood-icon.png",
+  LIFE: "/images/svg/life-icon.svg",
+  POISON: "/images/svg/poison-life-icon.svg",
+  MISSING: "/images/svg/missing-chance-icon.svg",
+}
 
 export const terrains: ITerrain[] = [
   {
@@ -60,4 +60,4 @@ export const terrains: ITerrain[] = [
     image: "/images/terrains/jungle.webp",
     getRequiredXp: (currentXp: number) => 3600,
   },
-];
+]

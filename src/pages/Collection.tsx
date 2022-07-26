@@ -1,97 +1,92 @@
-import { useContext, useEffect, useState } from "react";
-import styled from "styled-components";
-import { Message } from "../components/styled-components";
-import { IAnimal } from "../interfaces";
-import { getCookie, sortCardsAlphabetically } from "../utils";
-import { getUserProfile } from "../queries/user";
-import {
-  getAllAnimalsCards,
-  getFilteredAnimalsCards,
-} from "../queries/animalsCards";
-import MenuLayout from "../components/MenuLayout";
-import CollectionFilter from "../components/CollectionFilter";
-import Spinner from "../components/Spinner";
-import Card from "../components/Card";
-import Modal from "../components/Common/Modal";
-import ModalHandEditContent from "../components/ModalHandEditContent";
-import ModalCardPurchaseContent from "../components/ModalCardPurchaseContent";
-import AccordionSection from "../components/AccordionSection";
-import { BREAKPOINTS } from "../utils/constants";
-import UserContext, { IUserContext } from "../context/UserContext";
+import { useContext, useEffect, useState } from "react"
+import styled from "styled-components"
+import { Message } from "../components/styled-components"
+import { IAnimal } from "../interfaces"
+import { getCookie, sortCardsAlphabetically } from "../utils"
+import { getUserProfile } from "../queries/user"
+import { getAllAnimalsCards, getFilteredAnimalsCards } from "../queries/animalsCards"
+import MenuLayout from "../components/MenuLayout"
+import CollectionFilter from "../components/CollectionFilter"
+import Spinner from "../components/Spinner"
+import Card from "../components/Card"
+import Modal from "../components/Common/Modal"
+import ModalHandEditContent from "../components/ModalHandEditContent"
+import ModalCardPurchaseContent from "../components/ModalCardPurchaseContent"
+import AccordionSection from "../components/AccordionSection"
+import { BREAKPOINTS } from "../utils/constants"
+import UserContext, { IUserContext } from "../context/UserContext"
 
 const getCardOpacityForPreview = (cards: string[], name: string): string => {
-  if (cards.find((card) => card === name)) {
-    return "1";
+  if (cards.find(card => card === name)) {
+    return "1"
   }
-  return "0.6";
-};
+  return "0.6"
+}
 
 export default function Collection() {
-  const [state] = useContext<IUserContext>(UserContext);
-  const [speciesFilter, setSpeciesFilter] = useState<string>();
-  const [modal, setModal] = useState<string>("");
-  const [skillTypeFilter, setSkillTypeFilter] = useState<string>();
-  const [owningFilter, setOwningFilter] = useState<boolean | undefined>();
-  const [cardsToShow, setCardsToShow] = useState<IAnimal[]>([]);
-  const [allCards, setAllCards] = useState<IAnimal[]>([]);
-  const [currentHand, setCurrentHand] = useState<string[]>([]);
-  const [ownedCards, setOwnedCards] = useState<string[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [animalToAdd, setAnimalToAdd] = useState<IAnimal>();
-  const [animalToBuy, setAnimalToBuy] = useState<IAnimal>();
+  const [state] = useContext<IUserContext>(UserContext)
+  const [speciesFilter, setSpeciesFilter] = useState<string>()
+  const [modal, setModal] = useState<string>("")
+  const [skillTypeFilter, setSkillTypeFilter] = useState<string>()
+  const [owningFilter, setOwningFilter] = useState<boolean | undefined>()
+  const [cardsToShow, setCardsToShow] = useState<IAnimal[]>([])
+  const [allCards, setAllCards] = useState<IAnimal[]>([])
+  const [currentHand, setCurrentHand] = useState<string[]>([])
+  const [ownedCards, setOwnedCards] = useState<string[]>([])
+  const [isLoading, setIsLoading] = useState<boolean>(false)
+  const [animalToAdd, setAnimalToAdd] = useState<IAnimal>()
+  const [animalToBuy, setAnimalToBuy] = useState<IAnimal>()
 
   useEffect(() => {
-    setIsLoading(true);
-    getAllAnimalsCards().then((res) => {
-      setIsLoading(false);
+    setIsLoading(true)
+    getAllAnimalsCards().then(res => {
+      setIsLoading(false)
       if (res && res.animals) {
-        setAllCards(res.animals);
-        setCardsToShow(sortCardsAlphabetically(res.animals));
+        setAllCards(res.animals)
+        setCardsToShow(sortCardsAlphabetically(res.animals))
       }
-    });
-    const authId = getCookie("auth=");
+    })
+    const authId = getCookie("auth=")
     if (authId) {
-      getUserProfile(authId).then((res) => {
+      getUserProfile(authId).then(res => {
         if (res && res.owned_cards && res.hand && res.coins !== undefined) {
-          setOwnedCards(res.owned_cards);
-          setCurrentHand(res.hand);
+          setOwnedCards(res.owned_cards)
+          setCurrentHand(res.hand)
         }
-      });
+      })
     }
-  }, []);
+  }, [])
 
   useEffect(() => {
-    const sendingOwnedCards = owningFilter
-      ? ownedCards.map((card) => card)
-      : undefined;
+    const sendingOwnedCards = owningFilter ? ownedCards.map(card => card) : undefined
     const sendingOwnedCardsToFilter =
-      owningFilter === false ? ownedCards.map((card) => card) : undefined;
+      owningFilter === false ? ownedCards.map(card => card) : undefined
     getFilteredAnimalsCards(
       speciesFilter,
       skillTypeFilter,
       sendingOwnedCards,
       sendingOwnedCardsToFilter
-    ).then((res) => {
+    ).then(res => {
       if (res && res.animals) {
-        setCardsToShow(sortCardsAlphabetically(res.animals));
+        setCardsToShow(sortCardsAlphabetically(res.animals))
       }
-    });
-  }, [speciesFilter, skillTypeFilter, owningFilter]); //eslint-disable-line
+    })
+  }, [speciesFilter, skillTypeFilter, owningFilter]) //eslint-disable-line
 
   const handleEditHandClick = (name: string) => {
-    setModal("editHand");
-    const cardToAdd = allCards.find((card) => card.name === name);
+    setModal("editHand")
+    const cardToAdd = allCards.find(card => card.name === name)
     if (cardToAdd) {
-      setAnimalToAdd(cardToAdd);
+      setAnimalToAdd(cardToAdd)
     }
-  };
+  }
 
   const handlePurchaseClick = (card: IAnimal) => {
-    setModal("cardPurchase");
-    setAnimalToBuy(card);
-  };
+    setModal("cardPurchase")
+    setAnimalToBuy(card)
+  }
 
-  const hand = allCards.filter((card) => currentHand.includes(card.name));
+  const hand = allCards.filter(card => currentHand.includes(card.name))
 
   return (
     <MenuLayout>
@@ -106,7 +101,7 @@ export default function Collection() {
             <Spinner />
           ) : (
             <CardsContainer>
-              {hand.map((card) => {
+              {hand.map(card => {
                 const {
                   attack,
                   bleeding,
@@ -118,7 +113,7 @@ export default function Collection() {
                   skill,
                   species,
                   targeteable,
-                } = card;
+                } = card
                 return (
                   <SingleCardContainer>
                     <Card
@@ -135,9 +130,9 @@ export default function Collection() {
                       skill={skill}
                       name={name}
                       targeteable={targeteable}
-                    ></Card>
+                    />
                   </SingleCardContainer>
-                );
+                )
               })}
             </CardsContainer>
           )}
@@ -147,7 +142,7 @@ export default function Collection() {
             <Spinner />
           ) : cardsToShow.length > 0 ? (
             <CardsContainer>
-              {cardsToShow.map((card) => {
+              {cardsToShow.map(card => {
                 const {
                   attack,
                   bleeding,
@@ -160,51 +155,40 @@ export default function Collection() {
                   species,
                   targeteable,
                   price,
-                } = card;
+                } = card
+                const onPreviewClick =
+                  ownedCards.includes(name) && !currentHand.includes(name)
+                    ? handleEditHandClick
+                    : undefined
                 return (
                   <SingleCardContainer>
                     <Card
                       attack={attack}
                       belongsToUser={false}
                       bleeding={bleeding}
+                      displayInHandSign={currentHand.includes(name)}
                       species={species}
                       image={image}
                       key={name}
                       life={life}
-                      onPreviewClick={
-                        ownedCards.includes(name) && !currentHand.includes(name)
-                          ? handleEditHandClick
-                          : undefined
-                      }
-                      opacityForPreview={getCardOpacityForPreview(
-                        ownedCards,
-                        name
-                      )}
+                      onPreviewClick={onPreviewClick}
+                      opacityForPreview={getCardOpacityForPreview(ownedCards, name)}
                       paralyzed={paralyzed}
                       poisoned={poisoned}
                       skill={skill}
                       name={name}
                       targeteable={targeteable}
-                    >
-                      {currentHand.includes(name) ? (
-                        <span className="in-hand spaced-title">HAND</span>
-                      ) : undefined}
-                    </Card>
+                    />
                     {!ownedCards.includes(name) && (
                       <BuyButton
                         disabled={state.coins < price}
-                        onClick={() => handlePurchaseClick(card)}
-                      >
-                        <img
-                          alt="coins"
-                          src="/images/icons/coins.png"
-                          width={16}
-                        />
+                        onClick={() => handlePurchaseClick(card)}>
+                        <img alt="coins" src="/images/icons/coins.png" width={16} />
                         {price}
                       </BuyButton>
                     )}
                   </SingleCardContainer>
-                );
+                )
               })}
             </CardsContainer>
           ) : (
@@ -234,7 +218,7 @@ export default function Collection() {
         )}
       </>
     </MenuLayout>
-  );
+  )
 }
 
 const BuyButton = styled.button`
@@ -269,7 +253,7 @@ const BuyButton = styled.button`
     color: ${({ theme }) => theme.primary_red};
     cursor: not-allowed;
   }
-`;
+`
 
 const SingleCardContainer = styled.div`
   position: relative;
@@ -316,7 +300,7 @@ const SingleCardContainer = styled.div`
       }
     }
   }
-`;
+`
 
 const CardsContainer = styled.div`
   align-items: center;
@@ -329,4 +313,4 @@ const CardsContainer = styled.div`
   min-height: 100px;
   padding: 16px 0;
   width: 85%;
-`;
+`

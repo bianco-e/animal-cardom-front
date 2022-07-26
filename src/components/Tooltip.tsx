@@ -1,18 +1,14 @@
-import styled from "styled-components";
+import styled from "styled-components"
 
-type Direction = "TOP" | "BOTTOM" | "BOTTOM-LEFT";
+type Direction = "TOP" | "BOTTOM" | "BOTTOM-LEFT"
 
 interface IProps {
-  direction?: Direction;
-  description: string;
-  title: string;
+  direction?: Direction
+  description: string
+  title: string
 }
 
-export default function Tooltip({
-  direction = "TOP",
-  description,
-  title,
-}: IProps) {
+export default function Tooltip({ direction = "TOP", description, title }: IProps) {
   return (
     <TooltipWrapper className="tooltip" direction={direction}>
       <div className="description-container">
@@ -23,18 +19,18 @@ export default function Tooltip({
         <span>{title}</span>
       </div>
     </TooltipWrapper>
-  );
+  )
 }
 
 interface TooltipProps {
-  direction: Direction;
+  direction: Direction
 }
 
 const positions = {
   TOP: `bottom: 120%; flex-direction: column; left: calc(50% - 49px);`,
   BOTTOM: `top: 120%; flex-direction: column-reverse; left: calc(50% - 49px);`,
   "BOTTOM-LEFT": `top: 100%; flex-direction: column-reverse; right: 90%;`,
-};
+}
 
 const descriptionContainer = {
   borderRadius: {
@@ -42,7 +38,7 @@ const descriptionContainer = {
     BOTTOM: `0 0 4px 4px;`,
     "BOTTOM-LEFT": `0 0 4px 4px;`,
   },
-};
+}
 
 const titleContainer = {
   arrowPosition: {
@@ -55,7 +51,7 @@ const titleContainer = {
     BOTTOM: `4px 4px 0 0;`,
     "BOTTOM-LEFT": `4px 0 0 0;`,
   },
-};
+}
 
 const TooltipWrapper = styled.div<TooltipProps>`
   align-items: center;
@@ -67,8 +63,8 @@ const TooltipWrapper = styled.div<TooltipProps>`
   z-index: 3;
   ${({ direction }) => positions[direction]}
   > hr {
-    background: ${({ theme }) => theme.xp_secondary_violet};
-    border: 1px solid ${({ theme }) => theme.xp_secondary_violet};
+    background: ${({ theme }) => theme.secondary_violet};
+    border: 1px solid ${({ theme }) => theme.secondary_violet};
     margin: 0;
     width: calc(100% - 2px);
   }
@@ -83,8 +79,7 @@ const TooltipWrapper = styled.div<TooltipProps>`
   }
   .description-container {
     background: ${({ theme }) => theme.light_brown};
-    border-radius: ${({ direction }) =>
-      descriptionContainer.borderRadius[direction]};
+    border-radius: ${({ direction }) => descriptionContainer.borderRadius[direction]};
     font-size: 9px;
     font-weight: normal;
     width: 100%;
@@ -105,4 +100,4 @@ const TooltipWrapper = styled.div<TooltipProps>`
     position: absolute;
     width: 8px;
   }
-`;
+`

@@ -1,51 +1,49 @@
-import { useEffect, useRef, useState } from "react";
-import styled from "styled-components";
-import { LogButton } from "./styled-components";
+import { useEffect, useRef, useState } from "react"
+import styled from "styled-components"
+import { LogButton } from "./styled-components"
 
 interface Option {
-  text: string;
-  fn: () => void;
+  text: string
+  fn: () => void
 }
 
 interface IProps {
-  closedText: string;
-  options: Option[];
-  width: string;
+  closedText: string
+  options: Option[]
+  width: string
 }
 export default function Dropdown({ closedText, options, width }: IProps) {
-  const [isOpened, setIsOpened] = useState<boolean>(false);
-  const [selectedOption, setSelectedOption] = useState<string>();
-  const dropdownRef = useRef<HTMLDivElement>(null);
+  const [isOpened, setIsOpened] = useState<boolean>(false)
+  const [selectedOption, setSelectedOption] = useState<string>()
+  const dropdownRef = useRef<HTMLDivElement>(null)
 
   const handleClickOutside = (e: MouseEvent) => {
-    const { clientX, clientY } = e;
+    const { clientX, clientY } = e
     if (dropdownRef.current) {
       const isClickingOut =
-        clientX >
-          dropdownRef.current.offsetLeft + dropdownRef.current.offsetWidth ||
+        clientX > dropdownRef.current.offsetLeft + dropdownRef.current.offsetWidth ||
         clientX < dropdownRef.current.offsetLeft ||
-        clientY >
-          dropdownRef.current.offsetTop + dropdownRef.current.offsetHeight ||
-        clientY < dropdownRef.current.offsetTop;
+        clientY > dropdownRef.current.offsetTop + dropdownRef.current.offsetHeight ||
+        clientY < dropdownRef.current.offsetTop
       if (isClickingOut) {
-        setIsOpened(false);
+        setIsOpened(false)
       }
     }
-  };
+  }
 
   useEffect(() => {
-    isOpened && document.addEventListener("click", handleClickOutside);
-    return () => document.removeEventListener("click", handleClickOutside);
-  }, [isOpened]);
+    isOpened && document.addEventListener("click", handleClickOutside)
+    return () => document.removeEventListener("click", handleClickOutside)
+  }, [isOpened])
 
   const handleDropdown = () => {
-    setIsOpened(!isOpened);
-  };
+    setIsOpened(!isOpened)
+  }
   const handleSelection = (callback: Option["fn"], option: Option["text"]) => {
-    setSelectedOption(option);
-    setIsOpened(false);
-    callback();
-  };
+    setSelectedOption(option)
+    setIsOpened(false)
+    callback()
+  }
   return (
     <Wrapper isOpened={isOpened} width={width}>
       <LogButton onClick={handleDropdown}>
@@ -56,8 +54,7 @@ export default function Dropdown({ closedText, options, width }: IProps) {
           width={30}
           height={30}
           viewBox="0 0 960 560"
-          enable-background="new 0 0 960 560"
-        >
+          enable-background="new 0 0 960 560">
           <path
             d="M480,344.181L268.869,131.889c-15.756-15.859-41.3-15.859-57.054,0c-15.754,15.857-15.754,41.57,0,57.431l237.632,238.937
                 c8.395,8.451,19.562,12.254,30.553,11.698c10.993,0.556,22.159-3.247,30.555-11.698l237.631-238.937
@@ -70,28 +67,27 @@ export default function Dropdown({ closedText, options, width }: IProps) {
           return (
             <StyledOption
               fWeight={idx === 0 ? "normal" : "bold"}
-              onClick={() => handleSelection(opt.fn, opt.text)}
-            >
+              onClick={() => handleSelection(opt.fn, opt.text)}>
               {opt.text}
             </StyledOption>
-          );
+          )
         })}
       </OptionsContainer>
     </Wrapper>
-  );
+  )
 }
 
 interface WrapperProps {
-  isOpened?: boolean;
-  width?: string;
+  isOpened?: boolean
+  width?: string
 }
 
 interface OptionsContainerProps {
-  display?: string;
+  display?: string
 }
 
 interface OptionProps {
-  fWeight?: string;
+  fWeight?: string
 }
 
 const Wrapper = styled.div`
@@ -110,7 +106,7 @@ const Wrapper = styled.div`
       transform: ${(p: WrapperProps) => (p.isOpened ? "rotate(180deg)" : "")};
     }
   }
-`;
+`
 const OptionsContainer = styled.div`
   align-items: center;
   border-radius: 5px;
@@ -133,13 +129,13 @@ const OptionsContainer = styled.div`
     border-radius: 0 5px 5px 0;
   }
   ::-webkit-scrollbar-thumb {
-    background: ${({ theme }) => theme.xp_secondary_violet};
+    background: ${({ theme }) => theme.secondary_violet};
     border-radius: 0 5px 5px 0;
   }
   ::-webkit-scrollbar-thumb:hover {
-    background: ${({ theme }) => theme.xp_primary_violet};
+    background: ${({ theme }) => theme.primary_violet};
   }
-`;
+`
 const StyledOption = styled.span`
   align-items: center;
   background: #fff;
@@ -160,4 +156,4 @@ const StyledOption = styled.span`
   &:hover {
     background: ${({ theme }) => theme.light_brown};
   }
-`;
+`

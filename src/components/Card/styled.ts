@@ -1,4 +1,5 @@
 import styled from "styled-components"
+import { injuryAnimation } from "../../animations/card-animations"
 import { BREAKPOINTS } from "../../utils/constants"
 
 interface InjuryProps {
@@ -8,8 +9,8 @@ interface AnimalCardProps {
   attackAnimation?: any
   selectionAnimation?: any
   cursor?: string
-  isCardSelected: boolean
-  isParalyzed: boolean
+  isCardSelected?: boolean
+  isParalyzed?: boolean
   opacity: string
   transform?: string
 }
@@ -17,7 +18,7 @@ interface TextProps {
   color?: string
   fWeight?: string
   margin?: string
-  textDeco?: string
+  lineThrough?: boolean
 }
 interface FlexSectionProps {
   mBottom?: string
@@ -46,28 +47,19 @@ export const PlantEffectImage = styled.img<PlantEffectProps>`
       `}
 `
 
-export const Injury = styled.div<InjuryProps>`
-  ${({ animation }) => animation};
+export const Injury = styled.img<InjuryProps>`
+  ${injuryAnimation};
   display: flex;
   justify-content: flex-start;
   position: absolute;
   left: 50%;
   opacity: 0;
-  top: 6%;
-  transform: translateX(-50%);
+  top: 4%;
   transition: all 0.4s ease;
-  -webkit-transform: translateX(-50%);
+  -webkit-transform: translateX(-50%) rotate(60deg);
   z-index: 20;
-  > img {
-    &.big-wound {
-      transform: rotate(60deg);
-      width: 59%;
-    }
-    &.small-wound {
-      transform: rotate(240deg);
-      width: 27%;
-    }
-  }
+  transform: translateX(-50%) rotate(60deg);
+  width: 35%;
 `
 export const AnimalCard = styled.button<AnimalCardProps>`
   align-items: center;
@@ -104,8 +96,13 @@ export const AnimalCard = styled.button<AnimalCardProps>`
     transform: translateX(-50%);
     height: 210%;
     width: 35%;
-    background: ${({ opacity }) =>
-      opacity === "1" ? "linear-gradient(90deg, #5f0a87, #e3cdac, #a4508b)" : "none"};
+    background: ${({
+      opacity,
+      theme: { primary_violet, secondary_violet, light_brown },
+    }) =>
+      opacity === "1"
+        ? `linear-gradient(90deg, ${primary_violet}, ${light_brown}, ${secondary_violet})`
+        : "none"};
     z-index: -2;
     background-size: 300% 300%;
     ${({ selectionAnimation }) => selectionAnimation};
@@ -179,14 +176,6 @@ export const StatsWrapper = styled.div`
     justify-content: center;
     position: relative;
     width: calc(50% - 24px);
-    > span.poison-stats {
-      color: ${({ theme }) => theme.poison_green};
-      font-size: 10px;
-      font-weight: bold;
-      position: absolute;
-      bottom: 2px;
-      left: 24%;
-    }
   }
   ${BREAKPOINTS.MOBILE} {
     left: 5%;
@@ -194,9 +183,6 @@ export const StatsWrapper = styled.div`
     > div.stats-container {
       height: 20px;
       width: calc(50% - 10px);
-      > span.poison-stats {
-        font-size: 8px;
-      }
     }
   }
 `
@@ -216,7 +202,7 @@ export const CornerIconContainer = styled.div`
     font-size: 12px;
     line-height: 16px;
     position: absolute;
-    left: 24px;
+    left: 28px;
     top: 24px;
   }
   &.animal-condition {
@@ -317,7 +303,8 @@ export const Text = styled.span<TextProps>`
   font-weight: ${({ fWeight = "bold" }) => fWeight};
   margin: ${({ margin }) => margin};
   text-align: center;
-  text-decoration: ${({ textDeco }) => textDeco};
+  text-decoration: ${({ lineThrough, theme }) =>
+    lineThrough ? `line-through 2px ${theme.primary_red}` : ""};
 `
 export const FlexSection = styled.div<FlexSectionProps>`
   align-items: center;

@@ -1,12 +1,11 @@
 import { useContext, useEffect } from "react"
-import { utilitiesIcons } from "../../data/data"
+import { CARD_ICONS } from "../../data/data"
 import HandsContext from "../../context/HandsContext"
 import { SELECT_CARD } from "../../context/HandsContext/types"
 import { Poisoned, Skill, Stat } from "../../interfaces"
 import {
   attackAnimation,
   attackAudio,
-  injuryAnimation,
   selectionAnimation,
 } from "../../animations/card-animations"
 import usePlantAnimation from "../../hooks/usePlantAnimation"
@@ -27,7 +26,7 @@ interface IProps {
   attack: Stat<number>
   belongsToUser?: boolean
   bleeding: boolean
-  children?: JSX.Element
+  displayInHandSign?: boolean
   species: string
   image: string
   life: Stat<number | string>
@@ -44,39 +43,41 @@ interface IProps {
 export default function Card({
   attack,
   belongsToUser,
-  children,
-  life,
-  species,
+  bleeding,
+  displayInHandSign,
   image,
-  skill,
+  life,
   missingChance,
   name,
   onPreviewClick,
   opacityForPreview,
-  poisoned,
   paralyzed,
+  poisoned,
+  skill,
+  species,
   targeteable,
-  bleeding,
 }: IProps) {
   const [state, dispatch] = useContext(HandsContext)
-  const isCardSelected = state.attacker?.name === name
+  const isForPreview = !!opacityForPreview
+  const isParalyzed = paralyzed > 0
+  const isCardSelected = !isForPreview && state.attacker?.name === name
   const isCardUnderAttack = state.underAttack === name
   const hasCondition = !targeteable || missingChance
   const soundState = localStorage.getItem("sound")
   const [animationProps] = usePlantAnimation({ name, soundState })
+
   useEffect(() => {
     isCardUnderAttack && soundState === "on" && attackAudio.play()
   }, [isCardUnderAttack, soundState])
 
-  const isForPreview = !!opacityForPreview
-  const cardProps = isForPreview
+  const styledProps = isForPreview
     ? {
         attackAnimation: undefined,
         selectionAnimation: undefined,
         className: "card",
         cursor: onPreviewClick ? "pointer" : "default",
-        isCardSelected: false,
-        isParalyzed: false,
+        isCardSelected,
+        isParalyzed,
         onClick: () => onPreviewClick && onPreviewClick(name),
         opacity: opacityForPreview ? opacityForPreview : "1",
         transform: "",
@@ -86,38 +87,29 @@ export default function Card({
         selectionAnimation: isCardSelected ? selectionAnimation : undefined,
         cursor: "pointer",
         isCardSelected,
-        isParalyzed: paralyzed > 0,
+        isParalyzed,
         onClick: () => !state.pcTurn && dispatch({ type: SELECT_CARD, name }),
         opacity: `${life.current === "DEAD" ? "0.5" : "1"}`,
         transform: belongsToUser ? "translateY(-8px)" : "",
       }
+
+  const getStatColor = (stat: Stat<number | string>): string =>
+    stat.current > stat.initial ? "#a4508b" : stat.current < stat.initial ? "red" : ""
+
   return (
-    <AnimalCard {...cardProps}>
-      {children}
-      <Injury animation={isCardUnderAttack && injuryAnimation}>
-        <img
-          draggable="false"
-          alt="wound"
-          className="small-wound"
-          src="/images/svg/blood-splatter.svg"
-        />
-        <img
-          draggable="false"
-          alt="wound"
-          className="big-wound"
-          src="/images/svg/blood-splatter.svg"
-        />
-        <img
-          draggable="false"
-          alt="wound"
-          className="small-wound"
-          src="/images/svg/blood-splatter.svg"
-        />
-      </Injury>
-      {animationProps && <PlantEffectImage {...animationProps} />}
+    <AnimalCard {...styledProps}>
+      {displayInHandSign ? <span className="in-hand spaced-title">HAND</span> : null}
+
+      {isCardUnderAttack ? (
+        <Injury draggable="false" alt="wound" src="/images/svg/blood-splatter.svg" />
+      ) : null}
+
+      {animationProps ? <PlantEffectImage {...animationProps} /> : null}
+
       <CornerIconContainer>
         <span>{species}</span>
       </CornerIconContainer>
+
       {hasCondition ? (
         <CornerIconContainer className="animal-condition">
           {!targeteable ? (
@@ -137,7 +129,7 @@ export default function Card({
                 title="Missing chance"
                 description={`${name} has ${missingChance}% chance of missing the attack`}
               />
-              <Image className="missing-chance-icon" src={utilitiesIcons.missing} />
+              <Image className="missing-chance-icon" src={CARD_ICONS.MISSING} />
             </>
           ) : null}
         </CornerIconContainer>
@@ -153,36 +145,24 @@ export default function Card({
             <Image
               className="small-icon"
               src={
-                skill.types.includes("defensive")
-                  ? utilitiesIcons.defense
-                  : utilitiesIcons.fury
+                skill.types.includes("defensive") ? CARD_ICONS.DEFENSE : CARD_ICONS.FURY
               }
             />
           )}
-          <Text
-            className="skill-name spaced-title"
-            textDeco={`${paralyzed > 0 && "line-through 2px #dd5540"}`}>
+          <Text className="skill-name spaced-title" lineThrough={isParalyzed}>
             {skill.name}
           </Text>
-          {paralyzed > 0 ? <span className="paralyzed">({paralyzed})</span> : null}
+          {isParalyzed ? <span className="paralyzed">({paralyzed})</span> : null}
         </FlexSection>
-        <Text
-          className="skill"
-          fWeight="regular"
-          textDeco={`${paralyzed > 0 && "line-through 2px #dd5540"}`}>
+        <Text className="skill" fWeight="regular" lineThrough={isParalyzed}>
           {skill.description}
         </Text>
       </DescriptionContainer>
+
       <StatsWrapper>
         <div className="stats-container">
-          <Image className="small-icon" src={utilitiesIcons.attack} />
-          <Text
-            className="stats spaced-title"
-            color={`${
-              attack.current > attack.initial
-                ? "#a4508b"
-                : attack.current < attack.initial && "red"
-            }`}>
+          <Image className="small-icon" src={CARD_ICONS.ATTACK} />
+          <Text className="stats spaced-title" color={getStatColor(attack)}>
             {attack.current}
           </Text>
         </div>
@@ -192,32 +172,21 @@ export default function Card({
               title={`${name} is bleeding`}
               description={`Every turn ${name} gets 1 damage. It can be stopped with a plant`}
             />
-            <Image className="blood-drop" src={utilitiesIcons.blood} />
+            <Image className="blood-drop" src={CARD_ICONS.BLOOD} />
           </div>
         ) : null}
         <div className="stats-container">
           {poisoned.rounds > 0 && (
-            <>
-              <Tooltip
-                title={`${name} is poisoned`}
-                description={`${poisoned.damage} poison damage per round - ${poisoned.rounds} round(s) left`}
-              />
-              <span className="poison-stats">
-                {poisoned.damage} ({poisoned.rounds})
-              </span>
-            </>
+            <Tooltip
+              title={`${name} is poisoned`}
+              description={`${poisoned.damage} poison damage per round - ${poisoned.rounds} round(s) left`}
+            />
           )}
           <Image
             className="small-icon"
-            src={utilitiesIcons[poisoned.rounds > 0 ? "poisonLife" : "life"]}
+            src={poisoned.rounds > 0 ? CARD_ICONS.POISON : CARD_ICONS.LIFE}
           />
-          <Text
-            className="stats spaced-title"
-            color={`${
-              life.current > life.initial
-                ? "#a4508b"
-                : life.current < life.initial && "red"
-            }`}>
+          <Text className="stats spaced-title" color={getStatColor(life)}>
             {life.current}
           </Text>
         </div>

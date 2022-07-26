@@ -1,10 +1,10 @@
-import styled from "styled-components";
-import Dropdown from "./Dropdown";
+import Dropdown from "../Common/Dropdown"
+import { DropdownsContainer, Text, Wrapper } from "./styled"
 
 interface IProps {
-  setSpeciesFilter: (cards: string) => void;
-  setSkillTypeFilter: (cards: string) => void;
-  setOwningFilter: (bool: boolean | undefined) => void;
+  setSpeciesFilter: (cards: string) => void
+  setSkillTypeFilter: (cards: string) => void
+  setOwningFilter: (bool: boolean | undefined) => void
 }
 
 export default function CollectionFilter({
@@ -41,7 +41,7 @@ export default function CollectionFilter({
       text: "🦎",
       fn: () => setSpeciesFilter("🦎"),
     },
-  ];
+  ]
 
   const ownedDropdownOptions = [
     {
@@ -56,7 +56,7 @@ export default function CollectionFilter({
       text: "Not owned",
       fn: () => setOwningFilter(false),
     },
-  ];
+  ]
 
   const skillDropdownOptions = [
     {
@@ -107,54 +107,16 @@ export default function CollectionFilter({
       text: "Other",
       fn: () => setSkillTypeFilter("other"),
     },
-  ];
+  ]
 
   return (
     <Wrapper>
       <Text>Filter by</Text>
       <DropdownsContainer>
-        <Dropdown
-          closedText="Species"
-          options={speciesDropdownOptions}
-          width="200px"
-        />
-        <Dropdown
-          closedText="Owning"
-          options={ownedDropdownOptions}
-          width="200px"
-        />
-        <Dropdown
-          closedText="Skill"
-          options={skillDropdownOptions}
-          width="200px"
-        />
+        <Dropdown closedText="Species" options={speciesDropdownOptions} width="200px" />
+        <Dropdown closedText="Owning" options={ownedDropdownOptions} width="200px" />
+        <Dropdown closedText="Skill" options={skillDropdownOptions} width="200px" />
       </DropdownsContainer>
     </Wrapper>
-  );
+  )
 }
-
-const Wrapper = styled.div`
-  align-items: center;
-  background-image: url("/images/welcome-background.png");
-  background-size: cover;
-  background-position: bottom;
-  border-radius: 5px;
-  box-shadow: 0 0 10px 10px rgba(95, 57, 0, 0.2);
-  display: flex;
-  justify-content: space-between;
-  min-height: 80px;
-  padding: 15px 60px;
-  position: relative;
-  width: 75%;
-`;
-const DropdownsContainer = styled.div`
-  align-items: center;
-  display: flex;
-  justify-content: space-around;
-  width: 75%;
-`;
-const Text = styled.span`
-  color: ${({ theme }) => theme.light_brown};
-  font-weight: bold;
-  font-size: 20px;
-`;

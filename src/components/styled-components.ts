@@ -155,3 +155,14 @@ export const ACTextArea = styled.textarea`
     margin-bottom: 10px;
   }
 `
+
+export const HandContainer = styled.div`
+  align-items: center;
+  display: flex;
+  height: 37%;
+  justify-content: space-between;
+  width: 100%;
+  ${BREAKPOINTS.MOBILE} {
+    height: 32%;
+  }
+`

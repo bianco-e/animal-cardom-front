@@ -1,19 +1,6 @@
-import styled from "styled-components";
+import styled from "styled-components"
 
-interface IProps {
-  coins?: number;
-}
-
-export default function CoinsViewer({ coins }: IProps) {
-  return (
-    <Wrapper>
-      <img alt="coins" src="/images/icons/coins.png" width={24} />
-      <span>{coins && coins}</span>
-    </Wrapper>
-  );
-}
-
-const Wrapper = styled.div`
+export const Wrapper = styled.div`
   align-items: center;
   background: ${({ theme }) => theme.primary_brown};
   border-radius: 0 0 56px 56px;
@@ -32,4 +19,4 @@ const Wrapper = styled.div`
     font-weight: bold;
     margin-left: 10px;
   }
-`;
+`

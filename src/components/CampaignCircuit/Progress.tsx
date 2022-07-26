@@ -1,5 +1,5 @@
 import styled from "styled-components"
-import { terrains } from "../data/data"
+import { terrains } from "../../data/data"
 
 const TOTAL_LEVELS = 7
 interface IProps {

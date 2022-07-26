@@ -12,7 +12,7 @@ import Card from "../components/Card"
 import Modal from "../components/Common/Modal"
 import ModalHandEditContent from "../components/ModalHandEditContent"
 import ModalCardPurchaseContent from "../components/ModalCardPurchaseContent"
-import AccordionSection from "../components/AccordionSection"
+import Accordion from "../components/Common/Accordion"
 import { BREAKPOINTS } from "../utils/constants"
 import UserContext, { IUserContext } from "../context/UserContext"
 
@@ -96,7 +96,7 @@ export default function Collection() {
           setSkillTypeFilter={setSkillTypeFilter}
           setOwningFilter={setOwningFilter}
         />
-        <AccordionSection title="Hand">
+        <Accordion title="Hand">
           {!(currentHand.length > 0) ? (
             <Spinner />
           ) : (
@@ -136,8 +136,8 @@ export default function Collection() {
               })}
             </CardsContainer>
           )}
-        </AccordionSection>
-        <AccordionSection title="Collection">
+        </Accordion>
+        <Accordion title="Collection">
           {isLoading ? (
             <Spinner />
           ) : cardsToShow.length > 0 ? (
@@ -194,7 +194,7 @@ export default function Collection() {
           ) : (
             <Message margin="75px 0 0 0">No animals found.</Message>
           )}
-        </AccordionSection>
+        </Accordion>
         {modal === "editHand" ? (
           <Modal closeModal={() => setModal("")} withCloseButton={false}>
             <ModalHandEditContent

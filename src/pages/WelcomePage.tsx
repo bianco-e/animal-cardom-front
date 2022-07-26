@@ -1,85 +1,85 @@
-import { useState, useEffect } from "react";
-import { useHistory, useLocation } from "react-router-dom";
-import styled from "styled-components";
-import NavBar from "../components/NavBar";
-import { BREAKPOINTS } from "../utils/constants";
-import { ACButton, ACInput } from "../components/styled-components";
-import { useAuth0 } from "@auth0/auth0-react";
-import { trackAction } from "../queries/tracking";
-import { getUtm } from "../utils";
-import HowToPlay from "../components/HowToPlay";
+import { useState, useEffect } from "react"
+import { useHistory, useLocation } from "react-router-dom"
+import styled from "styled-components"
+import NavBar from "../components/NavBar"
+import { BREAKPOINTS } from "../utils/constants"
+import { ACButton, ACInput } from "../components/styled-components"
+import { useAuth0 } from "@auth0/auth0-react"
+import { trackAction } from "../queries/tracking"
+import { getUtm } from "../utils"
+import HowToPlay from "../components/HowToPlay"
 
 export default function WelcomePage() {
-  const userAgent = navigator.userAgent;
-  const { loginWithRedirect, user, isAuthenticated, isLoading } = useAuth0();
-  const location = useLocation();
-  const history = useHistory();
-  const [inputValue, setInputValue] = useState<string>("");
-  const [showErrorMessage, setShowErrorMessage] = useState<boolean>(false);
+  const userAgent = navigator.userAgent
+  const { loginWithRedirect, user, isAuthenticated, isLoading } = useAuth0()
+  const location = useLocation()
+  const history = useHistory()
+  const [inputValue, setInputValue] = useState<string>("")
+  const [showErrorMessage, setShowErrorMessage] = useState<boolean>(false)
 
-  const guestName = localStorage.getItem("ac-guest-name");
-  const currentUtm = getUtm(location.search);
+  const guestName = localStorage.getItem("ac-guest-name")
+  const currentUtm = getUtm(location.search)
   const baseAction = {
     guest_name: inputValue,
     ...(user?.sub ? { auth_id: user.sub } : {}),
     ...(userAgent ? { user_agent: userAgent } : {}),
     ...(currentUtm ? { utm: currentUtm } : {}),
     ...(guestName ? { guest_name: guestName } : {}),
-  };
+  }
 
   useEffect(() => {
     if (guestName) {
-      setInputValue(guestName);
+      setInputValue(guestName)
     }
-  }, []); //eslint-disable-line
+  }, []) //eslint-disable-line
 
   useEffect(() => {
     if (!isLoading) {
       const visit = {
         ...baseAction,
         action: "visit-landing",
-      };
-      trackAction(visit);
+      }
+      trackAction(visit)
     }
-  }, [isLoading]); //eslint-disable-line
+  }, [isLoading]) //eslint-disable-line
 
   const goToPlay = () => {
     if (inputValue !== "") {
-      localStorage.setItem("ac-guest-name", inputValue);
+      localStorage.setItem("ac-guest-name", inputValue)
       trackAction({
         ...baseAction,
         action: "play-as-guest-button",
-      });
-      history.push(`/play`);
-      setInputValue("");
-    } else setShowErrorMessage(true);
-  };
+      })
+      history.push(`/play`)
+      setInputValue("")
+    } else setShowErrorMessage(true)
+  }
 
   const onKeyDownFn = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       trackAction({
         ...baseAction,
         action: "play-as-guest-enter",
-      });
-      goToPlay();
+      })
+      goToPlay()
     }
-  };
+  }
 
   const playCampaign = () => {
     if (isAuthenticated && user?.given_name) {
       trackAction({
         ...baseAction,
         action: "continue-campaign-button",
-      });
-      history.push("/menu");
+      })
+      history.push("/campaign")
     } else {
       trackAction({
         ...baseAction,
         action: "start-campaign-button",
-      });
-      loginWithRedirect();
+      })
+      loginWithRedirect()
     }
-  };
+  }
 
   return (
     <Wrapper>
@@ -93,17 +93,11 @@ export default function WelcomePage() {
       <Title>Welcome to Animal Cardom!</Title>
 
       <Container>
-        <ACButton
-          fWeight="bold"
-          margin="0 0 48px !important"
-          onClick={playCampaign}
-        >
+        <ACButton fWeight="bold" margin="0 0 48px !important" onClick={playCampaign}>
           {isAuthenticated && user?.given_name ? "Continue" : "Start"} campaign
         </ACButton>
         <ACInput
-          onChange={(e) =>
-            e.target.value.length < 8 && setInputValue(e.target.value)
-          }
+          onChange={e => e.target.value.length < 8 && setInputValue(e.target.value)}
           onKeyDown={onKeyDownFn}
           placeholder="Enter your name to play as a guest"
           type="text"
@@ -113,9 +107,7 @@ export default function WelcomePage() {
           Play as a guest
         </ACButton>
         {showErrorMessage && (
-          <ErrorMessage>
-            Nameless people are not allowed in Animal Cardom!
-          </ErrorMessage>
+          <ErrorMessage>Nameless people are not allowed in Animal Cardom!</ErrorMessage>
         )}
       </Container>
       <HowToPlay
@@ -125,7 +117,7 @@ export default function WelcomePage() {
         }}
       />
     </Wrapper>
-  );
+  )
 }
 
 const ErrorMessage = styled.span`
@@ -139,7 +131,7 @@ const ErrorMessage = styled.span`
   transform: translateX(-50%);
   top: 240px;
   width: 100%;
-`;
+`
 const Wrapper = styled.div`
   align-items: center;
   background-image: url(/images/welcome-background.png);
@@ -148,7 +140,7 @@ const Wrapper = styled.div`
   flex-direction: column;
   height: 100vh;
   justify-content: space-around;
-`;
+`
 const Title = styled.h4`
   font-size: ${({ theme }) => theme.$2};
   text-align: center;
@@ -157,7 +149,7 @@ const Title = styled.h4`
     margin-bottom: 5px;
     font-size: ${({ theme }) => theme.$3};
   }
-`;
+`
 const Container = styled.div`
   align-items: center;
   display: flex;
@@ -173,4 +165,4 @@ const Container = styled.div`
     height: 65vh;
     width: 60%;
   }
-`;
+`

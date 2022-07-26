@@ -1,16 +1,6 @@
-import styled from "styled-components";
+import styled from "styled-components"
 
-export default function Spinner() {
-  return (
-    <SpinnerWrapper>
-      <Wrapper className="lds-circle">
-        <div></div>
-      </Wrapper>
-    </SpinnerWrapper>
-  );
-}
-
-const Wrapper = styled.div`
+export const Wrapper = styled.div`
   display: inline-block;
   transform: translateZ(1px);
   > div {
@@ -39,11 +29,11 @@ const Wrapper = styled.div`
       transform: rotateY(3600deg);
     }
   }
-`;
-const SpinnerWrapper = styled.div`
+`
+export const SpinnerWrapper = styled.div`
   align-items: center;
   display: flex;
   justify-content: center;
   margin-top: 60px;
   width: 100%;
-`;
+`

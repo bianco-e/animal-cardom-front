@@ -1,18 +1,11 @@
-import styled from "styled-components";
-
-interface IProps {
-  height?: string;
-  width?: string;
-}
-export default function AnimatedPlaceholder({ height, width }: IProps) {
-  return <Wrapper height={height} width={width}></Wrapper>;
-}
+import styled from "styled-components"
 
 interface WrapperProps {
-  height?: string;
-  width?: string;
+  height?: string
+  width?: string
 }
-const Wrapper = styled.span`
+
+export const Wrapper = styled.span`
   background: ${({ theme }) => theme.primary_brown};
   background: linear-gradient(
     90deg,
@@ -39,4 +32,4 @@ const Wrapper = styled.span`
       background-position: 100% 0%;
     }
   }
-`;
+`

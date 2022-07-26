@@ -1,43 +1,44 @@
-import { useEffect, useState } from "react";
-import styled from "styled-components";
-import { useHistory } from "react-router-dom";
-import Plant from "./Plant";
-import Modal from "./Common/Modal";
-import { BREAKPOINTS } from "../utils/constants";
-import { ACButton, ModalTitle, Text, Tooltip } from "./styled-components";
-import { IPlants, ITerrain } from "../interfaces/index";
+import { useEffect, useState } from "react"
+import styled from "styled-components"
+import { useHistory } from "react-router-dom"
+import Plant from "./Plant"
+import Modal from "./Common/Modal"
+import { BREAKPOINTS } from "../utils/constants"
+import { ACButton, ModalTitle, Text } from "./styled-components"
+import { IPlants, ITerrain } from "../interfaces/index"
+import Tooltip from "./Tooltip"
 
 interface IProps {
-  plants: IPlants;
-  terrain: ITerrain;
-  userName: string;
+  plants: IPlants
+  terrain: ITerrain
+  userName: string
 }
 
 export default function SidePanel({ plants, terrain, userName }: IProps) {
-  const [showTerrainTooltip, setShowTerrainTooltip] = useState<boolean>(false);
-  const [soundState, setSoundState] = useState<"off" | "on">("on");
-  const [showExitModal, setShowExitModal] = useState<boolean>(false);
-  const history = useHistory();
+  const [showTerrainTooltip, setShowTerrainTooltip] = useState<boolean>(false)
+  const [soundState, setSoundState] = useState<"off" | "on">("on")
+  const [showExitModal, setShowExitModal] = useState<boolean>(false)
+  const history = useHistory()
 
   useEffect(() => {
-    const currentSoundState = localStorage.getItem("sound");
+    const currentSoundState = localStorage.getItem("sound")
     if (
       currentSoundState &&
       (currentSoundState === "off" || currentSoundState === "on")
     ) {
-      setSoundState(currentSoundState);
+      setSoundState(currentSoundState)
     }
-  }, []);
+  }, [])
 
   useEffect(() => {
-    localStorage.setItem("sound", soundState);
-  }, [soundState]);
+    localStorage.setItem("sound", soundState)
+  }, [soundState])
 
   const handleSoundButton = () => {
-    const soundToSet = soundState === "off" ? "on" : "off";
-    setSoundState(soundToSet);
-  };
-  const handleExit = () => setShowExitModal(true);
+    const soundToSet = soundState === "off" ? "on" : "off"
+    setSoundState(soundToSet)
+  }
+  const handleExit = () => setShowExitModal(true)
 
   return (
     <LeftPanel bgImage={terrain.image}>
@@ -46,60 +47,56 @@ export default function SidePanel({ plants, terrain, userName }: IProps) {
           PC
         </Text>
         <PlayerNameTab>PC</PlayerNameTab>
-        {plants.pc.map((plant) => {
-          return <Plant plant={plant} key={plant.name} />;
+        {plants.pc.map(plant => {
+          return <Plant plant={plant} key={plant.name} />
         })}
       </HalfPanel>
-      <TerrainName
-        color={terrain.color}
-        onMouseEnter={() => setShowTerrainTooltip(true)}
-        onMouseLeave={() => setShowTerrainTooltip(false)}
-      >
+      <TerrainName color={terrain.color}>
         <OptionsPanel>
           <button onClick={handleSoundButton}>
-            <img
-              alt="sound-button"
-              src={`/icons/sound-${soundState}-icon.png`}
-            />
+            <img alt="sound-button" src={`/icons/sound-${soundState}-icon.png`} />
           </button>
           <button onClick={handleExit}>
             <img alt="exit-button" src={`/icons/exit-icon.png`} />
           </button>
         </OptionsPanel>
-        {showTerrainTooltip && (
-          <Tooltip>
-            {terrain.name !== "Neutral"
-              ? `${terrain.speciesToBuff} feel like home in ${terrain.name}.`
-              : "In Neutral terrain there's no benefit"}
-          </Tooltip>
-        )}
-        {terrain.name}
+        <div
+          className="name-container"
+          onMouseEnter={() => setShowTerrainTooltip(true)}
+          onMouseLeave={() => setShowTerrainTooltip(false)}>
+          {terrain.name}
+          {showTerrainTooltip && (
+            <Tooltip
+              direction="BOTTOM"
+              title="Bonus"
+              description={
+                terrain.name !== "Neutral"
+                  ? `${terrain.speciesToBuff} feel like home in ${terrain.name}.`
+                  : "In Neutral terrain there's no benefit"
+              }
+            />
+          )}
+        </div>
       </TerrainName>
       <HalfPanel>
         <Text fSize="18px" fWeight="bold" padding="5px">
           {userName}
         </Text>
         <PlayerNameTab>{userName}</PlayerNameTab>
-        {plants.user.map((plant) => {
-          return <Plant plant={plant} key={plant.name} />;
+        {plants.user.map(plant => {
+          return <Plant plant={plant} key={plant.name} />
         })}
       </HalfPanel>
       {showExitModal && (
-        <Modal
-          closeModal={() => setShowExitModal(false)}
-          withCloseButton={false}
-        >
+        <Modal closeModal={() => setShowExitModal(false)} withCloseButton={false}>
           <>
             <ModalTitle>You are about to exit</ModalTitle>
-            <Text margin="10px 0 5px">
-              Current game progress will get lost.
-            </Text>
+            <Text margin="10px 0 5px">Current game progress will get lost.</Text>
             <Text>Are you sure?</Text>
             <ACButton
               fWeight="bold"
               margin="20px 0"
-              onClick={() => setShowExitModal(false)}
-            >
+              onClick={() => setShowExitModal(false)}>
               Stay
             </ACButton>
             <ACButton onClick={() => history.push("/menu")}>Leave</ACButton>
@@ -107,11 +104,11 @@ export default function SidePanel({ plants, terrain, userName }: IProps) {
         </Modal>
       )}
     </LeftPanel>
-  );
+  )
 }
 
 interface LeftPanelProps {
-  bgImage?: string;
+  bgImage?: string
 }
 const PlayerNameTab = styled.div`
   background: rgba(240, 240, 240, 0.6);
@@ -131,7 +128,7 @@ const PlayerNameTab = styled.div`
     bottom: -42px;
     font-size: 14px;
   }
-`;
+`
 const LeftPanel = styled.div`
   background: url(${(p: LeftPanelProps) => p.bgImage});
   background-position: center;
@@ -155,7 +152,7 @@ const LeftPanel = styled.div`
     justify-content: space-around;
     width: 100%;
   }
-`;
+`
 const HalfPanel = styled.div`
   align-items: center;
   display: flex;
@@ -177,25 +174,30 @@ const HalfPanel = styled.div`
   ${BREAKPOINTS.MOBILE} {
     width: 40%;
   }
-`;
+`
 const TerrainName = styled.h3`
   align-items: center;
   color: ${({ color }) => color};
-  cursor: help;
   display: flex;
   height: 33%;
   justify-content: center;
   position: relative;
-  text-shadow: rgba(10, 10, 10, 0.6) 0px 1px 5px;
+  > div.name-container {
+    cursor: help;
+    position: relative;
+    text-shadow: rgba(10, 10, 10, 0.6) 0px 1px 5px;
+  }
   ${BREAKPOINTS.TABLET} {
     width: 90px;
     min-height: auto;
     height: 100%;
   }
   ${BREAKPOINTS.MOBILE} {
-    font-size: 14px;
+    > div.name-container {
+      font-size: 14px;
+    }
   }
-`;
+`
 const OptionsPanel = styled.div`
   align-items: center;
   background: ${({ theme }) => theme.primary_brown};
@@ -242,4 +244,4 @@ const OptionsPanel = styled.div`
       }
     }
   }
-`;
+`

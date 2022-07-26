@@ -1,23 +1,20 @@
-import { useContext, useEffect, useState } from "react";
-import styled from "styled-components";
-import Hand from "../components/Hand";
-import Modal from "../components/Common/Modal";
-import { useLocation, useHistory } from "react-router-dom";
-import { BREAKPOINTS } from "../utils/constants";
-import HandsContext, { IHandsContext } from "../context/HandsContext";
-import {
-  COMPUTER_PLAY,
-  COMPUTER_THINK,
-  SET_CARDS,
-} from "../context/HandsContext/types";
-import SidePanel from "../components/GamePanel";
-import { IAnimal, IPlant, ITerrain } from "../interfaces";
-import { getUserMe } from "../queries/user";
-import { newTerrain, newCampaignGame, newRandomGame } from "../queries/games";
-import Spinner from "../components/Spinner";
-import ModalResultContent from "../components/ModalResultContent";
-import { getCookie, getLiveCards } from "../utils";
-import { trackAction } from "../queries/tracking";
+import { useContext, useEffect, useState } from "react"
+import styled from "styled-components"
+import Modal from "../components/Common/Modal"
+import { useLocation, useHistory, useParams } from "react-router-dom"
+import { BREAKPOINTS } from "../utils/constants"
+import HandsContext, { IHandsContext } from "../context/HandsContext"
+import { COMPUTER_PLAY, COMPUTER_THINK, SET_CARDS } from "../context/HandsContext/types"
+import SidePanel from "../components/GamePanel"
+import { IAnimal, IPlant, ITerrain } from "../interfaces"
+import { getUserMe } from "../queries/user"
+import { newTerrain, newCampaignGame, newRandomGame } from "../queries/games"
+import Spinner from "../components/Spinner"
+import ModalContentResult from "../components/ModalContentResult"
+import { getCookie, getLiveCards } from "../utils"
+import { trackAction } from "../queries/tracking"
+import { HandContainer } from "../components/styled-components"
+import Card from "../components/Card"
 
 const emptyTerrain = {
   name: "",
@@ -25,141 +22,136 @@ const emptyTerrain = {
   speciesToBuff: "",
   image: "",
   getRequiredXp: (current: number) => 0,
-};
+}
+
+interface Params {
+  requiredXp: string
+}
 
 export default function App() {
-  const [state, dispatch] = useContext<IHandsContext>(HandsContext);
-  const [isCampaignGame, setIsCampaignGame] = useState<boolean>(false);
-  const [currentXp, setCurrentXp] = useState<number>(0);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [userName, setUserName] = useState<string>("");
-  const [terrain, setTerrain] = useState<ITerrain>(emptyTerrain);
-  const [modal, setModal] = useState<string>("");
-  const history = useHistory();
-  const { pathname, search } = useLocation();
-  const { hands, plants, pcTurn, pcPlay, triggerPcAttack } = state;
+  const [state, dispatch] = useContext<IHandsContext>(HandsContext)
+  const [isCampaignGame, setIsCampaignGame] = useState<boolean>(false)
+  const [currentXp, setCurrentXp] = useState<number>(0)
+  const [isLoading, setIsLoading] = useState<boolean>(false)
+  const [userName, setUserName] = useState<string>("")
+  const [terrain, setTerrain] = useState<ITerrain>(emptyTerrain)
+  const [modal, setModal] = useState<string>("")
+  const history = useHistory()
+  const { requiredXp } = useParams<Params>()
+  const { pathname } = useLocation()
+  const { hands, plants, pcTurn, pcPlay, triggerPcAttack } = state
 
   interface Response {
-    user: { animals: IAnimal[]; plants: IPlant[] };
-    pc: { animals: IAnimal[]; plants: IPlant[] };
+    user: { animals: IAnimal[]; plants: IPlant[] }
+    pc: { animals: IAnimal[]; plants: IPlant[] }
   }
 
   const newGameResHandler = (terrain: ITerrain, res?: Response) => {
-    setIsLoading(false);
+    setIsLoading(false)
     if (res && res.user && res.pc) {
       dispatch({
         type: SET_CARDS,
         hands: { pc: res.pc.animals, user: res.user.animals },
         plants: { pc: res.pc.plants, user: res.user.plants },
         terrain,
-      });
+      })
     }
-  };
+  }
 
-  const checkUserAndStartGame = () => {
-    setIsLoading(true);
+  const checkUserAndStartGame = async () => {
+    setIsLoading(true)
     if (!pathname.startsWith("/game")) {
       // is game for guests
-      const guest = localStorage.getItem("ac-guest-name");
-      guest ? setUserName(guest) : history.push("/");
-      newTerrain().then((terrainRes) => {
+      const guest = localStorage.getItem("ac-guest-name")
+      guest ? setUserName(guest) : history.push("/")
+      newTerrain().then(terrainRes => {
         if (terrainRes && terrainRes.name) {
-          setTerrain(terrainRes);
-          newRandomGame().then((res) => newGameResHandler(terrainRes, res));
+          setTerrain(terrainRes)
+          newRandomGame().then(res => newGameResHandler(terrainRes, res))
         }
-      });
+      })
     } else {
       // is campaign game
-      setIsCampaignGame(true);
-      const authId = getCookie("auth=");
-      if (authId) {
-        getUserMe(authId).then((userRes) => {
-          if (
-            userRes &&
-            userRes.xp !== undefined &&
-            userRes.hand &&
-            userRes.first_name
-          ) {
-            setUserName(userRes.first_name);
-            const { hand, xp } = userRes;
-            const xpParam = new URLSearchParams(search).get("x");
-            const parsedXpParam = xpParam && parseInt(xpParam);
-            if (
-              (parsedXpParam || parsedXpParam === 0) &&
-              parsedXpParam <= xp &&
-              [0, 450, 900, 1350, 1800, 2250, 2700, 3150, 3600].includes(
-                parsedXpParam
-              )
-            ) {
-              setCurrentXp(xp);
-              newTerrain(parsedXpParam).then((terrainRes) => {
-                if (terrainRes && terrainRes.name) {
-                  newCampaignGame(parsedXpParam, hand).then((gameRes) =>
-                    newGameResHandler(terrainRes, gameRes)
-                  );
-                  setTerrain(terrainRes);
-                }
-              });
-            } else history.push("/menu");
-          }
-        });
-      }
+      setIsCampaignGame(true)
+      const authId = getCookie("auth=")
+      if (!authId) return history.push("/")
+      const userRes = await getUserMe(authId)
+      if (userRes.error) return history.push("/")
+      const { first_name, hand, xp } = userRes
+      setUserName(first_name)
+      const parsedReqXp = parseInt(requiredXp)
+      if (xp < parsedReqXp) return history.push("/campaign")
+      setCurrentXp(xp)
+      const terrainRes = await newTerrain(parsedReqXp)
+      if (terrainRes.error) return history.push("/campaign")
+      newCampaignGame(parsedReqXp, hand).then(gameRes =>
+        newGameResHandler(terrainRes, gameRes)
+      )
+      setTerrain(terrainRes)
     }
-  };
+  }
 
   useEffect(() => {
-    checkUserAndStartGame();
-  }, []); //eslint-disable-line
+    checkUserAndStartGame()
+  }, []) //eslint-disable-line
 
   useEffect(() => {
-    if (!hands.pc.length || !hands.user.length) return;
-    const authId = getCookie("auth=");
-    const guestName = localStorage.getItem("ac-guest-name");
+    if (!hands.pc.length || !hands.user.length) return
+    const authId = getCookie("auth=")
+    const guestName = localStorage.getItem("ac-guest-name")
     const baseAction = {
       ...(authId ? { auth_id: authId } : {}),
       ...(guestName ? { guest_name: guestName } : {}),
-    };
+    }
     if (getLiveCards(hands.user).length === 0) {
-      setModal("lose");
+      setModal("lose")
       trackAction({
         ...baseAction,
         action: "user-lost",
-      });
+      })
     }
     if (getLiveCards(hands.pc).length === 0) {
-      setModal("win");
+      setModal("win")
       trackAction({
         ...baseAction,
         action: "user-won",
-      });
+      })
     }
-  }, [hands.pc, hands.user]); //eslint-disable-line
+  }, [hands.pc, hands.user]) //eslint-disable-line
 
   useEffect(() => {
     if (pcTurn) {
       if (triggerPcAttack) {
         setTimeout(() => {
-          dispatch({ type: COMPUTER_PLAY });
-        }, 1800);
+          dispatch({ type: COMPUTER_PLAY })
+        }, 1800)
       } else {
-        dispatch({ type: COMPUTER_THINK });
+        dispatch({ type: COMPUTER_THINK })
       }
     }
-  }, [pcTurn, triggerPcAttack]); //eslint-disable-line
+  }, [pcTurn, triggerPcAttack]) //eslint-disable-line
 
   return (
     <>
       <Wrapper bgImg={terrain!.image}>
         <SidePanel plants={plants} terrain={terrain!} userName={userName} />
         <Board>
-          <Hand hand={hands.pc} belongsToUser={false} />
+          <HandContainer>
+            {hands.pc.map((animal: IAnimal) => (
+              <Card {...animal} belongsToUser={false} />
+            ))}
+          </HandContainer>
           <BoardText>{pcPlay}</BoardText>
-          <Hand hand={hands.user} belongsToUser={true} />
+          <HandContainer>
+            {hands.user.map((animal: IAnimal) => (
+              <Card {...animal} belongsToUser={true} />
+            ))}
+          </HandContainer>
         </Board>
       </Wrapper>
       {modal && (
         <Modal closeModal={() => {}} withCloseButton={false}>
-          <ModalResultContent
+          <ModalContentResult
             closeModal={() => setModal("")}
             modalType={modal}
             isCampaignGame={isCampaignGame}
@@ -174,11 +166,11 @@ export default function App() {
         </Modal>
       )}
     </>
-  );
+  )
 }
 
 interface WrapperProps {
-  bgImg?: string;
+  bgImg?: string
 }
 const Wrapper = styled.div`
   background: url(${(p: WrapperProps) => p.bgImg});
@@ -191,7 +183,7 @@ const Wrapper = styled.div`
   ${BREAKPOINTS.TABLET} {
     flex-direction: column;
   }
-`;
+`
 const Board = styled.div`
   display: flex;
   flex-direction: column;
@@ -206,7 +198,7 @@ const Board = styled.div`
   ${BREAKPOINTS.MOBILE} {
     min-height: 285px;
   }
-`;
+`
 const BoardText = styled.h4`
   align-items: center;
   border-radius: 5px;
@@ -223,4 +215,4 @@ const BoardText = styled.h4`
   ${BREAKPOINTS.MOBILE} {
     font-size: 12px;
   }
-`;
+`

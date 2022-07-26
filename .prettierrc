@@ -1,0 +1,14 @@
+{
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "printWidth": 90,
+  "enable": true,
+  "trailingComma": "es5",
+  "tabWidth": 2,
+  "semi": false,
+  "arrowParens": "avoid",
+  "jsxBracketSameLine": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  }
+}

@@ -1,20 +1,20 @@
-import { useContext, useState } from "react";
-import styled from "styled-components";
-import Card from "./Card";
-import { IAnimal } from "../interfaces";
-import { ACButton } from "./styled-components";
-import { animalPurchase } from "../queries/user";
-import { getCookie } from "../utils";
-import Spinner from "./Spinner";
-import { BREAKPOINTS } from "../utils/constants";
-import UserContext, { IUserContext } from "../context/UserContext";
-import { SET_COINS } from "../context/UserContext/types";
+import { useContext, useState } from "react"
+import styled from "styled-components"
+import Card from "./Card"
+import { IAnimal } from "../interfaces"
+import { ACButton } from "./styled-components"
+import { animalPurchase } from "../queries/user"
+import { getCookie } from "../utils"
+import Spinner from "./Spinner"
+import { BREAKPOINTS } from "../utils/constants"
+import UserContext, { IUserContext } from "../context/UserContext"
+import { SET_COINS } from "../context/UserContext/types"
 
 interface IProps {
-  animalToBuy: IAnimal;
-  closeModal: () => void;
-  ownedCards: string[];
-  setOwnedCards: (cards: string[]) => void;
+  animalToBuy: IAnimal
+  closeModal: () => void
+  ownedCards: string[]
+  setOwnedCards: (cards: string[]) => void
 }
 export default function ModalHandEditContent({
   animalToBuy,
@@ -22,8 +22,8 @@ export default function ModalHandEditContent({
   ownedCards,
   setOwnedCards,
 }: IProps) {
-  const [state, dispatch] = useContext<IUserContext>(UserContext);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [state, dispatch] = useContext<IUserContext>(UserContext)
+  const [isLoading, setIsLoading] = useState<boolean>(false)
 
   const {
     attack,
@@ -37,24 +37,22 @@ export default function ModalHandEditContent({
     species,
     targeteable,
     price,
-  } = animalToBuy;
+  } = animalToBuy
 
   const handleConfirm = () => {
-    const authId = getCookie("auth=");
+    const authId = getCookie("auth=")
     if (authId) {
-      setIsLoading(true);
-      animalPurchase(authId, animalToBuy.name, animalToBuy.price).then(
-        (res) => {
-          if (res && res.new_card) {
-            setIsLoading(false);
-            dispatch({ type: SET_COINS, payload: state.coins - price });
-            setOwnedCards(ownedCards.concat(res.new_card));
-            closeModal();
-          }
+      setIsLoading(true)
+      animalPurchase(authId, animalToBuy.name, animalToBuy.price).then(res => {
+        if (res && res.new_card) {
+          setIsLoading(false)
+          dispatch({ type: SET_COINS, payload: state.coins - price })
+          setOwnedCards(ownedCards.concat(res.new_card))
+          closeModal()
         }
-      );
+      })
     }
-  };
+  }
 
   return (
     <Wrapper>
@@ -83,8 +81,7 @@ export default function ModalHandEditContent({
             />
           </Container>
           <Text className="remaining-coins">
-            After this purchase you will remain{" "}
-            <b>{state.coins - price} coins</b>
+            After this purchase you will remain <b>{state.coins - price} coins</b>
           </Text>
         </>
       )}
@@ -92,7 +89,7 @@ export default function ModalHandEditContent({
         {isLoading ? "Buying..." : "Confirm"}
       </ACButton>
     </Wrapper>
-  );
+  )
 }
 
 const Wrapper = styled.div`
@@ -105,7 +102,7 @@ const Wrapper = styled.div`
     margin-top: 30px;
     width: 50%;
   }
-`;
+`
 const Container = styled.div`
   align-items: center;
   display: flex;
@@ -143,10 +140,10 @@ const Container = styled.div`
       width: 20%;
     }
   }
-`;
+`
 const Text = styled.span`
   &.remaining-coins {
     margin-top: 20px;
   }
   font-size: 18px;
-`;
+`

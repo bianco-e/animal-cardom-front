@@ -1,18 +1,18 @@
-import { useState } from "react";
-import styled from "styled-components";
-import Card from "./Card";
-import { IAnimal } from "../interfaces";
-import { ACButton } from "./styled-components";
-import { updateHand } from "../queries/user";
-import { getCookie } from "../utils";
-import Spinner from "./Spinner";
-import { BREAKPOINTS } from "../utils/constants";
+import { useState } from "react"
+import styled from "styled-components"
+import Card from "./Card"
+import { IAnimal } from "../interfaces"
+import { ACButton } from "./styled-components"
+import { updateHand } from "../queries/user"
+import { getCookie } from "../utils"
+import Spinner from "./Spinner"
+import { BREAKPOINTS } from "../utils/constants"
 
 interface IProps {
-  hand: IAnimal[];
-  animalToAdd: IAnimal;
-  closeModal: () => void;
-  handSetter: (newHand: string[]) => void;
+  hand: IAnimal[]
+  animalToAdd: IAnimal
+  closeModal: () => void
+  handSetter: (newHand: string[]) => void
 }
 export default function ModalHandEditContent({
   animalToAdd,
@@ -20,36 +20,36 @@ export default function ModalHandEditContent({
   hand,
   handSetter,
 }: IProps) {
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [currentHand, setCurrentHand] = useState<IAnimal[]>(hand);
-  const [enteringAnimal, setEnteringAnimal] = useState<IAnimal>(animalToAdd);
+  const [isLoading, setIsLoading] = useState<boolean>(false)
+  const [currentHand, setCurrentHand] = useState<IAnimal[]>(hand)
+  const [enteringAnimal, setEnteringAnimal] = useState<IAnimal>(animalToAdd)
 
   const handleSelection = (name: string) => {
-    if (!currentHand.find((card) => card.name === enteringAnimal.name)) {
-      const newHand = currentHand.map((card) => {
+    if (!currentHand.find(card => card.name === enteringAnimal.name)) {
+      const newHand = currentHand.map(card => {
         if (card.name === name) {
-          return enteringAnimal;
-        } else return card;
-      });
-      setEnteringAnimal(currentHand.find((card) => card.name === name)!);
-      setCurrentHand(newHand);
+          return enteringAnimal
+        } else return card
+      })
+      setEnteringAnimal(currentHand.find(card => card.name === name)!)
+      setCurrentHand(newHand)
     }
-  };
+  }
 
   const handleConfirm = () => {
-    const authId = getCookie("auth=");
-    const handNames = currentHand.map((card) => card.name);
+    const authId = getCookie("auth=")
+    const handNames = currentHand.map(card => card.name)
     if (authId) {
-      setIsLoading(true);
-      updateHand(authId, handNames).then((res) => {
+      setIsLoading(true)
+      updateHand(authId, handNames).then(res => {
         if (res && res.length) {
-          setIsLoading(false);
-          handSetter(res);
-          closeModal();
+          setIsLoading(false)
+          handSetter(res)
+          closeModal()
         }
-      });
+      })
     }
-  };
+  }
 
   return (
     <Wrapper>
@@ -58,57 +58,22 @@ export default function ModalHandEditContent({
       ) : (
         <>
           <Container>
-            <Card
-              attack={enteringAnimal.attack}
-              belongsToUser={false}
-              bleeding={enteringAnimal.bleeding}
-              species={enteringAnimal.species}
-              image={enteringAnimal.image}
-              key={enteringAnimal.name}
-              life={enteringAnimal.life}
-              opacityForPreview="1"
-              paralyzed={enteringAnimal.paralyzed}
-              poisoned={enteringAnimal.poisoned}
-              skill={enteringAnimal.skill}
-              name={enteringAnimal.name}
-              targeteable={enteringAnimal.targeteable}
-            />
+            <Card {...enteringAnimal} belongsToUser={false} opacityForPreview="1" />
           </Container>
           <Text>
             Select an animal to switch for <b>{enteringAnimal.name}</b>
           </Text>
           <Container className="current-hand">
-            {currentHand.map((card) => {
-              const {
-                attack,
-                bleeding,
-                name,
-                image,
-                life,
-                paralyzed,
-                poisoned,
-                skill,
-                species,
-                targeteable,
-              } = card;
+            {currentHand.map(card => {
               return (
                 <Card
-                  attack={attack}
+                  {...card}
                   belongsToUser={false}
-                  bleeding={bleeding}
-                  species={species}
-                  image={image}
-                  key={name}
-                  life={life}
+                  key={card.name}
                   onPreviewClick={handleSelection}
                   opacityForPreview="1"
-                  paralyzed={paralyzed}
-                  poisoned={poisoned}
-                  skill={skill}
-                  name={name}
-                  targeteable={targeteable}
                 />
-              );
+              )
             })}
           </Container>
         </>
@@ -117,7 +82,7 @@ export default function ModalHandEditContent({
         {isLoading ? "Saving..." : "Confirm"}
       </ACButton>
     </Wrapper>
-  );
+  )
 }
 
 const Wrapper = styled.div`
@@ -130,7 +95,7 @@ const Wrapper = styled.div`
     margin-top: 30px;
     width: 50%;
   }
-`;
+`
 const Container = styled.div`
   align-items: center;
   display: flex;
@@ -166,8 +131,8 @@ const Container = styled.div`
       width: 20%;
     }
   }
-`;
+`
 const Text = styled.span`
   margin: 20px 0;
   font-size: 18px;
-`;
+`

@@ -1,5 +1,6 @@
-import { HandKey, IAnimal, IHands } from "../interfaces";
-import { getRandomChance } from "../utils";
+import { IGameState } from "../context/HandsContext"
+import { HandKey, IAnimal } from "../interfaces"
+import { getRandomChance } from "../utils"
 
 const BUTTERFLY_ANIMAL: IAnimal = {
   skill: {
@@ -27,7 +28,7 @@ const BUTTERFLY_ANIMAL: IAnimal = {
   targeteable: true,
   bleeding: false,
   price: 45,
-};
+}
 
 const applyDmg = (animal: IAnimal, statsDiff: number): IAnimal => ({
   ...animal,
@@ -35,225 +36,237 @@ const applyDmg = (animal: IAnimal, statsDiff: number): IAnimal => ({
     ...animal.life,
     current: statsDiff < 1 ? "DEAD" : statsDiff,
   },
-});
+})
 
 const ballBugFn = (
-  hands: IHands,
-  attacker: IAnimal,
-  defender: IAnimal,
+  state: IGameState,
   enemyHandKey: HandKey,
   statsDiff: number
-): IHands => {
+): IGameState => {
+  const defender = state.defender!
   return {
-    ...hands,
-    [enemyHandKey]: hands[enemyHandKey].map((animal) => {
-      if (animal.name === defender.name) {
-        if (animal.paralyzed === 0) {
-          return {
-            ...animal,
-            life: {
-              ...animal.life,
-              current:
-                (getRandomChance(50) ? statsDiff + 1 : statsDiff) < 1
-                  ? "DEAD"
-                  : statsDiff,
-            },
-          };
-        } else return applyDmg(animal, statsDiff);
-      } else return animal;
-    }),
-  };
-};
-
-const basiliskLizardFn = (
-  hands: IHands,
-  attacker: IAnimal,
-  defender: IAnimal,
-  enemyHandKey: HandKey,
-  statsDiff: number
-): IHands => {
-  return {
-    ...hands,
-    [enemyHandKey]: hands[enemyHandKey].map((animal) => {
-      if (animal.name === defender.name) {
-        if (animal.paralyzed === 0 && getRandomChance(30)) {
-          return {
-            ...animal,
-            life: {
-              ...animal.life,
-              current: statsDiff < 1 ? "DEAD" : statsDiff,
-            },
-          };
-        } else return applyDmg(animal, statsDiff);
-      } else return animal;
-    }),
-  };
-};
-
-const caterpillarFn = (
-  hands: IHands,
-  attacker: IAnimal,
-  defender: IAnimal,
-  enemyHandKey: HandKey,
-  statsDiff: number
-): IHands => {
-  return {
-    ...hands,
-    [enemyHandKey]: hands[enemyHandKey].map((animal) => {
-      if (animal.name === defender.name) {
-        if (animal.paralyzed === 0 && statsDiff < 1) {
-          return BUTTERFLY_ANIMAL;
-        } else return applyDmg(animal, statsDiff);
-      } else return animal;
-    }),
-  };
-};
-
-const combStarFn = (
-  hands: IHands,
-  attacker: IAnimal,
-  defender: IAnimal,
-  enemyHandKey: HandKey,
-  statsDiff: number
-): IHands => {
-  const ownHandKey = enemyHandKey === "pc" ? "user" : "pc";
-  return {
-    [ownHandKey]: hands[ownHandKey].map((animal) => {
-      if (animal.name === attacker.name && defender.paralyzed === 0) {
+    ...state,
+    underAttack: defender.name,
+    dodgedAttack: undefined,
+    hands: {
+      ...state.hands,
+      [enemyHandKey]: state.hands[enemyHandKey].map(animal => {
+        if (animal.name !== defender.name) return animal
+        if (animal.paralyzed > 0) return applyDmg(animal, statsDiff)
         return {
           ...animal,
-          poisoned: {
-            damage: 1,
-            rounds: 5,
+          life: {
+            ...animal.life,
+            current:
+              (getRandomChance(50) ? statsDiff + 1 : statsDiff) < 1 ? "DEAD" : statsDiff,
           },
-        };
-      } else return animal;
-    }),
-    [enemyHandKey]: hands[enemyHandKey].map((animal) => {
-      if (animal.name === defender.name) {
-        return applyDmg(animal, statsDiff);
-      } else return animal;
-    }),
-  };
-};
+        }
+      }),
+    },
+  }
+}
+
+const basiliskLizardFn = (
+  state: IGameState,
+  enemyHandKey: HandKey,
+  statsDiff: number
+): IGameState => {
+  const defender = state.defender!
+  const dodgesAttack = defender.paralyzed === 0 && getRandomChance(30)
+  return {
+    ...state,
+    underAttack: dodgesAttack ? undefined : defender.name,
+    dodgedAttack: dodgesAttack ? defender.name : undefined,
+    hands: {
+      ...state.hands,
+      [enemyHandKey]: state.hands[enemyHandKey].map(animal => {
+        if (animal.name !== defender.name) return animal
+        if (dodgesAttack) return animal
+        return applyDmg(animal, statsDiff)
+      }),
+    },
+  }
+}
+
+const caterpillarFn = (
+  state: IGameState,
+  enemyHandKey: HandKey,
+  statsDiff: number
+): IGameState => {
+  const defender = state.defender!
+  return {
+    ...state,
+    underAttack: defender.name,
+    dodgedAttack: undefined,
+    hands: {
+      ...state.hands,
+      [enemyHandKey]: state.hands[enemyHandKey].map(animal => {
+        if (animal.name !== defender.name) return animal
+        if (animal.paralyzed === 0 && statsDiff < 1) {
+          return BUTTERFLY_ANIMAL
+        } else return applyDmg(animal, statsDiff)
+      }),
+    },
+  }
+}
+
+const combStarFn = (
+  state: IGameState,
+  enemyHandKey: HandKey,
+  statsDiff: number
+): IGameState => {
+  const ownHandKey = enemyHandKey === "pc" ? "user" : "pc"
+  const defender = state.defender!
+  const attacker = state.attacker!
+  return {
+    ...state,
+    underAttack: defender.name,
+    dodgedAttack: undefined,
+    hands: {
+      [ownHandKey]: state.hands[ownHandKey].map(animal => {
+        if (animal.name === attacker.name && defender.paralyzed === 0) {
+          return {
+            ...animal,
+            poisoned: {
+              damage: 1,
+              rounds: 5,
+            },
+          }
+        } else return animal
+      }),
+      [enemyHandKey]: state.hands[enemyHandKey].map(animal => {
+        if (animal.name !== defender.name) return animal
+        return applyDmg(animal, statsDiff)
+      }),
+    },
+  }
+}
 
 const grasshoperFn = (
-  hands: IHands,
-  attacker: IAnimal,
-  defender: IAnimal,
+  state: IGameState,
   enemyHandKey: HandKey,
   statsDiff: number
-): IHands => {
+): IGameState => {
+  const defender = state.defender!
+  const dodgesAttack = defender.paralyzed === 0 && getRandomChance(10)
   return {
-    ...hands,
-    [enemyHandKey]: hands[enemyHandKey].map((animal) => {
-      if (animal.name === defender.name) {
-        if (animal.paralyzed === 0 && getRandomChance(10)) {
-          return {
-            ...animal,
-            life: {
-              ...animal.life,
-              current: statsDiff < 1 ? "DEAD" : statsDiff,
-            },
-          };
-        } else return applyDmg(animal, statsDiff);
-      } else return animal;
-    }),
-  };
-};
+    ...state,
+    underAttack: dodgesAttack ? undefined : defender.name,
+    dodgedAttack: dodgesAttack ? defender.name : undefined,
+    hands: {
+      ...state.hands,
+      [enemyHandKey]: state.hands[enemyHandKey].map(animal => {
+        if (animal.name !== defender.name) return animal
+        if (dodgesAttack) return animal
+        return applyDmg(animal, statsDiff)
+      }),
+    },
+  }
+}
 
 const hedgehogFn = (
-  hands: IHands,
-  attacker: IAnimal,
-  defender: IAnimal,
+  state: IGameState,
   enemyHandKey: HandKey,
   statsDiff: number
-): IHands => {
-  const ownHandKey = enemyHandKey === "pc" ? "user" : "pc";
+): IGameState => {
+  const ownHandKey = enemyHandKey === "pc" ? "user" : "pc"
+  const defender = state.defender!
+  const attacker = state.attacker!
   return {
-    [ownHandKey]: hands[ownHandKey].map((animal) => {
-      if (animal.name === attacker.name && defender.paralyzed === 0) {
-        if (typeof animal.life.current === "number") {
-          const diff = animal.life.current - defender.attack.current;
-          return {
-            ...animal,
-            life: {
-              ...animal.life,
-              current: diff < 1 ? "DEAD" : diff,
-            },
-          };
-        } else return animal;
-      } else return animal;
-    }),
-    [enemyHandKey]: hands[enemyHandKey].map((animal) => {
-      if (animal.name === defender.name) {
-        return applyDmg(animal, statsDiff);
-      } else return animal;
-    }),
-  };
-};
+    ...state,
+    underAttack: defender.name,
+    dodgedAttack: undefined,
+    hands: {
+      [ownHandKey]: state.hands[ownHandKey].map(animal => {
+        if (animal.name === attacker.name && defender.paralyzed === 0) {
+          if (typeof animal.life.current === "number") {
+            const diff = animal.life.current - defender.attack.current
+            return {
+              ...animal,
+              life: {
+                ...animal.life,
+                current: diff < 1 ? "DEAD" : diff,
+              },
+            }
+          } else return animal
+        } else return animal
+      }),
+      [enemyHandKey]: state.hands[enemyHandKey].map(animal => {
+        if (animal.name === defender.name) {
+          return applyDmg(animal, statsDiff)
+        } else return animal
+      }),
+    },
+  }
+}
 
 const lizardFn = (
-  hands: IHands,
-  attacker: IAnimal,
-  defender: IAnimal,
+  state: IGameState,
   enemyHandKey: HandKey,
   statsDiff: number
-): IHands => {
+): IGameState => {
+  const defender = state.defender!
   return {
-    ...hands,
-    [enemyHandKey]: hands[enemyHandKey].map((animal) => {
-      if (animal.name === defender.name) {
-        if (animal.paralyzed === 0) {
-          return {
-            ...animal,
-            life: {
-              ...animal.life,
-              current: statsDiff + 1 < 1 ? "DEAD" : statsDiff + 1,
-            },
-          };
-        } else return applyDmg(animal, statsDiff);
-      } else return animal;
-    }),
-  };
-};
+    ...state,
+    underAttack: defender.name,
+    dodgedAttack: undefined,
+    hands: {
+      ...state.hands,
+      [enemyHandKey]: state.hands[enemyHandKey].map(animal => {
+        if (animal.name !== defender.name) return animal
+        if (animal.paralyzed > 0) return applyDmg(animal, statsDiff)
+        return {
+          ...animal,
+          life: {
+            ...animal.life,
+            current: statsDiff + 1 < 1 ? "DEAD" : statsDiff + 1,
+          },
+        }
+      }),
+    },
+  }
+}
 
 const ostrichFn = (
-  hands: IHands,
-  attacker: IAnimal,
-  defender: IAnimal,
+  state: IGameState,
   enemyHandKey: HandKey,
   statsDiff: number
-): IHands => {
+): IGameState => {
+  const defender = state.defender!
   return {
-    ...hands,
-    [enemyHandKey]: hands[enemyHandKey].map((animal) => {
-      if (animal.name === defender.name) {
-        if (animal.paralyzed === 0) {
-          return {
-            ...animal,
-            life: {
-              ...animal.life,
-              current: statsDiff + 1 < 1 ? "DEAD" : statsDiff + 1,
-            },
-          };
-        } else return applyDmg(animal, statsDiff);
-      } else return animal;
-    }),
-  };
-};
+    ...state,
+    underAttack: defender.name,
+    dodgedAttack: undefined,
+    hands: {
+      ...state.hands,
+      [enemyHandKey]: state.hands[enemyHandKey].map(animal => {
+        if (animal.name !== defender.name) return animal
+        if (animal.paralyzed > 0) return applyDmg(animal, statsDiff)
+        return {
+          ...animal,
+          life: {
+            ...animal.life,
+            current: statsDiff + 1 < 1 ? "DEAD" : statsDiff + 1,
+          },
+        }
+      }),
+    },
+  }
+}
 
 const peacockFn = (
-  hands: IHands,
-  attacker: IAnimal,
-  defender: IAnimal,
+  state: IGameState,
   enemyHandKey: HandKey,
   statsDiff: number
-): IHands => {
+): IGameState => {
   return {
-    ...hands,
-    [enemyHandKey]: hands[enemyHandKey].map((animal) => {
-      if (animal.name === defender.name) {
+    ...state,
+    underAttack: state.defender!.name,
+    dodgedAttack: undefined,
+    hands: {
+      ...state.hands,
+      [enemyHandKey]: state.hands[enemyHandKey].map(animal => {
+        if (animal.name !== state.defender!.name) return animal
         if (animal.paralyzed === 0 && getRandomChance(30)) {
           return {
             ...animal,
@@ -261,49 +274,47 @@ const peacockFn = (
               ...animal.life,
               current: statsDiff + 2 < 1 ? "DEAD" : statsDiff + 2,
             },
-          };
-        } else return applyDmg(animal, statsDiff);
-      } else return animal;
-    }),
-  };
-};
+          }
+        } else return applyDmg(animal, statsDiff)
+      }),
+    },
+  }
+}
 
 export default function getSkillFn(name: string) {
   switch (name) {
     case "Ball Bug":
-      return ballBugFn;
+      return ballBugFn
     case "Basilisk Lizard":
-      return basiliskLizardFn;
+      return basiliskLizardFn
     case "Comb Star":
-      return combStarFn;
+      return combStarFn
     case "Grasshoper":
-      return grasshoperFn;
+      return grasshoperFn
     case "Hedgehog":
-      return hedgehogFn;
+      return hedgehogFn
     case "Lizard":
-      return lizardFn;
+      return lizardFn
     case "Ostrich":
-      return ostrichFn;
+      return ostrichFn
     case "Peacock":
-      return peacockFn;
+      return peacockFn
     case "Caterpillar":
-      return caterpillarFn;
+      return caterpillarFn
     default:
-      return (
-        hands: IHands,
-        attacker: IAnimal,
-        defender: IAnimal,
-        enemyHandKey: HandKey,
-        statsDiff: number
-      ) => {
+      return (state: IGameState, enemyHandKey: HandKey, statsDiff: number) => {
         return {
-          ...hands,
-          [enemyHandKey]: hands[enemyHandKey].map((animal) => {
-            if (animal.name === defender.name) {
-              return applyDmg(animal, statsDiff);
-            } else return animal;
-          }),
-        };
-      };
+          ...state,
+          underAttack: state.defender!.name,
+          dodgedAttack: undefined,
+          hands: {
+            ...state.hands,
+            [enemyHandKey]: state.hands[enemyHandKey].map(animal => {
+              if (animal.name !== state.defender!.name) return animal
+              return applyDmg(animal, statsDiff)
+            }),
+          },
+        }
+      }
   }
 }

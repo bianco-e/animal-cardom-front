@@ -6,7 +6,7 @@ import { BREAKPOINTS } from "../utils/constants"
 import HandsContext, { IHandsContext } from "../context/HandsContext"
 import { COMPUTER_PLAY, COMPUTER_THINK, SET_CARDS } from "../context/HandsContext/types"
 import SidePanel from "../components/GamePanel"
-import { IAnimal, IPlant, ITerrain } from "../interfaces"
+import { GameParams, IAnimal, IPlant, ITerrain } from "../interfaces"
 import { getUserMe } from "../queries/user"
 import { newTerrain, newCampaignGame, newRandomGame } from "../queries/games"
 import Spinner from "../components/Spinner"
@@ -24,10 +24,6 @@ const emptyTerrain = {
   getRequiredXp: (current: number) => 0,
 }
 
-interface Params {
-  requiredXp: string
-}
-
 export default function App() {
   const [state, dispatch] = useContext<IHandsContext>(HandsContext)
   const [isCampaignGame, setIsCampaignGame] = useState<boolean>(false)
@@ -37,7 +33,7 @@ export default function App() {
   const [terrain, setTerrain] = useState<ITerrain>(emptyTerrain)
   const [modal, setModal] = useState<string>("")
   const history = useHistory()
-  const { requiredXp } = useParams<Params>()
+  const { requiredXp } = useParams<GameParams>()
   const { pathname } = useLocation()
   const { hands, plants, pcTurn, pcPlay, triggerPcAttack } = state
 
@@ -64,12 +60,11 @@ export default function App() {
       // is game for guests
       const guest = localStorage.getItem("ac-guest-name")
       guest ? setUserName(guest) : history.push("/")
-      newTerrain().then(terrainRes => {
-        if (terrainRes && terrainRes.name) {
-          setTerrain(terrainRes)
-          newRandomGame().then(res => newGameResHandler(terrainRes, res))
-        }
-      })
+      const terrainRes = await newTerrain()
+      const newGameRes = await newRandomGame()
+      if (terrainRes.error || newGameRes.error) return history.push("/error")
+      setTerrain(terrainRes)
+      newGameResHandler(terrainRes, newGameRes)
     } else {
       // is campaign game
       setIsCampaignGame(true)
@@ -83,10 +78,9 @@ export default function App() {
       if (xp < parsedReqXp) return history.push("/campaign")
       setCurrentXp(xp)
       const terrainRes = await newTerrain(parsedReqXp)
-      if (terrainRes.error) return history.push("/campaign")
-      newCampaignGame(parsedReqXp, hand).then(gameRes =>
-        newGameResHandler(terrainRes, gameRes)
-      )
+      const gameRes = await newCampaignGame(parsedReqXp, hand)
+      if (terrainRes.error || gameRes.error) return history.push("/campaign")
+      newGameResHandler(terrainRes, gameRes)
       setTerrain(terrainRes)
     }
   }
@@ -138,13 +132,13 @@ export default function App() {
         <Board>
           <HandContainer>
             {hands.pc.map((animal: IAnimal) => (
-              <Card {...animal} belongsToUser={false} />
+              <Card {...animal} belongsToUser={false} key={animal.name} />
             ))}
           </HandContainer>
           <BoardText>{pcPlay}</BoardText>
           <HandContainer>
             {hands.user.map((animal: IAnimal) => (
-              <Card {...animal} belongsToUser={true} />
+              <Card {...animal} belongsToUser={true} key={animal.name} />
             ))}
           </HandContainer>
         </Board>

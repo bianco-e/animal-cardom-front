@@ -17,14 +17,19 @@ export const newRandomGame = () => {
 }
 
 export const newTerrain = (xp?: number) => {
-  return fetch(`${API_BASE_URL}terrains/new${xp ? `?xp=${xp}` : ""}`)
+  return fetch(`${API_BASE_URL}terrains/new${xp !== undefined ? `?xp=${xp}` : ""}`)
     .then(res => res.json())
     .catch(err => console.error(err))
 }
 
-export const saveGameResult = (auth_id: string, game: Game, current_xp: number) => {
+export const saveGameResult = (
+  auth_id: string,
+  game: Game,
+  current_xp: number,
+  required_xp: number
+) => {
   return fetch(`${API_BASE_URL}games/save-game`, {
-    ...ACPost({ auth_id, game, current_xp }),
+    ...ACPost({ auth_id, game, current_xp, required_xp }),
   })
     .then(res => res.json())
     .catch(err => console.error(err))

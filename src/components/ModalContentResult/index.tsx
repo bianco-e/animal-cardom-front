@@ -1,13 +1,13 @@
 import { useContext, useEffect, useState } from "react"
-import { useHistory } from "react-router-dom"
+import { useHistory, useParams } from "react-router-dom"
 import HandsContext, { IHandsContext, IGameState } from "../../context/HandsContext"
 import { EMPTY_STATE, SET_CARDS } from "../../context/HandsContext/types"
-import { HandKey, ITerrain } from "../../interfaces"
+import { GameParams, HandKey, ITerrain } from "../../interfaces"
 import { newRandomGame, newTerrain, saveGameResult } from "../../queries/games"
 import { getCookie } from "../../utils"
 import Spinner from "../Spinner"
 import { ACButton, ModalTitle, Text } from "../styled-components"
-import CampaignEarnings from "./CampaignEarnings"
+import CampaignRewards from "./CampaignRewards"
 import { Wrapper } from "./styled"
 
 interface IProps {
@@ -28,8 +28,9 @@ export default function ModalContentResult({
   const [state, dispatch] = useContext<IHandsContext>(HandsContext)
   const [isLoadingNewGame, setisLoadingNewGame] = useState<boolean>(false)
   const [earnedAnimal, setEarnedAnimal] = useState<string>()
-  const [earnedCoins, setEarnedCoins] = useState<number>(1)
+  const [earnedCoins, setEarnedCoins] = useState<number>()
   const [havingXp, setHavingXp] = useState<number>(0)
+  const { requiredXp } = useParams<GameParams>()
   const history = useHistory()
 
   const getStatsToSaveGame = (authId: string, won: boolean, state: IGameState): void => {
@@ -56,8 +57,8 @@ export default function ModalContentResult({
         user: mapPlantsToSave("user"),
       },
     }
-
-    saveGameResult(authId, gameToSave, currentXp).then(res => {
+    const parsedReqXp = parseInt(requiredXp)
+    saveGameResult(authId, gameToSave, currentXp, parsedReqXp).then(res => {
       if (res && !res.error) {
         setHavingXp(res.current_xp)
         setEarnedAnimal(res.earned_animal)
@@ -105,26 +106,25 @@ export default function ModalContentResult({
       {modalType === "win" ? (
         <>
           <ModalTitle>You won!</ModalTitle>
-          <Text margin={isCampaignGame ? "0 0 20px 0" : "0"}>
-            Good game! Nature always win against computers!
+          <Text margin={isCampaignGame ? "0 0 16px 0" : "0"}>
+            Good game! Nature always wins against computers!
           </Text>
         </>
       ) : (
         modalType === "lose" && (
           <>
             <ModalTitle>You lost!</ModalTitle>
-            <Text margin={isCampaignGame ? "0 0 20px 0" : "0"}>
+            <Text margin={isCampaignGame ? "0 0 16px 0" : "0"}>
               Nice try! PC defeated you this time, but nature always takes revenge!
             </Text>
           </>
         )
       )}
       {isCampaignGame ? (
-        <CampaignEarnings
+        <CampaignRewards
           earnedAnimal={earnedAnimal}
           earnedCoins={earnedCoins}
-          havingXp={havingXp}
-          handleRoute={handleRoute}
+          currentXp={havingXp}
         />
       ) : (
         <>

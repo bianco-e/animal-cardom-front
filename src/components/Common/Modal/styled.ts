@@ -28,7 +28,7 @@ export const ModalContainer = styled.div<ContentProps>`
     !forSpinner && "inset 0px 0px 10px rgba(0, 0, 0, 0.4)"};
   display: flex;
   flex-direction: column;
-  padding: 30px;
+  padding: 16px 24px;
   position: relative;
   z-index: 30;
   ${BREAKPOINTS.MOBILE} {

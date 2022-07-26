@@ -117,3 +117,7 @@ export interface Action {
   created_at?: string
   action: string
 }
+
+export interface GameParams {
+  requiredXp: string
+}

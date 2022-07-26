@@ -6,7 +6,7 @@ import { getUserProfile } from "../queries/user"
 import { getCookie } from "../utils"
 
 export default function Campaign() {
-  const [havingXp, sethavingXp] = useState(0)
+  const [currentXp, setCurrentXp] = useState(0)
   const [isLoading, setIsLoading] = useState<boolean>(false)
 
   useEffect(() => {
@@ -16,7 +16,7 @@ export default function Campaign() {
       getUserProfile(authId).then(res => {
         setIsLoading(false)
         if (res && res.xp) {
-          sethavingXp(res.xp)
+          setCurrentXp(res.xp)
         }
       })
     }
@@ -24,7 +24,7 @@ export default function Campaign() {
 
   return (
     <MenuLayout>
-      <>{isLoading ? <Spinner /> : <CampaignCircuit xp={havingXp} />}</>
+      <>{isLoading ? <Spinner /> : <CampaignCircuit xp={currentXp} />}</>
     </MenuLayout>
   )
 }

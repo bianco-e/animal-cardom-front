@@ -11,7 +11,7 @@ import Accordion from "../components/Common/Accordion"
 export default function Profile() {
   const [lastGames, setLastGames] = useState<Game[]>([])
   const [isLoadingLastGames, setIsLoadingLastGames] = useState<boolean>(false)
-  const [havingXp, setHavingXp] = useState<number>(0)
+  const [currentXp, setCurrentXp] = useState<number>(0)
 
   useEffect(() => {
     const authId = getCookie("auth=")
@@ -19,7 +19,7 @@ export default function Profile() {
       setIsLoadingLastGames(true)
       getUserProfile(authId).then(res => {
         if (res && res.xp) {
-          setHavingXp(res.xp)
+          setCurrentXp(res.xp)
         }
       })
       getLastGames(authId).then(res => {
@@ -34,7 +34,7 @@ export default function Profile() {
   return (
     <MenuLayout>
       <>
-        <AvatarWithXpBar havingXp={havingXp} />
+        <AvatarWithXpBar xp={currentXp} />
         <Accordion title="History">
           {isLoadingLastGames ? <Spinner /> : <HistoryGames lastGames={lastGames} />}
         </Accordion>

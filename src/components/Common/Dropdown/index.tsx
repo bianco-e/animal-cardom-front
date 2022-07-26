@@ -66,6 +66,7 @@ export default function Dropdown({ closedText, options, width }: IProps) {
         {options.map((opt, idx) => {
           return (
             <StyledOption
+              key={opt.text + idx}
               fWeight={idx === 0 ? "normal" : "bold"}
               onClick={() => handleSelection(opt.fn, opt.text)}>
               {opt.text}

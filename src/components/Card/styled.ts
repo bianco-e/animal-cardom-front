@@ -1,5 +1,5 @@
 import styled from "styled-components"
-import { injuryAnimation } from "../../animations/card-animations"
+import { injuryAnimation, missAnimation } from "../../animations/card-animations"
 import { BREAKPOINTS } from "../../utils/constants"
 
 interface InjuryProps {
@@ -298,6 +298,13 @@ export const Text = styled.span<TextProps>`
     ${BREAKPOINTS.MOBILE} {
       font-size: 12px;
     }
+  }
+  &.miss-msg {
+    ${missAnimation}
+    color: ${({ theme }) => theme.primary_red};
+    font-size: 32px;
+    position: absolute;
+    z-index: 2;
   }
   color: ${({ color }) => color};
   font-weight: ${({ fWeight = "bold" }) => fWeight};

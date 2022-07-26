@@ -39,13 +39,27 @@ const injury = keyframes`
   }
 `
 
+const miss = keyframes`
+  0% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-32px);
+    opacity: 0;
+  }
+`
+
 export const selectionAnimation = css`
   animation: 3.5s ${cardSelection} linear infinite;
 `
 export const injuryAnimation = css`
-  animation: 0.25s ${injury} forwards;
+  animation: 0.3s ${injury} forwards;
+`
+export const missAnimation = css`
+  animation: 0.7s ${miss} forwards;
 `
 export const attackAnimation = css`
-  animation: 0.25s ${attack} linear;
+  animation: 0.3s ${attack} linear;
 `
 export const attackAudio = new Audio("/audio/claw-sound-effect.mp3")

@@ -62,6 +62,7 @@ export default function Card({
   const isParalyzed = paralyzed > 0
   const isCardSelected = !isForPreview && state.attacker?.name === name
   const isCardUnderAttack = state.underAttack === name
+  const hasDodgedAttack = state.dodgedAttack === name
   const hasCondition = !targeteable || missingChance
   const soundState = localStorage.getItem("sound")
   const [animationProps] = usePlantAnimation({ name, soundState })
@@ -101,8 +102,9 @@ export default function Card({
       {displayInHandSign ? <span className="in-hand spaced-title">HAND</span> : null}
 
       {isCardUnderAttack ? (
-        <Injury draggable="false" alt="wound" src="/images/svg/blood-splatter.svg" />
+        <Injury alt="under-attack" src="/images/svg/blood-splatter.svg" />
       ) : null}
+      {hasDodgedAttack ? <Text className="miss-msg">Miss!</Text> : null}
 
       {animationProps ? <PlantEffectImage {...animationProps} /> : null}
 

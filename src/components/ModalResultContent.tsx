@@ -1,17 +1,14 @@
-import { useContext, useEffect, useState } from "react";
-import styled from "styled-components";
-import { useHistory, useLocation } from "react-router-dom";
-import HandsContext, {
-  IHandsContext,
-  IHandsState,
-} from "../context/HandsContext";
-import { EMPTY_STATE, SET_CARDS } from "../context/HandsContext/types";
-import { HandKey, ITerrain } from "../interfaces";
-import { newRandomGame, newTerrain, saveGameResult } from "../queries/games";
-import { getCookie } from "../utils";
-import AvatarWithXpBar from "./AvatarWithXpBar";
-import Spinner from "./Spinner";
-import { ACButton, ModalTitle, Text } from "./styled-components";
+import { useContext, useEffect, useState } from "react"
+import styled from "styled-components"
+import { useHistory, useLocation } from "react-router-dom"
+import HandsContext, { IHandsContext, IGameState } from "../context/HandsContext"
+import { EMPTY_STATE, SET_CARDS } from "../context/HandsContext/types"
+import { HandKey, ITerrain } from "../interfaces"
+import { newRandomGame, newTerrain, saveGameResult } from "../queries/games"
+import { getCookie } from "../utils"
+import AvatarWithXpBar from "./AvatarWithXpBar"
+import Spinner from "./Spinner"
+import { ACButton, ModalTitle, Text } from "./styled-components"
 
 const getGameEarning = (
   currentXp: number,
@@ -20,30 +17,30 @@ const getGameEarning = (
   if (xpParam >= currentXp) {
     switch (currentXp) {
       case 1350:
-        return { xpToEarn: 450, earnedAnimal: "Frog" };
+        return { xpToEarn: 450, earnedAnimal: "Frog" }
       case 1800:
-        return { xpToEarn: 450, earnedAnimal: "Bee" };
+        return { xpToEarn: 450, earnedAnimal: "Bee" }
       case 2250:
-        return { xpToEarn: 450, earnedAnimal: "Pelican" };
+        return { xpToEarn: 450, earnedAnimal: "Pelican" }
       case 2700:
-        return { xpToEarn: 450, earnedAnimal: "Orc" };
+        return { xpToEarn: 450, earnedAnimal: "Orc" }
       case 3150:
-        return { xpToEarn: 450, earnedAnimal: "Snake" };
+        return { xpToEarn: 450, earnedAnimal: "Snake" }
       case 3600:
-        return { xpToEarn: 450, earnedAnimal: "Lion" };
+        return { xpToEarn: 450, earnedAnimal: "Lion" }
       default:
-        return { xpToEarn: 450, earnedAnimal: undefined };
+        return { xpToEarn: 450, earnedAnimal: undefined }
     }
   }
-  return { xpToEarn: 0, earnedAnimal: undefined };
-};
+  return { xpToEarn: 0, earnedAnimal: undefined }
+}
 
 interface IProps {
-  closeModal: () => void;
-  currentXp?: number;
-  isCampaignGame: boolean;
-  modalType: string;
-  setTerrain: (terrain: ITerrain) => void;
+  closeModal: () => void
+  currentXp?: number
+  isCampaignGame: boolean
+  modalType: string
+  setTerrain: (terrain: ITerrain) => void
 }
 export default function ModalResultContent({
   closeModal,
@@ -52,42 +49,38 @@ export default function ModalResultContent({
   modalType,
   setTerrain,
 }: IProps) {
-  const [state, dispatch] = useContext<IHandsContext>(HandsContext);
-  const [isLoadingNewGame, setisLoadingNewGame] = useState<boolean>(false);
-  const [showEarnedAnimal, setShowEarnedAnimal] = useState<string>();
-  const [earnedCoins, setEarnedCoins] = useState<number>(1);
-  const [havingXp, setHavingXp] = useState<number>(0);
-  const history = useHistory();
-  const { search } = useLocation();
+  const [state, dispatch] = useContext<IHandsContext>(HandsContext)
+  const [isLoadingNewGame, setisLoadingNewGame] = useState<boolean>(false)
+  const [showEarnedAnimal, setShowEarnedAnimal] = useState<string>()
+  const [earnedCoins, setEarnedCoins] = useState<number>(1)
+  const [havingXp, setHavingXp] = useState<number>(0)
+  const history = useHistory()
+  const { search } = useLocation()
 
-  const getStatsToSaveGame = (
-    authId: string,
-    won: boolean,
-    state: IHandsState
-  ): void => {
+  const getStatsToSaveGame = (authId: string, won: boolean, state: IGameState): void => {
     const mapCardsToSave = (handKey: HandKey) =>
-      state.hands[handKey].map((card) => ({
+      state.hands[handKey].map(card => ({
         name: card.name,
         survived: card.life.current !== "DEAD",
-      }));
+      }))
     const mapPlantsToSave = (handKey: HandKey) =>
-      state.plants[handKey].map((plant) => {
-        const wasApplied = state.usedPlants.find((pl) => pl.name === plant.name)
+      state.plants[handKey].map(plant => {
+        const wasApplied = state.usedPlants.find(pl => pl.name === plant.name)
           ? true
-          : false;
+          : false
         return {
           name: plant.name,
           applied: wasApplied,
-        };
-      });
-    const xpParam = parseInt(search.split("?x=")[1]);
+        }
+      })
+    const xpParam = parseInt(search.split("?x=")[1])
     const gameEarning =
       currentXp !== undefined
         ? getGameEarning(currentXp, xpParam)
-        : { xpToEarn: 0, earnedAnimal: undefined };
-    const { xpToEarn, earnedAnimal } = gameEarning;
-    const coinsToEarn = won ? 5 : 1;
-    setEarnedCoins(coinsToEarn);
+        : { xpToEarn: 0, earnedAnimal: undefined }
+    const { xpToEarn, earnedAnimal } = gameEarning
+    const coinsToEarn = won ? 5 : 1
+    setEarnedCoins(coinsToEarn)
 
     const gameToSave = {
       terrain: state.terrainName!,
@@ -103,51 +96,51 @@ export default function ModalResultContent({
         pc: mapPlantsToSave("pc"),
         user: mapPlantsToSave("user"),
       },
-    };
+    }
 
-    saveGameResult(authId, gameToSave).then((res) => {
+    saveGameResult(authId, gameToSave).then(res => {
       if (res && res.xp !== undefined) {
-        setHavingXp(res.xp);
+        setHavingXp(res.xp)
         if (res.earned_animal) {
-          setShowEarnedAnimal(res.earned_animal);
+          setShowEarnedAnimal(res.earned_animal)
         }
       }
-    });
-  };
+    })
+  }
 
   useEffect(() => {
-    const authId = getCookie("auth=");
+    const authId = getCookie("auth=")
     if (isCampaignGame && authId) {
-      getStatsToSaveGame(authId, modalType === "win", state);
+      getStatsToSaveGame(authId, modalType === "win", state)
     }
-  }, []); //eslint-disable-line
+  }, []) //eslint-disable-line
 
   const handleRoute = (path: string) => {
-    dispatch({ type: EMPTY_STATE });
-    history.push(path);
-  };
+    dispatch({ type: EMPTY_STATE })
+    history.push(path)
+  }
 
   const handlePlayAgain = () => {
-    dispatch({ type: EMPTY_STATE });
-    setisLoadingNewGame(true);
-    newTerrain().then((terrainRes) => {
+    dispatch({ type: EMPTY_STATE })
+    setisLoadingNewGame(true)
+    newTerrain().then(terrainRes => {
       if (terrainRes && terrainRes.name) {
-        setTerrain(terrainRes);
-        newRandomGame().then((gameRes) => {
+        setTerrain(terrainRes)
+        newRandomGame().then(gameRes => {
           if (gameRes && gameRes.pc && gameRes.user) {
-            setisLoadingNewGame(false);
-            closeModal();
+            setisLoadingNewGame(false)
+            closeModal()
             dispatch({
               type: SET_CARDS,
               hands: { pc: gameRes.pc.animals, user: gameRes.user.animals },
               plants: { pc: gameRes.pc.plants, user: gameRes.user.plants },
               terrain: terrainRes,
-            });
+            })
           }
-        });
+        })
       }
-    });
-  };
+    })
+  }
 
   return (
     <Wrapper>
@@ -163,8 +156,7 @@ export default function ModalResultContent({
           <>
             <ModalTitle>You lost!</ModalTitle>
             <Text margin={isCampaignGame ? "0 0 20px 0" : "0"}>
-              Nice try! PC defeated you this time, but nature always takes
-              revenge!
+              Nice try! PC defeated you this time, but nature always takes revenge!
             </Text>
           </>
         )
@@ -205,7 +197,7 @@ export default function ModalResultContent({
         </>
       )}
     </Wrapper>
-  );
+  )
 }
 
 const Wrapper = styled.div`
@@ -223,4 +215,4 @@ const Wrapper = styled.div`
       margin-right: 5px;
     }
   }
-`;
+`

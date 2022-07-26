@@ -86,7 +86,7 @@ export default function Card({
     : {
         attackAnimation: isCardUnderAttack ? attackAnimation : undefined,
         selectionAnimation: isCardSelected ? selectionAnimation : undefined,
-        cursor: "pointer",
+        cursor: belongsToUser || state.attacker ? "pointer" : "default",
         isCardSelected,
         isParalyzed,
         onClick: () => !state.pcTurn && dispatch({ type: SELECT_CARD, name }),

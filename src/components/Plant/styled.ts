@@ -25,6 +25,7 @@ export const PlantCard = styled.button<PlantCardProps>`
   background-color: ${({ theme }) => theme.primary_brown};
   border-radius: 4px;
   box-shadow: inset 0px 0px 2px black;
+  cursor: ${({ belongsToUser }) => (belongsToUser ? "pointer" : "default")};
   display: flex;
   flex-direction: column;
   height: 100%;

@@ -13,6 +13,7 @@ interface AnimalCardProps {
   isParalyzed?: boolean
   opacity: string
   transform?: string
+  width?: string
 }
 interface TextProps {
   color?: string
@@ -78,7 +79,7 @@ export const AnimalCard = styled.button<AnimalCardProps>`
   padding: 12px;
   position: relative;
   transition: transform 0.15s ease;
-  width: calc(20% - 32px);
+  width: ${({ width = "calc(20% - 32px)" }) => width};
   &:hover {
     box-shadow: 4px 4px 4px ${({ theme }) => theme.secondary_brown},
       inset 0px 0px 8px black;

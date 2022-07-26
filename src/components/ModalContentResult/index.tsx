@@ -1,14 +1,15 @@
 import { useContext, useEffect, useState } from "react"
-import styled from "styled-components"
 import { useHistory, useLocation } from "react-router-dom"
-import HandsContext, { IHandsContext, IGameState } from "../context/HandsContext"
-import { EMPTY_STATE, SET_CARDS } from "../context/HandsContext/types"
-import { HandKey, ITerrain } from "../interfaces"
-import { newRandomGame, newTerrain, saveGameResult } from "../queries/games"
-import { getCookie } from "../utils"
-import AvatarWithXpBar from "./AvatarWithXpBar"
-import Spinner from "./Spinner"
-import { ACButton, ModalTitle, Text } from "./styled-components"
+import HandsContext, { IHandsContext, IGameState } from "../../context/HandsContext"
+import { EMPTY_STATE, SET_CARDS } from "../../context/HandsContext/types"
+import { HandKey, ITerrain } from "../../interfaces"
+import { newRandomGame, newTerrain, saveGameResult } from "../../queries/games"
+import { getCookie } from "../../utils"
+import AvatarWithXpBar from "../AvatarWithXpBar"
+import Spinner from "../Spinner"
+import { ACButton, ModalTitle, Text } from "../styled-components"
+import CampaignEarnings from "./CampaignEarnings"
+import { Wrapper } from "./styled"
 
 const getGameEarning = (
   currentXp: number,
@@ -42,7 +43,7 @@ interface IProps {
   modalType: string
   setTerrain: (terrain: ITerrain) => void
 }
-export default function ModalResultContent({
+export default function ModalContentResult({
   closeModal,
   currentXp,
   isCampaignGame,
@@ -51,7 +52,7 @@ export default function ModalResultContent({
 }: IProps) {
   const [state, dispatch] = useContext<IHandsContext>(HandsContext)
   const [isLoadingNewGame, setisLoadingNewGame] = useState<boolean>(false)
-  const [showEarnedAnimal, setShowEarnedAnimal] = useState<string>()
+  const [earnedAnimal, setEarnedAnimal] = useState<string>()
   const [earnedCoins, setEarnedCoins] = useState<number>(1)
   const [havingXp, setHavingXp] = useState<number>(0)
   const history = useHistory()
@@ -102,7 +103,7 @@ export default function ModalResultContent({
       if (res && res.xp !== undefined) {
         setHavingXp(res.xp)
         if (res.earned_animal) {
-          setShowEarnedAnimal(res.earned_animal)
+          setEarnedAnimal(res.earned_animal)
         }
       }
     })
@@ -162,24 +163,12 @@ export default function ModalResultContent({
         )
       )}
       {isCampaignGame ? (
-        <>
-          <AvatarWithXpBar havingXp={havingXp} />
-          {showEarnedAnimal && (
-            <>
-              <p>You have earned a new animal.</p>
-              <span>
-                Go to Collection to check your <b>{showEarnedAnimal}</b>
-              </span>
-            </>
-          )}
-          <div className="earned-coins">
-            <b>{earnedCoins}</b>
-            <img alt="coins" src="/images/icons/coins.png" width={15} />
-          </div>
-          <ACButton margin="20px 0" onClick={() => handleRoute("/campaign")}>
-            Go to campaign menu
-          </ACButton>
-        </>
+        <CampaignEarnings
+          earnedAnimal={earnedAnimal}
+          earnedCoins={earnedCoins}
+          havingXp={havingXp}
+          handleRoute={handleRoute}
+        />
       ) : (
         <>
           {isLoadingNewGame ? (
@@ -199,20 +188,3 @@ export default function ModalResultContent({
     </Wrapper>
   )
 }
-
-const Wrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  height: 100%;
-  width: 100%;
-  > .earned-coins {
-    display: flex;
-    align-items: center;
-    font-size: 16px;
-    margin-top: 15px;
-    > b {
-      margin-right: 5px;
-    }
-  }
-`

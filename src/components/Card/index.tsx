@@ -38,6 +38,7 @@ interface IProps {
   skill: Skill
   name: string
   targeteable: boolean
+  width?: string
 }
 
 export default function Card({
@@ -56,6 +57,7 @@ export default function Card({
   skill,
   species,
   targeteable,
+  width,
 }: IProps) {
   const [state, dispatch] = useContext(HandsContext)
   const isForPreview = !!opacityForPreview
@@ -98,7 +100,7 @@ export default function Card({
     stat.current > stat.initial ? "#a4508b" : stat.current < stat.initial ? "red" : ""
 
   return (
-    <AnimalCard {...styledProps}>
+    <AnimalCard {...styledProps} width={width}>
       {displayInHandSign ? <span className="in-hand spaced-title">HAND</span> : null}
 
       {isCardUnderAttack ? (

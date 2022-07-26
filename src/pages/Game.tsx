@@ -10,7 +10,7 @@ import { IAnimal, IPlant, ITerrain } from "../interfaces"
 import { getUserMe } from "../queries/user"
 import { newTerrain, newCampaignGame, newRandomGame } from "../queries/games"
 import Spinner from "../components/Spinner"
-import ModalResultContent from "../components/ModalResultContent"
+import ModalContentResult from "../components/ModalContentResult"
 import { getCookie, getLiveCards } from "../utils"
 import { trackAction } from "../queries/tracking"
 import { HandContainer } from "../components/styled-components"
@@ -157,7 +157,7 @@ export default function App() {
       </Wrapper>
       {modal && (
         <Modal closeModal={() => {}} withCloseButton={false}>
-          <ModalResultContent
+          <ModalContentResult
             closeModal={() => setModal("")}
             modalType={modal}
             isCampaignGame={isCampaignGame}

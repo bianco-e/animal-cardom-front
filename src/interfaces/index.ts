@@ -121,3 +121,15 @@ export interface Action {
 export interface GameParams {
   requiredXp: string
 }
+
+export interface ReduxAction {
+  type: string
+  payload: any
+}
+
+export interface IUserState {
+  token: string | null
+  data: {
+    coins: number
+  }
+}

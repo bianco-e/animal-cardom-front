@@ -1,7 +1,7 @@
-import { useContext, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import styled from "styled-components"
 import { Message } from "../components/styled-components"
-import { IAnimal } from "../interfaces"
+import { IAnimal, IUserState } from "../interfaces"
 import { getCookie, sortCardsAlphabetically } from "../utils"
 import { getUserProfile } from "../queries/user"
 import { getAllAnimalsCards, getFilteredAnimalsCards } from "../queries/animalsCards"
@@ -14,7 +14,7 @@ import ModalHandEditContent from "../components/ModalHandEditContent"
 import ModalCardPurchaseContent from "../components/ModalCardPurchaseContent"
 import Accordion from "../components/Common/Accordion"
 import { BREAKPOINTS } from "../utils/constants"
-import UserContext, { IUserContext } from "../context/UserContext"
+import { useSelector } from "react-redux"
 
 const getCardOpacityForPreview = (cards: string[], name: string): string => {
   if (cards.find(card => card === name)) {
@@ -24,7 +24,6 @@ const getCardOpacityForPreview = (cards: string[], name: string): string => {
 }
 
 export default function Collection() {
-  const [state] = useContext<IUserContext>(UserContext)
   const [speciesFilter, setSpeciesFilter] = useState<string>()
   const [modal, setModal] = useState<string>("")
   const [skillTypeFilter, setSkillTypeFilter] = useState<string>()
@@ -36,6 +35,7 @@ export default function Collection() {
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [animalToAdd, setAnimalToAdd] = useState<IAnimal>()
   const [animalToBuy, setAnimalToBuy] = useState<IAnimal>()
+  const coins: number = useSelector(({ user }: { user: IUserState }) => user.data.coins)
 
   useEffect(() => {
     setIsLoading(true)
@@ -181,7 +181,7 @@ export default function Collection() {
                     />
                     {!ownedCards.includes(name) && (
                       <BuyButton
-                        disabled={state.coins < price}
+                        disabled={coins < price}
                         onClick={() => handlePurchaseClick(card)}>
                         <img alt="coins" src="/images/icons/coins.png" width={16} />
                         {price}

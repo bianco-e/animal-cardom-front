@@ -9,6 +9,7 @@ export const Wrapper = styled.div`
   box-shadow: 0 0 10px 10px rgba(95, 57, 0, 0.2);
   display: flex;
   justify-content: space-between;
+  margin-top: 76px;
   min-height: 80px;
   padding: 15px 60px;
   position: relative;

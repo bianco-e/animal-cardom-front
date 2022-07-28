@@ -15,7 +15,7 @@ export default function Menu() {
     if (animalsRes.error) return
     setNewestAnimals(animalsRes.animals)
   }
-
+  console.log("newestAnimals", newestAnimals)
   useEffect(() => {
     fetchNewestAnimals()
   }, [])
@@ -62,7 +62,7 @@ const Wrapper = styled.div`
       cursor: default;
       height: 280px;
       margin-bottom: 16px;
-      width: calc(30% - 32px);
+      width: calc(30% - 40px);
       > .animal-name {
         font-size: 18px;
       }

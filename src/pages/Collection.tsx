@@ -88,11 +88,6 @@ export default function Collection() {
   return (
     <MenuLayout>
       <>
-        <CollectionFilter
-          setSpeciesFilter={setSpeciesFilter}
-          setSkillTypeFilter={setSkillTypeFilter}
-          setOwningFilter={setOwningFilter}
-        />
         <Accordion title="Hand">
           {!(currentHand.length > 0) ? (
             <Spinner />
@@ -111,36 +106,48 @@ export default function Collection() {
         <Accordion title="Collection">
           {isLoading ? (
             <Spinner />
-          ) : cardsToShow.length > 0 ? (
-            <CardsContainer>
-              {cardsToShow.map(card => {
-                const onPreviewClick =
-                  ownedCards.includes(card.name) && !currentHand.includes(card.name)
-                    ? handleEditHandClick
-                    : undefined
-                return (
-                  <SingleCardContainer key={card.name}>
-                    <Card
-                      {...card}
-                      belongsToUser={false}
-                      displayInHandSign={currentHand.includes(card.name)}
-                      onPreviewClick={onPreviewClick}
-                      opacityForPreview={getCardOpacityForPreview(ownedCards, card.name)}
-                    />
-                    {!ownedCards.includes(card.name) && (
-                      <BuyButton
-                        disabled={coins < card.price}
-                        onClick={() => handlePurchaseClick(card)}>
-                        <img alt="coins" src="/images/icons/coins.png" width={16} />
-                        {card.price}
-                      </BuyButton>
-                    )}
-                  </SingleCardContainer>
-                )
-              })}
-            </CardsContainer>
           ) : (
-            <Message margin="75px 0 0 0">No animals found.</Message>
+            <>
+              <CollectionFilter
+                setSpeciesFilter={setSpeciesFilter}
+                setSkillTypeFilter={setSkillTypeFilter}
+                setOwningFilter={setOwningFilter}
+              />
+              {cardsToShow.length > 0 ? (
+                <CardsContainer>
+                  {cardsToShow.map(card => {
+                    const onPreviewClick =
+                      ownedCards.includes(card.name) && !currentHand.includes(card.name)
+                        ? handleEditHandClick
+                        : undefined
+                    return (
+                      <SingleCardContainer key={card.name}>
+                        <Card
+                          {...card}
+                          belongsToUser={false}
+                          displayInHandSign={currentHand.includes(card.name)}
+                          onPreviewClick={onPreviewClick}
+                          opacityForPreview={getCardOpacityForPreview(
+                            ownedCards,
+                            card.name
+                          )}
+                        />
+                        {!ownedCards.includes(card.name) && (
+                          <BuyButton
+                            disabled={coins < card.price}
+                            onClick={() => handlePurchaseClick(card)}>
+                            <img alt="coins" src="/images/icons/coins.png" width={16} />
+                            {card.price}
+                          </BuyButton>
+                        )}
+                      </SingleCardContainer>
+                    )
+                  })}
+                </CardsContainer>
+              ) : (
+                <Message margin="75px 0 0 0">No animals found.</Message>
+              )}
+            </>
           )}
         </Accordion>
         {modal === "editHand" ? (
@@ -257,7 +264,7 @@ const CardsContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
-  margin-top: 60px;
+  margin-top: 44px;
   min-height: 100px;
   padding: 16px 0;
   width: 85%;

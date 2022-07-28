@@ -57,7 +57,7 @@ export const Wrapper = styled.div<WrapperProps>`
   padding: 0 20px;
   position: fixed;
   top: 0;
-  width: 250px;
+  width: 200px;
   z-index: 5;
   & > *:not(:last-child) {
     margin-bottom: ${({ theme }) => theme.$2};

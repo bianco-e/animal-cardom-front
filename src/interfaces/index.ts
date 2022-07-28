@@ -35,18 +35,18 @@ export interface IPlant {
 }
 
 export interface IAnimal {
-  name: string
-  species: string
-  image: string
   attack: Stat<number>
-  life: Stat<number | string>
-  skill: Skill
-  poisoned: Poisoned
-  paralyzed: number
-  targeteable: boolean
   bleeding: boolean
-  price: number
+  image: string
+  life: Stat<number | string>
   missing_chance?: number
+  name: string
+  paralyzed: number
+  poisoned: Poisoned
+  price: number
+  skill: Skill
+  species: string
+  targeteable: boolean
 }
 
 export interface ITerrain {

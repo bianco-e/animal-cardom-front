@@ -43,7 +43,7 @@ export default function SideMenu() {
     logout({ returnTo: window.location.origin })
   }
   const hideSideMenu = () => {
-    setMenuWidth(menuWidth === "1px" ? "210px" : "1px")
+    setMenuWidth(menuWidth === "1px" ? "200px" : "1px")
   }
 
   return (

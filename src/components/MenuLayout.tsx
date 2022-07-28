@@ -23,7 +23,7 @@ export default function MenuLayout({ children }: { children: JSX.Element }) {
 }
 
 const Wrapper = styled.div`
-  margin-left: 290px;
+  margin-left: 240px;
   ${BREAKPOINTS.MOBILE} {
     margin-left: 0;
   }

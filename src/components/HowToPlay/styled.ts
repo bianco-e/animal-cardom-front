@@ -1,6 +1,6 @@
-import styled from "styled-components";
-import { buttonAnimation } from "../../animations";
-import { BREAKPOINTS } from "../../utils/constants";
+import styled from "styled-components"
+import { buttonAnimation } from "../../animations"
+import { BREAKPOINTS } from "../../utils/constants"
 
 export const HowToPlayWrapper = styled.div`
   align-items: center;
@@ -11,7 +11,7 @@ export const HowToPlayWrapper = styled.div`
   padding: ${({ theme }) => theme.$4};
   width: 60vw;
   & > *:not(:last-child) {
-    margin-bottom: ${({ theme }) => theme.$4};
+    margin-bottom: ${({ theme }) => theme.$5};
   }
   ${BREAKPOINTS.TABLET} {
     width: 75vw;
@@ -19,30 +19,29 @@ export const HowToPlayWrapper = styled.div`
   ${BREAKPOINTS.MOBILE} {
     width: 95vw;
   }
-`;
+`
 
 export const HowToPlayTitle = styled.h1`
   font-size: ${({ theme }) => theme.$2};
   margin-bottom: ${({ theme }) => theme.$4} !important;
   margin-top: 0;
-`;
+`
 
 export const HowToPlaySubtitle = styled.h2`
   font-size: ${({ theme }) => theme.$3};
   margin-top: 0;
-`;
+`
 
 export const HowToPlayText = styled.span`
   font-size: ${({ theme }) => theme.$4};
-`;
+`
 
 export const HowToPlayCTA = styled.button`
   background: ${({ theme }) => theme.secondary_brown};
   border: 2px solid ${({ theme }) => theme.primary_brown};
   border-radius: 100%;
   bottom: ${({ theme }) => theme.$4};
-  box-shadow: inset 0px 0px 3px rgba(0, 0, 0, 0.5),
-    1px 1px 5px rgba(0, 0, 0, 0.5);
+  box-shadow: inset 0px 0px 3px rgba(0, 0, 0, 0.5), 1px 1px 5px rgba(0, 0, 0, 0.5);
   align-items: center;
   display: flex;
   justify-content: center;
@@ -92,4 +91,4 @@ export const HowToPlayCTA = styled.button`
       ${buttonAnimation}
     }
   }
-`;
+`

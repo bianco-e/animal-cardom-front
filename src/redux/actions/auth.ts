@@ -28,7 +28,7 @@ export const loginUser = (userData: AuthUser) => {
       dispatch(SET_TOKEN(token))
       return dispatch(SET_USER_SUCCESS(user))
     }
-    if (error && error === "no_user") return dispatch(SET_USER_ERROR())
+    if (error && error !== "no_user") return dispatch(SET_USER_ERROR())
 
     //register user
     const userTemplate = getNewUserTemplate(userData)

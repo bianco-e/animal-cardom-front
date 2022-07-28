@@ -1,8 +1,8 @@
-import { useContext, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import styled from "styled-components"
 import { Message } from "../components/styled-components"
-import { IAnimal } from "../interfaces"
-import { getCookie, sortCardsAlphabetically } from "../utils"
+import { IAnimal, User } from "../interfaces"
+import { sortCardsAlphabetically } from "../utils"
 import { getUserProfile } from "../queries/user"
 import { getAllAnimalsCards, getFilteredAnimalsCards } from "../queries/animalsCards"
 import MenuLayout from "../components/MenuLayout"
@@ -14,17 +14,14 @@ import ModalHandEditContent from "../components/ModalHandEditContent"
 import ModalCardPurchaseContent from "../components/ModalCardPurchaseContent"
 import Accordion from "../components/Common/Accordion"
 import { BREAKPOINTS } from "../utils/constants"
-import UserContext, { IUserContext } from "../context/UserContext"
+import { useAppSelector } from "../hooks/redux-hooks"
 
 const getCardOpacityForPreview = (cards: string[], name: string): string => {
-  if (cards.find(card => card === name)) {
-    return "1"
-  }
+  if (cards.find(card => card === name)) return "1"
   return "0.6"
 }
 
 export default function Collection() {
-  const [state] = useContext<IUserContext>(UserContext)
   const [speciesFilter, setSpeciesFilter] = useState<string>()
   const [modal, setModal] = useState<string>("")
   const [skillTypeFilter, setSkillTypeFilter] = useState<string>()
@@ -36,6 +33,7 @@ export default function Collection() {
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [animalToAdd, setAnimalToAdd] = useState<IAnimal>()
   const [animalToBuy, setAnimalToBuy] = useState<IAnimal>()
+  const { coins, auth_id: authId }: User = useAppSelector(({ auth }) => auth.user)
 
   useEffect(() => {
     setIsLoading(true)
@@ -46,7 +44,6 @@ export default function Collection() {
         setCardsToShow(sortCardsAlphabetically(res.animals))
       }
     })
-    const authId = getCookie("auth=")
     if (authId) {
       getUserProfile(authId).then(res => {
         if (res && res.owned_cards && res.hand && res.coins !== undefined) {
@@ -55,7 +52,7 @@ export default function Collection() {
         }
       })
     }
-  }, [])
+  }, []) //eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     const sendingOwnedCards = owningFilter ? ownedCards.map(card => card) : undefined
@@ -91,46 +88,15 @@ export default function Collection() {
   return (
     <MenuLayout>
       <>
-        <CollectionFilter
-          setSpeciesFilter={setSpeciesFilter}
-          setSkillTypeFilter={setSkillTypeFilter}
-          setOwningFilter={setOwningFilter}
-        />
         <Accordion title="Hand">
           {!(currentHand.length > 0) ? (
             <Spinner />
           ) : (
             <CardsContainer>
               {hand.map(card => {
-                const {
-                  attack,
-                  bleeding,
-                  name,
-                  image,
-                  life,
-                  paralyzed,
-                  poisoned,
-                  skill,
-                  species,
-                  targeteable,
-                } = card
                 return (
-                  <SingleCardContainer>
-                    <Card
-                      attack={attack}
-                      belongsToUser={false}
-                      bleeding={bleeding}
-                      species={species}
-                      image={image}
-                      key={name}
-                      life={life}
-                      opacityForPreview="1"
-                      paralyzed={paralyzed}
-                      poisoned={poisoned}
-                      skill={skill}
-                      name={name}
-                      targeteable={targeteable}
-                    />
+                  <SingleCardContainer key={card.name}>
+                    <Card {...card} opacityForPreview="1" />
                   </SingleCardContainer>
                 )
               })}
@@ -140,59 +106,48 @@ export default function Collection() {
         <Accordion title="Collection">
           {isLoading ? (
             <Spinner />
-          ) : cardsToShow.length > 0 ? (
-            <CardsContainer>
-              {cardsToShow.map(card => {
-                const {
-                  attack,
-                  bleeding,
-                  name,
-                  image,
-                  life,
-                  paralyzed,
-                  poisoned,
-                  skill,
-                  species,
-                  targeteable,
-                  price,
-                } = card
-                const onPreviewClick =
-                  ownedCards.includes(name) && !currentHand.includes(name)
-                    ? handleEditHandClick
-                    : undefined
-                return (
-                  <SingleCardContainer>
-                    <Card
-                      attack={attack}
-                      belongsToUser={false}
-                      bleeding={bleeding}
-                      displayInHandSign={currentHand.includes(name)}
-                      species={species}
-                      image={image}
-                      key={name}
-                      life={life}
-                      onPreviewClick={onPreviewClick}
-                      opacityForPreview={getCardOpacityForPreview(ownedCards, name)}
-                      paralyzed={paralyzed}
-                      poisoned={poisoned}
-                      skill={skill}
-                      name={name}
-                      targeteable={targeteable}
-                    />
-                    {!ownedCards.includes(name) && (
-                      <BuyButton
-                        disabled={state.coins < price}
-                        onClick={() => handlePurchaseClick(card)}>
-                        <img alt="coins" src="/images/icons/coins.png" width={16} />
-                        {price}
-                      </BuyButton>
-                    )}
-                  </SingleCardContainer>
-                )
-              })}
-            </CardsContainer>
           ) : (
-            <Message margin="75px 0 0 0">No animals found.</Message>
+            <>
+              <CollectionFilter
+                setSpeciesFilter={setSpeciesFilter}
+                setSkillTypeFilter={setSkillTypeFilter}
+                setOwningFilter={setOwningFilter}
+              />
+              {cardsToShow.length > 0 ? (
+                <CardsContainer>
+                  {cardsToShow.map(card => {
+                    const onPreviewClick =
+                      ownedCards.includes(card.name) && !currentHand.includes(card.name)
+                        ? handleEditHandClick
+                        : undefined
+                    return (
+                      <SingleCardContainer key={card.name}>
+                        <Card
+                          {...card}
+                          belongsToUser={false}
+                          displayInHandSign={currentHand.includes(card.name)}
+                          onPreviewClick={onPreviewClick}
+                          opacityForPreview={getCardOpacityForPreview(
+                            ownedCards,
+                            card.name
+                          )}
+                        />
+                        {!ownedCards.includes(card.name) && (
+                          <BuyButton
+                            disabled={coins < card.price}
+                            onClick={() => handlePurchaseClick(card)}>
+                            <img alt="coins" src="/images/icons/coins.png" width={16} />
+                            {card.price}
+                          </BuyButton>
+                        )}
+                      </SingleCardContainer>
+                    )
+                  })}
+                </CardsContainer>
+              ) : (
+                <Message margin="75px 0 0 0">No animals found.</Message>
+              )}
+            </>
           )}
         </Accordion>
         {modal === "editHand" ? (
@@ -309,7 +264,7 @@ const CardsContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
-  margin-top: 60px;
+  margin-top: 44px;
   min-height: 100px;
   padding: 16px 0;
   width: 85%;

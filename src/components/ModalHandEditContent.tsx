@@ -1,12 +1,12 @@
 import { useState } from "react"
 import styled from "styled-components"
 import Card from "./Card"
-import { IAnimal } from "../interfaces"
+import { IAnimal, User } from "../interfaces"
 import { ACButton } from "./styled-components"
 import { updateHand } from "../queries/user"
-import { getCookie } from "../utils"
 import Spinner from "./Spinner"
 import { BREAKPOINTS } from "../utils/constants"
+import { useAppSelector } from "../hooks/redux-hooks"
 
 interface IProps {
   hand: IAnimal[]
@@ -23,6 +23,8 @@ export default function ModalHandEditContent({
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [currentHand, setCurrentHand] = useState<IAnimal[]>(hand)
   const [enteringAnimal, setEnteringAnimal] = useState<IAnimal>(animalToAdd)
+  const user: User = useAppSelector(({ auth }) => auth.user)
+  const { auth_id: authId } = user
 
   const handleSelection = (name: string) => {
     if (!currentHand.find(card => card.name === enteringAnimal.name)) {
@@ -37,18 +39,16 @@ export default function ModalHandEditContent({
   }
 
   const handleConfirm = () => {
-    const authId = getCookie("auth=")
     const handNames = currentHand.map(card => card.name)
-    if (authId) {
-      setIsLoading(true)
-      updateHand(authId, handNames).then(res => {
-        if (res && res.length) {
-          setIsLoading(false)
-          handSetter(res)
-          closeModal()
-        }
-      })
-    }
+    if (!authId) return
+    setIsLoading(true)
+    updateHand(authId, handNames).then(res => {
+      if (res && res.length) {
+        setIsLoading(false)
+        handSetter(res)
+        closeModal()
+      }
+    })
   }
 
   return (

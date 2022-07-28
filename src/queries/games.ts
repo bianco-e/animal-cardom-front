@@ -1,11 +1,11 @@
 import { Game } from "../interfaces"
-import { ACPost } from "./user"
+import { postMethod } from "./methods"
 import { API_BASE_URL } from "../utils/constants"
 
 export const newCampaignGame = (xp: number, user_cards: string[]) => {
-  return fetch(
-    `${API_BASE_URL}games/new-campaign?xp=${xp}&user_cards=${user_cards.join(";")}`
-  )
+  return fetch(`${API_BASE_URL}games/new-campaign`, {
+    ...postMethod({ xp, user_cards }),
+  })
     .then(res => res.json())
     .catch(err => console.error(err))
 }
@@ -29,7 +29,7 @@ export const saveGameResult = (
   required_xp: number
 ) => {
   return fetch(`${API_BASE_URL}games/save-game`, {
-    ...ACPost({ auth_id, game, current_xp, required_xp }),
+    ...postMethod({ auth_id, game, current_xp, required_xp }),
   })
     .then(res => res.json())
     .catch(err => console.error(err))

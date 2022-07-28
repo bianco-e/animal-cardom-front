@@ -1,14 +1,13 @@
-import { useContext, useState } from "react"
+import { useState } from "react"
 import styled from "styled-components"
 import Card from "./Card"
-import { IAnimal } from "../interfaces"
+import { IAnimal, User } from "../interfaces"
 import { ACButton } from "./styled-components"
 import { animalPurchase } from "../queries/user"
-import { getCookie } from "../utils"
 import Spinner from "./Spinner"
 import { BREAKPOINTS } from "../utils/constants"
-import UserContext, { IUserContext } from "../context/UserContext"
-import { SET_COINS } from "../context/UserContext/types"
+import { useAppDispatch, useAppSelector } from "../hooks/redux-hooks"
+import { SET_COINS } from "../redux/reducers/auth"
 
 interface IProps {
   animalToBuy: IAnimal
@@ -22,36 +21,21 @@ export default function ModalHandEditContent({
   ownedCards,
   setOwnedCards,
 }: IProps) {
-  const [state, dispatch] = useContext<IUserContext>(UserContext)
+  const dispatch = useAppDispatch()
   const [isLoading, setIsLoading] = useState<boolean>(false)
-
-  const {
-    attack,
-    bleeding,
-    name,
-    image,
-    life,
-    paralyzed,
-    poisoned,
-    skill,
-    species,
-    targeteable,
-    price,
-  } = animalToBuy
+  const user: User = useAppSelector(({ auth }) => auth.user)
+  const { coins, auth_id: authId } = user
 
   const handleConfirm = () => {
-    const authId = getCookie("auth=")
-    if (authId) {
-      setIsLoading(true)
-      animalPurchase(authId, animalToBuy.name, animalToBuy.price).then(res => {
-        if (res && res.new_card) {
-          setIsLoading(false)
-          dispatch({ type: SET_COINS, payload: state.coins - price })
-          setOwnedCards(ownedCards.concat(res.new_card))
-          closeModal()
-        }
-      })
-    }
+    setIsLoading(true)
+    animalPurchase(authId, animalToBuy.name, animalToBuy.price).then(res => {
+      if (res && res.new_card) {
+        setIsLoading(false)
+        dispatch(SET_COINS(coins - animalToBuy.price))
+        setOwnedCards(ownedCards.concat(res.new_card))
+        closeModal()
+      }
+    })
   }
 
   return (
@@ -61,27 +45,14 @@ export default function ModalHandEditContent({
       ) : (
         <>
           <Text>
-            You are about to spend <b>{price} coins</b> to buy <b>{name}</b>
+            You are about to spend <b>{animalToBuy.price} coins</b> to buy{" "}
+            <b>{animalToBuy.name}</b>
           </Text>
           <Container>
-            <Card
-              attack={attack}
-              belongsToUser={false}
-              bleeding={bleeding}
-              species={species}
-              image={image}
-              key={name}
-              life={life}
-              opacityForPreview="1"
-              paralyzed={paralyzed}
-              poisoned={poisoned}
-              skill={skill}
-              name={name}
-              targeteable={targeteable}
-            />
+            <Card {...animalToBuy} opacityForPreview="1" />
           </Container>
           <Text className="remaining-coins">
-            After this purchase you will remain <b>{state.coins - price} coins</b>
+            After this purchase you will remain <b>{coins - animalToBuy.price} coins</b>
           </Text>
         </>
       )}

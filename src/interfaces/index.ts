@@ -35,18 +35,18 @@ export interface IPlant {
 }
 
 export interface IAnimal {
-  name: string
-  species: string
-  image: string
   attack: Stat<number>
-  life: Stat<number | string>
-  skill: Skill
-  poisoned: Poisoned
-  paralyzed: number
-  targeteable: boolean
   bleeding: boolean
-  price: number
+  image: string
+  life: Stat<number | string>
   missing_chance?: number
+  name: string
+  paralyzed: number
+  poisoned: Poisoned
+  price: number
+  skill: Skill
+  species: string
+  targeteable: boolean
 }
 
 export interface ITerrain {
@@ -96,6 +96,7 @@ export interface AuthUser {
 
 export interface User {
   auth_id: string
+  coins: number
   picture: string
   email: string
   first_name: string
@@ -120,4 +121,14 @@ export interface Action {
 
 export interface GameParams {
   requiredXp: string
+}
+
+export interface IRootState {
+  auth: {
+    isLogged: boolean
+    error: boolean
+    isLoading: boolean
+    token: string | null
+    user: User
+  }
 }

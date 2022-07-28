@@ -1,14 +1,13 @@
+import { useAppSelector } from "../../hooks/redux-hooks"
 import { Wrapper } from "./styled"
 
-interface IProps {
-  coins?: number
-}
+export default function CoinsViewer() {
+  const coins: number = useAppSelector(({ auth }) => auth.user.coins)
 
-export default function CoinsViewer({ coins }: IProps) {
   return (
     <Wrapper>
       <img alt="coins" src="/images/icons/coins.png" width={24} />
-      <span>{coins && coins}</span>
+      <span>{coins}</span>
     </Wrapper>
   )
 }

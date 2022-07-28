@@ -6,15 +6,14 @@ import AnimatedPlaceholder from "../Common/AnimatedPlaceholder"
 import { getCurrentSection } from "../../utils"
 import HowToPlay from "../HowToPlay"
 import { CloseButton, LogoutButton, UserInfoContainer, Wrapper } from "./styled"
+import { useAppDispatch, useAppSelector } from "../../hooks/redux-hooks"
+import { CLEAR_TOKEN } from "../../redux/reducers/auth"
 
-interface IProps {
-  avatar: string
-  username: string
-}
-
-export default function SideMenu({ avatar, username }: IProps) {
+export default function SideMenu() {
   const [currentSection, setCurrentSection] = useState<string>()
   const [menuWidth, setMenuWidth] = useState<string>("210px")
+  const dispatch = useAppDispatch()
+  const user = useAppSelector(({ auth }) => auth.user)
   const { logout } = useAuth0()
   const history = useHistory()
   const location = useLocation()
@@ -39,9 +38,12 @@ export default function SideMenu({ avatar, username }: IProps) {
       fn: () => history.push("/campaign"),
     },
   ]
-  const handleLogout = () => logout({ returnTo: window.location.origin })
+  const handleLogout = () => {
+    dispatch(CLEAR_TOKEN())
+    logout({ returnTo: window.location.origin })
+  }
   const hideSideMenu = () => {
-    setMenuWidth(menuWidth === "1px" ? "210px" : "1px")
+    setMenuWidth(menuWidth === "1px" ? "200px" : "1px")
   }
 
   return (
@@ -65,11 +67,11 @@ export default function SideMenu({ avatar, username }: IProps) {
         width={56}
         onClick={() => history.push("/")}
       />
-      {username ? (
+      {user.first_name ? (
         <UserInfoContainer>
-          <img className="avatar" alt={username} src={avatar} />
+          <img className="avatar" alt={user.first_name} src={user.picture} />
           <span>
-            <b>{username}</b>
+            <b>{user.first_name}</b>
           </span>
         </UserInfoContainer>
       ) : (

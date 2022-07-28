@@ -23,13 +23,13 @@ export default function AvatarWithXpBar({ xp }: { xp: number }) {
       <svg height="170" width="170">
         <defs>
           <linearGradient id="gradient" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stop-color="#5f0a87" />
-            <stop offset="100%" stop-color="#a4508b" />
+            <stop offset="0%" stopColor="#5f0a87" />
+            <stop offset="100%" stopColor="#a4508b" />
           </linearGradient>
         </defs>
         <circle
           className="progress-ring__circle"
-          stroke-width={STROKE_WIDTH}
+          strokeWidth={STROKE_WIDTH}
           fill="transparent"
           r={CIRCLE_RADIUS}
           cx={CIRCLE_RADIUS + STROKE_WIDTH * 2}

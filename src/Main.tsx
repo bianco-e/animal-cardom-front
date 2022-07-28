@@ -1,28 +1,27 @@
-import { BrowserRouter } from "react-router-dom";
-import Router from "./Router";
-import { ThemeProvider } from "styled-components";
-import theme, { GlobalStyle } from "./styles";
-import { HandsContext } from "./context/HandsContext";
-import { UserContext } from "./context/UserContext";
-import AuthProvider from "./0auth/Provider";
+import { BrowserRouter } from "react-router-dom"
+import Router from "./Router"
+import { Provider } from "react-redux"
+import { ThemeProvider } from "styled-components"
+import theme, { GlobalStyle } from "./styles"
+import { HandsContext } from "./context/HandsContext"
+import AuthProvider from "./0auth/Provider"
+import store from "./redux"
 
-const Main = () => {
+export default function Main() {
   return (
     <ThemeProvider theme={theme}>
-      <AuthProvider>
-        <HandsContext>
-          <UserContext>
+      <Provider store={store}>
+        <AuthProvider>
+          <HandsContext>
             <>
               <GlobalStyle />
               <BrowserRouter>
                 <Router />
               </BrowserRouter>
             </>
-          </UserContext>
-        </HandsContext>
-      </AuthProvider>
+          </HandsContext>
+        </AuthProvider>
+      </Provider>
     </ThemeProvider>
-  );
-};
-
-export default Main;
+  )
+}

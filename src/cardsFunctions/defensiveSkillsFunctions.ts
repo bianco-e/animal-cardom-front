@@ -53,14 +53,8 @@ const ballBugFn = (
       [enemyHandKey]: state.hands[enemyHandKey].map(animal => {
         if (animal.name !== defender.name) return animal
         if (animal.paralyzed > 0) return applyDmg(animal, statsDiff)
-        return {
-          ...animal,
-          life: {
-            ...animal.life,
-            current:
-              (getRandomChance(50) ? statsDiff + 1 : statsDiff) < 1 ? "DEAD" : statsDiff,
-          },
-        }
+        const takesLessDmg = getRandomChance(50)
+        return applyDmg(animal, takesLessDmg ? statsDiff + 1 : statsDiff)
       }),
     },
   }
@@ -102,9 +96,8 @@ const caterpillarFn = (
       ...state.hands,
       [enemyHandKey]: state.hands[enemyHandKey].map(animal => {
         if (animal.name !== defender.name) return animal
-        if (animal.paralyzed === 0 && statsDiff < 1) {
-          return BUTTERFLY_ANIMAL
-        } else return applyDmg(animal, statsDiff)
+        if (animal.paralyzed === 0 && statsDiff < 1) return BUTTERFLY_ANIMAL
+        return applyDmg(animal, statsDiff)
       }),
     },
   }
@@ -179,22 +172,14 @@ const hedgehogFn = (
     hands: {
       [ownHandKey]: state.hands[ownHandKey].map(animal => {
         if (animal.name === attacker.name && defender.paralyzed === 0) {
-          if (typeof animal.life.current === "number") {
-            const diff = animal.life.current - defender.attack.current
-            return {
-              ...animal,
-              life: {
-                ...animal.life,
-                current: diff < 1 ? "DEAD" : diff,
-              },
-            }
-          } else return animal
+          if (typeof animal.life.current !== "number") return animal
+          const diff = animal.life.current - defender.attack.current
+          return applyDmg(animal, diff)
         } else return animal
       }),
       [enemyHandKey]: state.hands[enemyHandKey].map(animal => {
-        if (animal.name === defender.name) {
-          return applyDmg(animal, statsDiff)
-        } else return animal
+        if (animal.name !== defender.name) return animal
+        return applyDmg(animal, statsDiff)
       }),
     },
   }
@@ -215,13 +200,7 @@ const lizardFn = (
       [enemyHandKey]: state.hands[enemyHandKey].map(animal => {
         if (animal.name !== defender.name) return animal
         if (animal.paralyzed > 0) return applyDmg(animal, statsDiff)
-        return {
-          ...animal,
-          life: {
-            ...animal.life,
-            current: statsDiff + 1 < 1 ? "DEAD" : statsDiff + 1,
-          },
-        }
+        return applyDmg(animal, statsDiff + 1)
       }),
     },
   }
@@ -242,13 +221,7 @@ const ostrichFn = (
       [enemyHandKey]: state.hands[enemyHandKey].map(animal => {
         if (animal.name !== defender.name) return animal
         if (animal.paralyzed > 0) return applyDmg(animal, statsDiff)
-        return {
-          ...animal,
-          life: {
-            ...animal.life,
-            current: statsDiff + 1 < 1 ? "DEAD" : statsDiff + 1,
-          },
-        }
+        return applyDmg(animal, statsDiff + 1)
       }),
     },
   }
@@ -267,15 +240,9 @@ const peacockFn = (
       ...state.hands,
       [enemyHandKey]: state.hands[enemyHandKey].map(animal => {
         if (animal.name !== state.defender!.name) return animal
-        if (animal.paralyzed === 0 && getRandomChance(30)) {
-          return {
-            ...animal,
-            life: {
-              ...animal.life,
-              current: statsDiff + 2 < 1 ? "DEAD" : statsDiff + 2,
-            },
-          }
-        } else return applyDmg(animal, statsDiff)
+        if (animal.paralyzed > 0) return applyDmg(animal, statsDiff)
+        const takesLessDmg = getRandomChance(30)
+        return applyDmg(animal, takesLessDmg ? statsDiff + 2 : statsDiff)
       }),
     },
   }

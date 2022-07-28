@@ -2,7 +2,7 @@ import { useContext, useEffect } from "react"
 import { CARD_ICONS } from "../../data/data"
 import HandsContext from "../../context/HandsContext"
 import { SELECT_CARD } from "../../context/HandsContext/types"
-import { Poisoned, Skill, Stat } from "../../interfaces"
+import { IAnimal, Stat } from "../../interfaces"
 import {
   attackAnimation,
   attackAudio,
@@ -22,22 +22,11 @@ import {
   Text,
 } from "./styled"
 
-interface IProps {
-  attack: Stat<number>
+interface IProps extends IAnimal {
   belongsToUser?: boolean
-  bleeding: boolean
   displayInHandSign?: boolean
-  species: string
-  image: string
-  life: Stat<number | string>
-  missingChance?: number
   onPreviewClick?: (name: string) => void
   opacityForPreview?: string
-  paralyzed: number
-  poisoned: Poisoned
-  skill: Skill
-  name: string
-  targeteable: boolean
   width?: string
 }
 
@@ -48,7 +37,7 @@ export default function Card({
   displayInHandSign,
   image,
   life,
-  missingChance,
+  missing_chance: missingChance,
   name,
   onPreviewClick,
   opacityForPreview,
@@ -68,7 +57,7 @@ export default function Card({
   const hasCondition = !targeteable || missingChance
   const soundState = localStorage.getItem("sound")
   const [animationProps] = usePlantAnimation({ name, soundState })
-
+  console.log("missingChance", missingChance)
   useEffect(() => {
     isCardUnderAttack && soundState === "on" && attackAudio.play()
   }, [isCardUnderAttack, soundState])

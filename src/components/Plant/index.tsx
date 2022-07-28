@@ -14,9 +14,10 @@ export default function Plant({ plant }: { plant: IPlant }) {
   const { name, description, image, appliable_on } = plant
   const isPlantSelected = selectedPlant?.name === name
   const plantBelongsToUser = !!plants.user.find((pl: IPlant) => pl.name === name)
-  const onPlantClick = () =>
+  const onPlantClick = () => {
     //@ts-ignore
-    !pcTurn && !usedPlants.includes(plant) && dispatch(selectPlant(plant))
+    if (!pcTurn && !usedPlants.includes(plant)) return dispatch(selectPlant(plant))
+  }
 
   return (
     <PlantContainer>

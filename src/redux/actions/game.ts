@@ -169,13 +169,10 @@ export const selectCard = (name: string) => {
     const pcLiveCards = getLiveCards(hands.pc)
     const userLiveCards = getLiveCards(hands.user)
     const animal = hands.pc.concat(hands.user).find(card => card.name === name)
-    console.log("selectedPlant", selectedPlant)
-    console.log("attacker", attacker)
-    console.log("state", game)
 
     if (selectedPlant && !attacker) {
       const updatedGame = applyPlantToCard(selectedPlant, animal!, game, "pc")
-      dispatch(GAME_ACTIONS.SET_STATE(updatedGame))
+      return dispatch(GAME_ACTIONS.SET_STATE(updatedGame))
     }
     if (!attacker) {
       if (!userLiveCards.includes(animal!)) return dispatch(GAME_ACTIONS.SET_STATE(game))
@@ -210,7 +207,7 @@ export const selectPlant = (plant: IPlant) => {
       const updatedGame = {
         ...game,
         selectedPlant: plant,
-        ...(attacker ? { attacker: undefined } : {}),
+        attacker: attacker ? undefined : attacker,
       }
       return dispatch(GAME_ACTIONS.SET_STATE(updatedGame))
     }
@@ -288,7 +285,7 @@ const applyPoisonDamage = (hands: IHands, enemyHandKey: HandKey): IHands => {
   return { ...hands, [enemyHandKey]: applyPoisonInAHand(hands[enemyHandKey]) }
 }
 
-const setTerrain = (game: IGameState, terrain: ITerrain) => {
+const setCardsAndTerrain = (game: IGameState, terrain: ITerrain) => {
   const buffCards = (arr: IAnimal[]) => {
     return arr.map(card => {
       if (card.species === terrain.speciesToBuff) {
@@ -301,7 +298,7 @@ const setTerrain = (game: IGameState, terrain: ITerrain) => {
   }
   return {
     ...game,
-    terrainName: terrain.name,
+    terrain: terrain,
     hands: {
       pc: buffCards(game.hands.pc),
       user: buffCards(game.hands.user),
@@ -312,7 +309,7 @@ const setTerrain = (game: IGameState, terrain: ITerrain) => {
 export const setCards = (hands: IHands, plants: IPlants, terrain: ITerrain) => {
   return (dispatch: AppDispatch, getState: () => IRootState) => {
     const { game } = getState()
-    const updatedGame = setTerrain({ ...game, hands, plants }, terrain)
+    const updatedGame = setCardsAndTerrain({ ...game, hands, plants }, terrain)
     dispatch(GAME_ACTIONS.SET_STATE(updatedGame))
   }
 }

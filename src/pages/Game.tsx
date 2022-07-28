@@ -17,14 +17,6 @@ import Card from "../components/Card"
 import { useAppDispatch, useAppSelector } from "../hooks/redux-hooks"
 import { computerPlay, setCards } from "../redux/actions/game"
 
-const emptyTerrain = {
-  name: "",
-  color: "#fff",
-  speciesToBuff: "",
-  image: "",
-  getRequiredXp: (current: number) => 0,
-}
-
 interface IProps {
   isCampaign?: boolean
 }
@@ -35,11 +27,10 @@ export default function Game({ isCampaign }: IProps) {
   const [currentXp, setCurrentXp] = useState<number>(0)
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [userName, setUserName] = useState<string>("")
-  const [terrain, setTerrain] = useState<ITerrain>(emptyTerrain)
   const [modal, setModal] = useState<string>("")
   const history = useHistory()
   const { requiredXp } = useParams<GameParams>()
-  const { hands, plants, pcTurn, pcPlay, triggerPcAttack } = game
+  const { hands, plants, pcTurn, pcPlay, triggerPcAttack, terrain } = game
   const { auth_id: authId }: User = useAppSelector(({ auth }) => auth.user)
   interface Response {
     user: { animals: IAnimal[]; plants: IPlant[] }
@@ -69,7 +60,6 @@ export default function Game({ isCampaign }: IProps) {
       const terrainRes = await newTerrain()
       const newGameRes = await newRandomGame()
       if (terrainRes.error || newGameRes.error) return history.push("/error")
-      setTerrain(terrainRes)
       newGameResHandler(terrainRes, newGameRes)
     } else {
       // is campaign game
@@ -85,7 +75,6 @@ export default function Game({ isCampaign }: IProps) {
       const gameRes = await newCampaignGame(parsedReqXp, hand)
       if (terrainRes.error || gameRes.error) return history.push("/campaign")
       newGameResHandler(terrainRes, gameRes)
-      setTerrain(terrainRes)
     }
   }
 
@@ -158,7 +147,6 @@ export default function Game({ isCampaign }: IProps) {
             closeModal={() => setModal("")}
             modalType={modal}
             isCampaignGame={isCampaign}
-            setTerrain={setTerrain}
             currentXp={currentXp}
           />
         </Modal>

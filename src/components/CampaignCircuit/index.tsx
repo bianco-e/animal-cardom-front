@@ -1,6 +1,7 @@
 import { useRef, useEffect, useState } from "react"
 import { useHistory } from "react-router-dom"
-import { terrains } from "../../data/data"
+import { ITerrain } from "../../interfaces"
+import { getAllTerrains } from "../../queries/games"
 import CampaignProgress from "./Progress"
 import { TerrainContainer, Wrapper } from "./styled"
 
@@ -10,12 +11,26 @@ const firstLevelGames = {
   "1350": 3,
 }
 
-const ANGLE = 360 / terrains.length
 interface IProps {
   xp: number
 }
 export default function CampaignCircuit({ xp }: IProps) {
   const [containerWidth, setContainerWidth] = useState<number>(200)
+  const [terrains, setTerrains] = useState<ITerrain[]>([])
+
+  const ANGLE = terrains.length ? 360 / terrains.length : 0
+
+  const fetchTerrains = async () => {
+    const terrainsRes = await getAllTerrains()
+    if (terrainsRes && !terrainsRes.error) {
+      setTerrains(terrainsRes.terrains)
+    }
+  }
+
+  useEffect(() => {
+    fetchTerrains()
+  }, [])
+
   const containerRef = useRef<HTMLDivElement>(null)
   const history = useHistory()
 
@@ -29,12 +44,16 @@ export default function CampaignCircuit({ xp }: IProps) {
 
   return (
     <>
-      <CampaignProgress xp={xp} />
+      <CampaignProgress terrains={terrains} xp={xp} />
       <Wrapper ref={containerRef}>
         {terrains.map((terrain, idx) => {
-          const { image, name, getRequiredXp } = terrain
-          const requiredXp = getRequiredXp(xp)
-          const isDisabled = requiredXp > xp
+          const { image, name, campaign_xp } = terrain
+          const terrainXp = !campaign_xp.includes(0)
+            ? campaign_xp[0]
+            : xp < 1350
+            ? xp
+            : 900
+          const isDisabled = terrainXp > xp
           const level = idx + 1
           return (
             <TerrainContainer
@@ -48,7 +67,7 @@ export default function CampaignCircuit({ xp }: IProps) {
               }
               key={name}
               level={level}
-              onClick={() => !isDisabled && handleCampaignGame(requiredXp)}
+              onClick={() => !isDisabled && handleCampaignGame(terrainXp)}
               title={isDisabled ? "Locked" : `${name} terrain`}
             />
           )

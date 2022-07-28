@@ -7,7 +7,7 @@ export interface IGameState {
   usedPlants: IPlant[]
   attacker?: IAnimal
   defender?: IAnimal
-  terrainName?: string
+  terrain: ITerrain
   underAttack?: string
   dodgedAttack?: string
   pcTurn: boolean
@@ -71,7 +71,7 @@ export interface ITerrain {
   image: string
   name: string
   color: string
-  getRequiredXp: (current: number) => number
+  campaign_xp: number[]
 }
 
 export interface Game {

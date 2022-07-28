@@ -11,7 +11,13 @@ const initialState: IGameState = {
   attacker: undefined,
   defender: undefined,
   underAttack: undefined,
-  terrainName: undefined,
+  terrain: {
+    name: "",
+    color: "#fff",
+    speciesToBuff: "",
+    image: "",
+    campaign_xp: [0],
+  },
   pcTurn: false,
   triggerPcAttack: false,
   pcPlay: "",
@@ -22,7 +28,6 @@ export const slice = createSlice({
   initialState,
   reducers: {
     SET_STATE: (state, action) => {
-      console.log("action", action)
       return action.payload
     },
     EMPTY_STATE: () => {

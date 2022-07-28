@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import { useHistory, useParams } from "react-router-dom"
 import { GAME_ACTIONS } from "../../redux/reducers/game"
 import { useAppDispatch, useAppSelector } from "../../hooks/redux-hooks"
-import { GameParams, HandKey, ITerrain, User, IGameState } from "../../interfaces"
+import { GameParams, HandKey, User, IGameState } from "../../interfaces"
 import { newRandomGame, newTerrain, saveGameResult } from "../../queries/games"
 import Spinner from "../Spinner"
 import { ACButton, ModalTitle, Text } from "../styled-components"
@@ -15,7 +15,6 @@ interface IProps {
   currentXp: number
   isCampaignGame?: boolean
   modalType: string
-  setTerrain: (terrain: ITerrain) => void
 }
 
 export default function ModalContentResult({
@@ -23,7 +22,6 @@ export default function ModalContentResult({
   currentXp,
   isCampaignGame,
   modalType,
-  setTerrain,
 }: IProps) {
   const [isLoadingNewGame, setisLoadingNewGame] = useState<boolean>(false)
   const [earnedAnimal, setEarnedAnimal] = useState<string>()
@@ -49,7 +47,7 @@ export default function ModalContentResult({
       }))
 
     const gameToSave = {
-      terrain: game.terrainName!,
+      terrain: game.terrain.name,
       won,
       used_animals: {
         pc: mapCardsToSave("pc"),
@@ -86,7 +84,6 @@ export default function ModalContentResult({
     setisLoadingNewGame(true)
     newTerrain().then(terrainRes => {
       if (terrainRes && terrainRes.name) {
-        setTerrain(terrainRes)
         newRandomGame().then(gameRes => {
           if (gameRes && gameRes.pc && gameRes.user) {
             setisLoadingNewGame(false)

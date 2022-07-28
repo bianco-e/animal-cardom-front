@@ -1,12 +1,13 @@
 import styled from "styled-components"
-import { terrains } from "../../data/data"
+import { ITerrain } from "../../interfaces"
 
 const TOTAL_LEVELS = 7
 interface IProps {
   xp: number
+  terrains: ITerrain[]
 }
-export default function CampaignProgress({ xp }: IProps) {
-  const currentTerrain = terrains.find(t => t.getRequiredXp(xp) === xp)
+export default function CampaignProgress({ xp, terrains }: IProps) {
+  const currentTerrain = terrains.find(t => t.campaign_xp.includes(xp))
   const currentTerrainN = currentTerrain ? terrains.indexOf(currentTerrain) + 1 : 0
   const progress = currentTerrainN === 1 ? xp / 1350 + 1 : currentTerrainN
   const barWidth: number = xp === 0 ? 0 : (progress / TOTAL_LEVELS) * 100

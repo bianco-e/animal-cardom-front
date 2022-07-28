@@ -1,4 +1,6 @@
 export interface IGameState {
+  isLoading: boolean
+  gameError: boolean
   hands: IHands
   plants: IPlants
   animalToTreat?: IAnimal

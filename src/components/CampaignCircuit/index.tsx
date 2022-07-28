@@ -1,22 +1,21 @@
 import { useRef, useEffect, useState } from "react"
 import { useHistory } from "react-router-dom"
-import { ITerrain } from "../../interfaces"
+import { useAppSelector } from "../../hooks/redux-hooks"
+import { ITerrain, User } from "../../interfaces"
 import { getAllTerrains } from "../../queries/games"
 import CampaignProgress from "./Progress"
 import { TerrainContainer, Wrapper } from "./styled"
 
-const firstLevelGames = {
-  "450": 1,
-  "900": 2,
-  "1350": 3,
+const firstLevelGames: { [x: number]: number } = {
+  450: 1,
+  900: 2,
+  1350: 3,
 }
 
-interface IProps {
-  xp: number
-}
-export default function CampaignCircuit({ xp }: IProps) {
+export default function CampaignCircuit() {
   const [containerWidth, setContainerWidth] = useState<number>(200)
   const [terrains, setTerrains] = useState<ITerrain[]>([])
+  const { xp }: User = useAppSelector(({ auth }) => auth.user)
 
   const ANGLE = terrains.length ? 360 / terrains.length : 0
 
@@ -42,9 +41,14 @@ export default function CampaignCircuit({ xp }: IProps) {
 
   const handleCampaignGame = (xp: number) => history.push(`/game/${xp}`)
 
+  const getGames = () => {
+    if (firstLevelGames[xp]) return `${firstLevelGames[xp]}/3`
+    return xp > 1350 ? "3/3" : undefined
+  }
+
   return (
     <>
-      <CampaignProgress terrains={terrains} xp={xp} />
+      <CampaignProgress terrains={terrains} />
       <Wrapper ref={containerRef}>
         {terrains.map((terrain, idx) => {
           const { image, name, campaign_xp } = terrain
@@ -61,10 +65,7 @@ export default function CampaignCircuit({ xp }: IProps) {
               bgImage={image}
               containerWidth={containerWidth}
               disabled={isDisabled}
-              games={
-                //@ts-ignore
-                level === 1 && xp > 0 ? `${firstLevelGames[xp]}/3` : undefined
-              }
+              games={level === 1 ? getGames() : undefined}
               key={name}
               level={level}
               onClick={() => !isDisabled && handleCampaignGame(terrainXp)}

@@ -1,7 +1,9 @@
-import { createSlice } from "@reduxjs/toolkit"
+import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 import { IGameState } from "../../interfaces"
 
 const initialState: IGameState = {
+  isLoading: false,
+  gameError: false,
   hands: { user: [], pc: [] },
   plants: { user: [], pc: [] },
   animalToTreat: undefined,
@@ -30,8 +32,22 @@ export const slice = createSlice({
     SET_STATE: (state, action) => {
       return action.payload
     },
-    EMPTY_STATE: () => {
-      return initialState
+    SET_LOADING_GAME: (state, action) => {
+      return {
+        ...state,
+        isLoading: true,
+        gameError: false,
+      }
+    },
+    SET_GAME_ERROR: (state, action) => {
+      return {
+        ...state,
+        isLoading: false,
+        gameError: true,
+      }
+    },
+    EMPTY_STATE: (state, action: PayloadAction<{ isLoading: boolean } | undefined>) => {
+      return { ...initialState, isLoading: action.payload?.isLoading || false }
     },
     COMPUTER_THINK: state => {
       return {

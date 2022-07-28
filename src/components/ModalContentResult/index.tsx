@@ -8,31 +8,29 @@ import Spinner from "../Spinner"
 import { ACButton, ModalTitle, Text } from "../styled-components"
 import CampaignRewards from "./CampaignRewards"
 import { Wrapper } from "./styled"
-import { setCards } from "../../redux/actions/game"
+import { setGame } from "../../redux/actions/game"
+import { AUTH_ACTIONS } from "../../redux/reducers/auth"
 
 interface IProps {
   closeModal: () => void
-  currentXp: number
   isCampaignGame?: boolean
   modalType: string
 }
 
 export default function ModalContentResult({
   closeModal,
-  currentXp,
   isCampaignGame,
   modalType,
 }: IProps) {
-  const [isLoadingNewGame, setisLoadingNewGame] = useState<boolean>(false)
   const [earnedAnimal, setEarnedAnimal] = useState<string>()
   const [earnedCoins, setEarnedCoins] = useState<number>()
-  const [havingXp, setHavingXp] = useState<number>(0)
   const { requiredXp } = useParams<GameParams>()
   const user: User = useAppSelector(({ auth }) => auth.user)
-  const { auth_id: authId } = user
+  const { auth_id: authId, xp } = user
   const history = useHistory()
   const dispatch = useAppDispatch()
   const game = useAppSelector(({ game }) => game)
+  const { isLoading } = game
 
   const getStatsToSaveGame = (authId: string, won: boolean, game: IGameState): void => {
     const mapCardsToSave = (handKey: HandKey) =>
@@ -59,11 +57,12 @@ export default function ModalContentResult({
       },
     }
     const parsedReqXp = parseInt(requiredXp)
-    saveGameResult(authId, gameToSave, currentXp, parsedReqXp).then(res => {
+    saveGameResult(authId, gameToSave, xp, parsedReqXp).then(res => {
       if (res && !res.error) {
-        setHavingXp(res.current_xp)
-        setEarnedAnimal(res.earned_animal)
+        dispatch(AUTH_ACTIONS.SET_XP(res.current_xp))
+        dispatch(AUTH_ACTIONS.SET_COINS(res.current_coins))
         setEarnedCoins(res.earned_coins)
+        setEarnedAnimal(res.earned_animal)
       }
     })
   }
@@ -80,17 +79,15 @@ export default function ModalContentResult({
   }
 
   const handlePlayAgain = () => {
-    dispatch(GAME_ACTIONS.EMPTY_STATE())
-    setisLoadingNewGame(true)
+    dispatch(GAME_ACTIONS.EMPTY_STATE({ isLoading: true }))
     newTerrain().then(terrainRes => {
       if (terrainRes && terrainRes.name) {
         newRandomGame().then(gameRes => {
           if (gameRes && gameRes.pc && gameRes.user) {
-            setisLoadingNewGame(false)
             closeModal()
             dispatch(
               //@ts-ignore
-              setCards(
+              setGame(
                 { pc: gameRes.pc.animals, user: gameRes.user.animals },
                 { pc: gameRes.pc.plants, user: gameRes.user.plants },
                 terrainRes
@@ -122,14 +119,10 @@ export default function ModalContentResult({
         )
       )}
       {isCampaignGame ? (
-        <CampaignRewards
-          earnedAnimal={earnedAnimal}
-          earnedCoins={earnedCoins}
-          currentXp={havingXp}
-        />
+        <CampaignRewards earnedAnimal={earnedAnimal} earnedCoins={earnedCoins} />
       ) : (
         <>
-          {isLoadingNewGame ? (
+          {isLoading ? (
             <Spinner />
           ) : (
             <>

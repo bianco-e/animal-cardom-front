@@ -5,9 +5,7 @@ import { useHistory, useParams } from "react-router-dom"
 import { BREAKPOINTS } from "../utils/constants"
 import { GAME_ACTIONS } from "../redux/reducers/game"
 import SidePanel from "../components/GamePanel"
-import { GameParams, IAnimal, IPlant, ITerrain, User } from "../interfaces"
-import { getUserMe } from "../queries/user"
-import { newTerrain, newCampaignGame, newRandomGame } from "../queries/games"
+import { GameParams, IAnimal, User } from "../interfaces"
 import Spinner from "../components/Spinner"
 import ModalContentResult from "../components/ModalContentResult"
 import { getLiveCards } from "../utils"
@@ -15,7 +13,7 @@ import { trackAction } from "../queries/tracking"
 import { HandContainer } from "../components/styled-components"
 import Card from "../components/Card"
 import { useAppDispatch, useAppSelector } from "../hooks/redux-hooks"
-import { computerPlay, setCards } from "../redux/actions/game"
+import { computerPlay, startCampaignGame, startGuestGame } from "../redux/actions/game"
 
 interface IProps {
   isCampaign?: boolean
@@ -24,63 +22,41 @@ interface IProps {
 export default function Game({ isCampaign }: IProps) {
   const game = useAppSelector(({ game }) => game)
   const dispatch = useAppDispatch()
-  const [currentXp, setCurrentXp] = useState<number>(0)
-  const [isLoading, setIsLoading] = useState<boolean>(false)
   const [userName, setUserName] = useState<string>("")
   const [modal, setModal] = useState<string>("")
-  const history = useHistory()
+  const { push } = useHistory()
   const { requiredXp } = useParams<GameParams>()
-  const { hands, plants, pcTurn, pcPlay, triggerPcAttack, terrain } = game
+  const {
+    hands,
+    plants,
+    pcTurn,
+    pcPlay,
+    triggerPcAttack,
+    terrain,
+    gameError,
+    isLoading,
+  } = game
   const { auth_id: authId }: User = useAppSelector(({ auth }) => auth.user)
-  interface Response {
-    user: { animals: IAnimal[]; plants: IPlant[] }
-    pc: { animals: IAnimal[]; plants: IPlant[] }
-  }
 
-  const newGameResHandler = (terrain: ITerrain, res?: Response) => {
-    setIsLoading(false)
-    if (res && res.user && res.pc) {
-      dispatch(
-        //@ts-ignore
-        setCards(
-          { pc: res.pc.animals, user: res.user.animals },
-          { pc: res.pc.plants, user: res.user.plants },
-          terrain
-        )
-      )
-    }
-  }
+  useEffect(() => {
+    if (gameError) return push(isCampaign ? "/campaign" : "/")
+  }, [gameError]) //eslint-disable-line
 
-  const checkUserAndStartGame = async () => {
-    setIsLoading(true)
+  useEffect(() => {
+    dispatch(GAME_ACTIONS.SET_LOADING_GAME(true))
     if (!isCampaign) {
       // is game for guests
       const guest = localStorage.getItem("ac-guest-name")
-      guest ? setUserName(guest) : history.push("/")
-      const terrainRes = await newTerrain()
-      const newGameRes = await newRandomGame()
-      if (terrainRes.error || newGameRes.error) return history.push("/error")
-      newGameResHandler(terrainRes, newGameRes)
+      guest ? setUserName(guest) : push("/")
+      //@ts-ignore
+      dispatch(startGuestGame())
     } else {
       // is campaign game
-      if (!authId) return history.push("/")
-      const userRes = await getUserMe(authId)
-      if (userRes.error) return history.push("/")
-      const { first_name, hand, xp } = userRes
-      setUserName(first_name)
       const parsedReqXp = parseInt(requiredXp)
-      if (xp < parsedReqXp) return history.push("/campaign")
-      setCurrentXp(xp)
-      const terrainRes = await newTerrain(parsedReqXp)
-      const gameRes = await newCampaignGame(parsedReqXp, hand)
-      if (terrainRes.error || gameRes.error) return history.push("/campaign")
-      newGameResHandler(terrainRes, gameRes)
+      //@ts-ignore
+      dispatch(startCampaignGame(setUserName, parsedReqXp))
     }
-  }
-
-  useEffect(() => {
-    checkUserAndStartGame()
-  }, []) //eslint-disable-line
+  }, [isCampaign]) //eslint-disable-line
 
   useEffect(() => {
     if (!hands.pc.length || !hands.user.length) return
@@ -147,7 +123,6 @@ export default function Game({ isCampaign }: IProps) {
             closeModal={() => setModal("")}
             modalType={modal}
             isCampaignGame={isCampaign}
-            currentXp={currentXp}
           />
         </Modal>
       )}

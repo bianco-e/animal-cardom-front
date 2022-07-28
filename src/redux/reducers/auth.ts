@@ -12,6 +12,7 @@ export const slice = createSlice({
       auth_id: undefined,
       role: undefined,
       coins: 0,
+      xp: 0,
     },
   },
   reducers: {
@@ -35,6 +36,15 @@ export const slice = createSlice({
         user: {
           ...state.user,
           coins: action.payload,
+        },
+      }
+    },
+    SET_XP: (state, action) => {
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          xp: action.payload,
         },
       }
     },

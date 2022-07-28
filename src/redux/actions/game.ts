@@ -16,6 +16,45 @@ import {
 } from "../../interfaces"
 import { GAME_ACTIONS } from "../reducers/game"
 import { AppDispatch } from ".."
+import { newCampaignGame, newRandomGame, newTerrain } from "../../queries/games"
+
+export const startGuestGame = () => {
+  return async (dispatch: AppDispatch) => {
+    const terrainRes = await newTerrain()
+    const gameRes = await newRandomGame()
+    if (terrainRes.error || gameRes.error)
+      return dispatch(GAME_ACTIONS.SET_GAME_ERROR(true))
+    dispatch(
+      //@ts-ignore
+      setGame(
+        { pc: gameRes.pc.animals, user: gameRes.user.animals },
+        { pc: gameRes.pc.plants, user: gameRes.user.plants },
+        terrainRes
+      )
+    )
+  }
+}
+
+export const startCampaignGame = (setUserName: (str: string) => void, reqXp: number) => {
+  return async (dispatch: AppDispatch, getState: () => IRootState) => {
+    const { auth } = getState()
+    const { first_name, hand, xp } = auth.user
+    setUserName(first_name)
+    if (xp < reqXp) dispatch(GAME_ACTIONS.SET_GAME_ERROR(true))
+    const terrainRes = await newTerrain(reqXp)
+    const gameRes = await newCampaignGame(reqXp, hand)
+    if (terrainRes.error || gameRes.error)
+      return dispatch(GAME_ACTIONS.SET_GAME_ERROR(true))
+    dispatch(
+      //@ts-ignore
+      setGame(
+        { pc: gameRes.pc.animals, user: gameRes.user.animals },
+        { pc: gameRes.pc.plants, user: gameRes.user.plants },
+        terrainRes
+      )
+    )
+  }
+}
 
 const getHighestAttackCard = (hand: IAnimal[]) =>
   hand.reduce((acc, value) => (value.attack.current > acc.attack.current ? value : acc))
@@ -299,6 +338,8 @@ const setCardsAndTerrain = (game: IGameState, terrain: ITerrain) => {
   return {
     ...game,
     terrain: terrain,
+    isLoading: false,
+    gameError: false,
     hands: {
       pc: buffCards(game.hands.pc),
       user: buffCards(game.hands.user),
@@ -306,7 +347,7 @@ const setCardsAndTerrain = (game: IGameState, terrain: ITerrain) => {
   }
 }
 
-export const setCards = (hands: IHands, plants: IPlants, terrain: ITerrain) => {
+export const setGame = (hands: IHands, plants: IPlants, terrain: ITerrain) => {
   return (dispatch: AppDispatch, getState: () => IRootState) => {
     const { game } = getState()
     const updatedGame = setCardsAndTerrain({ ...game, hands, plants }, terrain)

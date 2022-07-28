@@ -1,12 +1,13 @@
 import styled from "styled-components"
-import { ITerrain } from "../../interfaces"
+import { useAppSelector } from "../../hooks/redux-hooks"
+import { ITerrain, User } from "../../interfaces"
 
 const TOTAL_LEVELS = 7
 interface IProps {
-  xp: number
   terrains: ITerrain[]
 }
-export default function CampaignProgress({ xp, terrains }: IProps) {
+export default function CampaignProgress({ terrains }: IProps) {
+  const { xp }: User = useAppSelector(({ auth }) => auth.user)
   const currentTerrain = terrains.find(t => t.campaign_xp.includes(xp))
   const currentTerrainN = currentTerrain ? terrains.indexOf(currentTerrain) + 1 : 0
   const progress = currentTerrainN === 1 ? xp / 1350 + 1 : currentTerrainN

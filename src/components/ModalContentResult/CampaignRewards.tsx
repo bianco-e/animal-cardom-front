@@ -10,17 +10,13 @@ import { useAppDispatch } from "../../hooks/redux-hooks"
 interface IProps {
   earnedAnimal?: string
   earnedCoins?: number
-  currentXp: number
 }
 
-export default function CampaignRewards({
-  earnedAnimal,
-  earnedCoins,
-  currentXp,
-}: IProps) {
+export default function CampaignRewards({ earnedAnimal, earnedCoins }: IProps) {
   const { push } = useHistory()
   const [earnedCard, setEarnedCard] = useState<IAnimal>()
   const dispatch = useAppDispatch()
+
   const getEarnedCard = async (earnedAnimal: string) => {
     const res = await getAnimalByName(earnedAnimal)
     if (res.error) return
@@ -49,7 +45,7 @@ export default function CampaignRewards({
 
   return (
     <>
-      <AvatarWithXpBar xp={currentXp} />
+      <AvatarWithXpBar />
       {earnedCoins ? (
         <div className="earned-coins">
           <span>

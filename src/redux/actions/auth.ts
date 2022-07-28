@@ -28,14 +28,17 @@ export const loginUser = (userData: AuthUser) => {
       dispatch(SET_TOKEN(token))
       return dispatch(SET_USER_SUCCESS(user))
     }
+    if (error && error === "no_user") return dispatch(SET_USER_ERROR())
 
     //register user
-    if (error === "no_user") {
-      const userTemplate = getNewUserTemplate(userData)
-      const { token, error, user } = await createUser(userTemplate)
-      if (error) return dispatch(SET_USER_ERROR())
-      dispatch(SET_TOKEN(token))
-      return dispatch(SET_USER_SUCCESS(user))
-    }
+    const userTemplate = getNewUserTemplate(userData)
+    const {
+      token: regToken,
+      error: regError,
+      user: regUser,
+    } = await createUser(userTemplate)
+    if (regError) return dispatch(SET_USER_ERROR())
+    dispatch(SET_TOKEN(regToken))
+    return dispatch(SET_USER_SUCCESS(regUser))
   }
 }

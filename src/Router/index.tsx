@@ -14,6 +14,7 @@ import Modal from "../components/Common/Modal"
 import ModalScreenWidthContent from "../components/ModalScreenWidthContent"
 import useWindowDimensions from "../hooks/useWindowDimensions"
 import NotFoundPage from "../pages/NotFound"
+import PrivateRoute from "./PrivateRoute"
 
 const MainRouter = () => {
   const dimensions = useWindowDimensions()
@@ -31,15 +32,16 @@ const MainRouter = () => {
       <Switch>
         <Route exact path="/" render={() => <WelcomePage />} />
         <Route exact path="/analytics" render={() => <Analytics />} />
-        <Route
+        <Route exact path={"/play"} render={() => <Game />} />
+        <PrivateRoute
           exact
-          path={["/play", "/game/:requiredXp(0|450|900|1350|1800|2250|2700|3150|3600)"]}
+          path={"/game/:requiredXp(0|450|900|1350|1800|2250|2700|3150|3600)"}
           render={() => <Game />}
         />
-        <Route exact path="/menu" render={() => <Menu />} />
-        <Route exact path="/campaign" render={() => <Campaign />} />
-        <Route exact path="/profile" render={() => <Profile />} />
-        <Route exact path="/collection" render={() => <Collection />} />
+        <PrivateRoute exact path="/menu" render={() => <Menu />} />
+        <PrivateRoute exact path="/campaign" render={() => <Campaign />} />
+        <PrivateRoute exact path="/profile" render={() => <Profile />} />
+        <PrivateRoute exact path="/collection" render={() => <Collection />} />
         <Route exact path="/error" render={() => <ErrorPage />} />
         <Route exact path="/give-feedback" render={() => <FeedbackPage />} />
 

@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react"
 import styled from "styled-components"
 import { Message } from "../components/styled-components"
-import { IAnimal, IUserState } from "../interfaces"
-import { getCookie, sortCardsAlphabetically } from "../utils"
+import { IAnimal, User } from "../interfaces"
+import { sortCardsAlphabetically } from "../utils"
 import { getUserProfile } from "../queries/user"
 import { getAllAnimalsCards, getFilteredAnimalsCards } from "../queries/animalsCards"
 import MenuLayout from "../components/MenuLayout"
@@ -14,12 +14,10 @@ import ModalHandEditContent from "../components/ModalHandEditContent"
 import ModalCardPurchaseContent from "../components/ModalCardPurchaseContent"
 import Accordion from "../components/Common/Accordion"
 import { BREAKPOINTS } from "../utils/constants"
-import { useSelector } from "react-redux"
+import { useAppSelector } from "../hooks/redux-hooks"
 
 const getCardOpacityForPreview = (cards: string[], name: string): string => {
-  if (cards.find(card => card === name)) {
-    return "1"
-  }
+  if (cards.find(card => card === name)) return "1"
   return "0.6"
 }
 
@@ -35,7 +33,7 @@ export default function Collection() {
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [animalToAdd, setAnimalToAdd] = useState<IAnimal>()
   const [animalToBuy, setAnimalToBuy] = useState<IAnimal>()
-  const coins: number = useSelector(({ user }: { user: IUserState }) => user.data.coins)
+  const { coins, auth_id: authId }: User = useAppSelector(({ auth }) => auth.user)
 
   useEffect(() => {
     setIsLoading(true)
@@ -46,7 +44,6 @@ export default function Collection() {
         setCardsToShow(sortCardsAlphabetically(res.animals))
       }
     })
-    const authId = getCookie("auth=")
     if (authId) {
       getUserProfile(authId).then(res => {
         if (res && res.owned_cards && res.hand && res.coins !== undefined) {
@@ -55,7 +52,7 @@ export default function Collection() {
         }
       })
     }
-  }, [])
+  }, []) //eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     const sendingOwnedCards = owningFilter ? ownedCards.map(card => card) : undefined
@@ -102,35 +99,9 @@ export default function Collection() {
           ) : (
             <CardsContainer>
               {hand.map(card => {
-                const {
-                  attack,
-                  bleeding,
-                  name,
-                  image,
-                  life,
-                  paralyzed,
-                  poisoned,
-                  skill,
-                  species,
-                  targeteable,
-                } = card
                 return (
-                  <SingleCardContainer>
-                    <Card
-                      attack={attack}
-                      belongsToUser={false}
-                      bleeding={bleeding}
-                      species={species}
-                      image={image}
-                      key={name}
-                      life={life}
-                      opacityForPreview="1"
-                      paralyzed={paralyzed}
-                      poisoned={poisoned}
-                      skill={skill}
-                      name={name}
-                      targeteable={targeteable}
-                    />
+                  <SingleCardContainer key={card.name}>
+                    <Card {...card} opacityForPreview="1" />
                   </SingleCardContainer>
                 )
               })}
@@ -143,48 +114,25 @@ export default function Collection() {
           ) : cardsToShow.length > 0 ? (
             <CardsContainer>
               {cardsToShow.map(card => {
-                const {
-                  attack,
-                  bleeding,
-                  name,
-                  image,
-                  life,
-                  paralyzed,
-                  poisoned,
-                  skill,
-                  species,
-                  targeteable,
-                  price,
-                } = card
                 const onPreviewClick =
-                  ownedCards.includes(name) && !currentHand.includes(name)
+                  ownedCards.includes(card.name) && !currentHand.includes(card.name)
                     ? handleEditHandClick
                     : undefined
                 return (
-                  <SingleCardContainer>
+                  <SingleCardContainer key={card.name}>
                     <Card
-                      attack={attack}
+                      {...card}
                       belongsToUser={false}
-                      bleeding={bleeding}
-                      displayInHandSign={currentHand.includes(name)}
-                      species={species}
-                      image={image}
-                      key={name}
-                      life={life}
+                      displayInHandSign={currentHand.includes(card.name)}
                       onPreviewClick={onPreviewClick}
-                      opacityForPreview={getCardOpacityForPreview(ownedCards, name)}
-                      paralyzed={paralyzed}
-                      poisoned={poisoned}
-                      skill={skill}
-                      name={name}
-                      targeteable={targeteable}
+                      opacityForPreview={getCardOpacityForPreview(ownedCards, card.name)}
                     />
-                    {!ownedCards.includes(name) && (
+                    {!ownedCards.includes(card.name) && (
                       <BuyButton
-                        disabled={coins < price}
+                        disabled={coins < card.price}
                         onClick={() => handlePurchaseClick(card)}>
                         <img alt="coins" src="/images/icons/coins.png" width={16} />
-                        {price}
+                        {card.price}
                       </BuyButton>
                     )}
                   </SingleCardContainer>

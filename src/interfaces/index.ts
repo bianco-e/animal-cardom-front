@@ -96,6 +96,7 @@ export interface AuthUser {
 
 export interface User {
   auth_id: string
+  coins: number
   picture: string
   email: string
   first_name: string
@@ -122,14 +123,12 @@ export interface GameParams {
   requiredXp: string
 }
 
-export interface ReduxAction {
-  type: string
-  payload: any
-}
-
-export interface IUserState {
-  token: string | null
-  data: {
-    coins: number
+export interface IRootState {
+  auth: {
+    isLogged: boolean
+    error: boolean
+    isLoading: boolean
+    token: string | null
+    user: User
   }
 }

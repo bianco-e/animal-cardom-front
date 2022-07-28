@@ -9,57 +9,31 @@ import { BREAKPOINTS } from "../utils/constants"
 
 export default function Menu() {
   const [newestAnimals, setNewestAnimals] = useState<IAnimal[]>([])
+
+  const fetchNewestAnimals = async () => {
+    const animalsRes = await getNewestAnimals()
+    if (animalsRes.error) return
+    setNewestAnimals(animalsRes.animals)
+  }
+
   useEffect(() => {
-    getNewestAnimals().then(res => {
-      if (res && res.animals) {
-        setNewestAnimals(res.animals)
-      }
-    })
+    fetchNewestAnimals()
   }, [])
+
   return (
     <MenuLayout>
-      <>
-        <Wrapper>
-          <Title>Newest animals</Title>
-          {!(newestAnimals.length > 0) ? (
-            <Spinner />
-          ) : (
-            <div>
-              {newestAnimals.map(card => {
-                const {
-                  attack,
-                  bleeding,
-                  name,
-                  image,
-                  life,
-                  paralyzed,
-                  poisoned,
-                  skill,
-                  species,
-                  targeteable,
-                } = card
-                return (
-                  <Card
-                    attack={attack}
-                    belongsToUser={false}
-                    bleeding={bleeding}
-                    species={species}
-                    image={image}
-                    key={name}
-                    life={life}
-                    opacityForPreview="1"
-                    paralyzed={paralyzed}
-                    poisoned={poisoned}
-                    skill={skill}
-                    name={name}
-                    targeteable={targeteable}
-                  />
-                )
-              })}
-            </div>
-          )}
-        </Wrapper>
-      </>
+      <Wrapper>
+        <Title>Newest animals</Title>
+        {!(newestAnimals.length > 0) ? (
+          <Spinner />
+        ) : (
+          <div>
+            {newestAnimals.map(card => (
+              <Card {...card} key={card.name} opacityForPreview="1" />
+            ))}
+          </div>
+        )}
+      </Wrapper>
     </MenuLayout>
   )
 }

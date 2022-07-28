@@ -1,23 +1,24 @@
-import { useEffect, useState } from "react"
-import { useAuth0 } from "@auth0/auth0-react"
-import { Route, useHistory } from "react-router-dom"
-import { useDispatch } from "react-redux"
-import { AuthUser } from "../interfaces"
+import { Redirect, Route } from "react-router-dom"
+import Spinner from "../components/Spinner"
+import { useAppSelector } from "../hooks/redux-hooks"
+import useLogin from "../hooks/useLogin"
 
 interface IProps {
-  children: JSX.Element
+  exact?: boolean
+  path: string
+  render: () => JSX.Element
 }
 
-export default function PrivateRoute({ children }: IProps) {
-  const { user, isAuthenticated, isLoading } = useAuth0<AuthUser>()
-  const dispatch = useDispatch()
-  const { push } = useHistory()
-  const [showSpinner, setShowSpiiner] = useState<boolean>(false)
-
-  useEffect(() => {
-    if (!isAuthenticated || !user) return
-    if (!user.sub) return
-  }, [isAuthenticated, user])
-
-  return <Route>{children}</Route>
+export default function PrivateRoute({ exact, path, render }: IProps) {
+  useLogin()
+  const { error, isLoading, isLogged } = useAppSelector(({ auth }) => auth)
+  return isLoading ? (
+    <Spinner />
+  ) : error ? (
+    <Redirect to="/error" />
+  ) : isLogged ? (
+    <Route exact={exact} path={path} render={render} />
+  ) : (
+    <Redirect to="/" />
+  )
 }

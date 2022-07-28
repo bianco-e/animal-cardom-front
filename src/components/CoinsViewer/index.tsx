@@ -1,9 +1,8 @@
-import { useSelector } from "react-redux"
-import { IUserState } from "../../interfaces"
+import { useAppSelector } from "../../hooks/redux-hooks"
 import { Wrapper } from "./styled"
 
 export default function CoinsViewer() {
-  const coins: number = useSelector(({ user }: { user: IUserState }) => user.data.coins)
+  const coins: number = useAppSelector(({ auth }) => auth.user.coins)
 
   return (
     <Wrapper>

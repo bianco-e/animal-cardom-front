@@ -1,14 +1,13 @@
 import { useState } from "react"
 import styled from "styled-components"
 import Card from "./Card"
-import { IAnimal, IUserState } from "../interfaces"
+import { IAnimal, User } from "../interfaces"
 import { ACButton } from "./styled-components"
 import { animalPurchase } from "../queries/user"
-import { getCookie } from "../utils"
 import Spinner from "./Spinner"
 import { BREAKPOINTS } from "../utils/constants"
-import { useDispatch, useSelector } from "react-redux"
-import { setCoins } from "../redux/actions/user"
+import { useAppDispatch, useAppSelector } from "../hooks/redux-hooks"
+import { SET_COINS } from "../redux/reducers/auth"
 
 interface IProps {
   animalToBuy: IAnimal
@@ -22,18 +21,17 @@ export default function ModalHandEditContent({
   ownedCards,
   setOwnedCards,
 }: IProps) {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const [isLoading, setIsLoading] = useState<boolean>(false)
-  const coins: number = useSelector(({ user }: { user: IUserState }) => user.data.coins)
+  const user: User = useAppSelector(({ auth }) => auth.user)
+  const { coins, auth_id: authId } = user
 
   const handleConfirm = () => {
-    const authId = getCookie("auth=")
-    if (!authId) return
     setIsLoading(true)
     animalPurchase(authId, animalToBuy.name, animalToBuy.price).then(res => {
       if (res && res.new_card) {
         setIsLoading(false)
-        dispatch(setCoins(coins - animalToBuy.price))
+        dispatch(SET_COINS(coins - animalToBuy.price))
         setOwnedCards(ownedCards.concat(res.new_card))
         closeModal()
       }

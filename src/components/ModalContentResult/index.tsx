@@ -2,9 +2,9 @@ import { useContext, useEffect, useState } from "react"
 import { useHistory, useParams } from "react-router-dom"
 import HandsContext, { IHandsContext, IGameState } from "../../context/HandsContext"
 import { EMPTY_STATE, SET_CARDS } from "../../context/HandsContext/types"
-import { GameParams, HandKey, ITerrain } from "../../interfaces"
+import { useAppSelector } from "../../hooks/redux-hooks"
+import { GameParams, HandKey, ITerrain, User } from "../../interfaces"
 import { newRandomGame, newTerrain, saveGameResult } from "../../queries/games"
-import { getCookie } from "../../utils"
 import Spinner from "../Spinner"
 import { ACButton, ModalTitle, Text } from "../styled-components"
 import CampaignRewards from "./CampaignRewards"
@@ -31,6 +31,8 @@ export default function ModalContentResult({
   const [earnedCoins, setEarnedCoins] = useState<number>()
   const [havingXp, setHavingXp] = useState<number>(0)
   const { requiredXp } = useParams<GameParams>()
+  const user: User = useAppSelector(({ auth }) => auth.user)
+  const { auth_id: authId } = user
   const history = useHistory()
 
   const getStatsToSaveGame = (authId: string, won: boolean, state: IGameState): void => {
@@ -68,7 +70,6 @@ export default function ModalContentResult({
   }
 
   useEffect(() => {
-    const authId = getCookie("auth=")
     if (isCampaignGame && authId) {
       getStatsToSaveGame(authId, modalType === "win", state)
     }

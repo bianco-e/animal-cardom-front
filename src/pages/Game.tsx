@@ -6,15 +6,16 @@ import { BREAKPOINTS } from "../utils/constants"
 import HandsContext, { IHandsContext } from "../context/HandsContext"
 import { COMPUTER_PLAY, COMPUTER_THINK, SET_CARDS } from "../context/HandsContext/types"
 import SidePanel from "../components/GamePanel"
-import { GameParams, IAnimal, IPlant, ITerrain } from "../interfaces"
+import { GameParams, IAnimal, IPlant, ITerrain, User } from "../interfaces"
 import { getUserMe } from "../queries/user"
 import { newTerrain, newCampaignGame, newRandomGame } from "../queries/games"
 import Spinner from "../components/Spinner"
 import ModalContentResult from "../components/ModalContentResult"
-import { getCookie, getLiveCards } from "../utils"
+import { getLiveCards } from "../utils"
 import { trackAction } from "../queries/tracking"
 import { HandContainer } from "../components/styled-components"
 import Card from "../components/Card"
+import { useAppSelector } from "../hooks/redux-hooks"
 
 const emptyTerrain = {
   name: "",
@@ -36,6 +37,7 @@ export default function App() {
   const { requiredXp } = useParams<GameParams>()
   const { pathname } = useLocation()
   const { hands, plants, pcTurn, pcPlay, triggerPcAttack } = state
+  const { auth_id: authId }: User = useAppSelector(({ auth }) => auth.user)
 
   interface Response {
     user: { animals: IAnimal[]; plants: IPlant[] }
@@ -68,7 +70,6 @@ export default function App() {
     } else {
       // is campaign game
       setIsCampaignGame(true)
-      const authId = getCookie("auth=")
       if (!authId) return history.push("/")
       const userRes = await getUserMe(authId)
       if (userRes.error) return history.push("/")
@@ -91,7 +92,6 @@ export default function App() {
 
   useEffect(() => {
     if (!hands.pc.length || !hands.user.length) return
-    const authId = getCookie("auth=")
     const guestName = localStorage.getItem("ac-guest-name")
     const baseAction = {
       ...(authId ? { auth_id: authId } : {}),

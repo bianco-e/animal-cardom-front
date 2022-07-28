@@ -1,12 +1,12 @@
-import { useContext, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { useHistory } from "react-router"
-import HandsContext, { IHandsContext } from "../../context/HandsContext"
-import { EMPTY_STATE } from "../../context/HandsContext/types"
+import { GAME_ACTIONS } from "../../redux/reducers/game"
 import { IAnimal } from "../../interfaces"
 import { getAnimalByName } from "../../queries/animalsCards"
 import AvatarWithXpBar from "../AvatarWithXpBar"
 import Card from "../Card"
 import { ACButton, Text } from "../styled-components"
+import { useAppDispatch } from "../../hooks/redux-hooks"
 interface IProps {
   earnedAnimal?: string
   earnedCoins?: number
@@ -18,10 +18,9 @@ export default function CampaignRewards({
   earnedCoins,
   currentXp,
 }: IProps) {
-  const [, dispatch] = useContext<IHandsContext>(HandsContext)
   const { push } = useHistory()
   const [earnedCard, setEarnedCard] = useState<IAnimal>()
-
+  const dispatch = useAppDispatch()
   const getEarnedCard = async (earnedAnimal: string) => {
     const res = await getAnimalByName(earnedAnimal)
     if (res.error) return
@@ -29,7 +28,7 @@ export default function CampaignRewards({
   }
 
   const handleRoute = (path: string) => {
-    dispatch({ type: EMPTY_STATE })
+    dispatch(GAME_ACTIONS.EMPTY_STATE())
     push(path)
   }
 

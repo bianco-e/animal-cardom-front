@@ -1,3 +1,20 @@
+export interface IGameState {
+  hands: IHands
+  plants: IPlants
+  animalToTreat?: IAnimal
+  treatedAnimal?: IAnimal
+  selectedPlant?: IPlant
+  usedPlants: IPlant[]
+  attacker?: IAnimal
+  defender?: IAnimal
+  terrainName?: string
+  underAttack?: string
+  dodgedAttack?: string
+  pcTurn: boolean
+  triggerPcAttack: boolean
+  pcPlay: string
+}
+
 export type HandKey = "pc" | "user"
 
 export interface Stat<T> {
@@ -131,4 +148,5 @@ export interface IRootState {
     token: string | null
     user: User
   }
+  game: IGameState
 }

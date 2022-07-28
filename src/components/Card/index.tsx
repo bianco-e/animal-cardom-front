@@ -1,7 +1,5 @@
-import { useContext, useEffect } from "react"
+import { useEffect } from "react"
 import { CARD_ICONS } from "../../data/data"
-import HandsContext from "../../context/HandsContext"
-import { SELECT_CARD } from "../../context/HandsContext/types"
 import { IAnimal, Stat } from "../../interfaces"
 import {
   attackAnimation,
@@ -21,6 +19,8 @@ import {
   StatsWrapper,
   Text,
 } from "./styled"
+import { useAppDispatch, useAppSelector } from "../../hooks/redux-hooks"
+import { selectCard } from "../../redux/actions/game"
 
 interface IProps extends IAnimal {
   belongsToUser?: boolean
@@ -48,16 +48,17 @@ export default function Card({
   targeteable,
   width,
 }: IProps) {
-  const [state, dispatch] = useContext(HandsContext)
+  const dispatch = useAppDispatch()
+  const game = useAppSelector(({ game }) => game)
   const isForPreview = !!opacityForPreview
   const isParalyzed = paralyzed > 0
-  const isCardSelected = !isForPreview && state.attacker?.name === name
-  const isCardUnderAttack = state.underAttack === name
-  const hasDodgedAttack = state.dodgedAttack === name
+  const isCardSelected = !isForPreview && game.attacker?.name === name
+  const isCardUnderAttack = game.underAttack === name
+  const hasDodgedAttack = game.dodgedAttack === name
   const hasCondition = !targeteable || missingChance
   const soundState = localStorage.getItem("sound")
   const [animationProps] = usePlantAnimation({ name, soundState })
-  console.log("missingChance", missingChance)
+
   useEffect(() => {
     isCardUnderAttack && soundState === "on" && attackAudio.play()
   }, [isCardUnderAttack, soundState])
@@ -77,10 +78,12 @@ export default function Card({
     : {
         attackAnimation: isCardUnderAttack ? attackAnimation : undefined,
         selectionAnimation: isCardSelected ? selectionAnimation : undefined,
-        cursor: belongsToUser || state.attacker ? "pointer" : "default",
+        cursor:
+          belongsToUser || game.attacker || game.selectedPlant ? "pointer" : "default",
         isCardSelected,
         isParalyzed,
-        onClick: () => !state.pcTurn && dispatch({ type: SELECT_CARD, name }),
+        //@ts-ignore
+        onClick: () => (!game.pcTurn ? dispatch(selectCard(name)) : null),
         opacity: `${life.current === "DEAD" ? "0.5" : "1"}`,
         transform: belongsToUser ? "translateY(-8px)" : "",
       }

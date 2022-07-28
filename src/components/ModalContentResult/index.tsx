@@ -1,19 +1,19 @@
-import { useContext, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { useHistory, useParams } from "react-router-dom"
-import HandsContext, { IHandsContext, IGameState } from "../../context/HandsContext"
-import { EMPTY_STATE, SET_CARDS } from "../../context/HandsContext/types"
-import { useAppSelector } from "../../hooks/redux-hooks"
-import { GameParams, HandKey, ITerrain, User } from "../../interfaces"
+import { GAME_ACTIONS } from "../../redux/reducers/game"
+import { useAppDispatch, useAppSelector } from "../../hooks/redux-hooks"
+import { GameParams, HandKey, ITerrain, User, IGameState } from "../../interfaces"
 import { newRandomGame, newTerrain, saveGameResult } from "../../queries/games"
 import Spinner from "../Spinner"
 import { ACButton, ModalTitle, Text } from "../styled-components"
 import CampaignRewards from "./CampaignRewards"
 import { Wrapper } from "./styled"
+import { setCards } from "../../redux/actions/game"
 
 interface IProps {
   closeModal: () => void
   currentXp: number
-  isCampaignGame: boolean
+  isCampaignGame?: boolean
   modalType: string
   setTerrain: (terrain: ITerrain) => void
 }
@@ -25,7 +25,6 @@ export default function ModalContentResult({
   modalType,
   setTerrain,
 }: IProps) {
-  const [state, dispatch] = useContext<IHandsContext>(HandsContext)
   const [isLoadingNewGame, setisLoadingNewGame] = useState<boolean>(false)
   const [earnedAnimal, setEarnedAnimal] = useState<string>()
   const [earnedCoins, setEarnedCoins] = useState<number>()
@@ -34,21 +33,23 @@ export default function ModalContentResult({
   const user: User = useAppSelector(({ auth }) => auth.user)
   const { auth_id: authId } = user
   const history = useHistory()
+  const dispatch = useAppDispatch()
+  const game = useAppSelector(({ game }) => game)
 
-  const getStatsToSaveGame = (authId: string, won: boolean, state: IGameState): void => {
+  const getStatsToSaveGame = (authId: string, won: boolean, game: IGameState): void => {
     const mapCardsToSave = (handKey: HandKey) =>
-      state.hands[handKey].map(card => ({
+      game.hands[handKey].map(card => ({
         name: card.name,
         survived: card.life.current !== "DEAD",
       }))
     const mapPlantsToSave = (handKey: HandKey) =>
-      state.plants[handKey].map(plant => ({
+      game.plants[handKey].map(plant => ({
         name: plant.name,
-        applied: !!state.usedPlants.find(pl => pl.name === plant.name),
+        applied: !!game.usedPlants.find(pl => pl.name === plant.name),
       }))
 
     const gameToSave = {
-      terrain: state.terrainName!,
+      terrain: game.terrainName!,
       won,
       used_animals: {
         pc: mapCardsToSave("pc"),
@@ -71,17 +72,17 @@ export default function ModalContentResult({
 
   useEffect(() => {
     if (isCampaignGame && authId) {
-      getStatsToSaveGame(authId, modalType === "win", state)
+      getStatsToSaveGame(authId, modalType === "win", game)
     }
   }, []) //eslint-disable-line
 
   const handleRoute = (path: string) => {
-    dispatch({ type: EMPTY_STATE })
+    dispatch(GAME_ACTIONS.EMPTY_STATE())
     history.push(path)
   }
 
   const handlePlayAgain = () => {
-    dispatch({ type: EMPTY_STATE })
+    dispatch(GAME_ACTIONS.EMPTY_STATE())
     setisLoadingNewGame(true)
     newTerrain().then(terrainRes => {
       if (terrainRes && terrainRes.name) {
@@ -90,12 +91,14 @@ export default function ModalContentResult({
           if (gameRes && gameRes.pc && gameRes.user) {
             setisLoadingNewGame(false)
             closeModal()
-            dispatch({
-              type: SET_CARDS,
-              hands: { pc: gameRes.pc.animals, user: gameRes.user.animals },
-              plants: { pc: gameRes.pc.plants, user: gameRes.user.plants },
-              terrain: terrainRes,
-            })
+            dispatch(
+              //@ts-ignore
+              setCards(
+                { pc: gameRes.pc.animals, user: gameRes.user.animals },
+                { pc: gameRes.pc.plants, user: gameRes.user.plants },
+                terrainRes
+              )
+            )
           }
         })
       }

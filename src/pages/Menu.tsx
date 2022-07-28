@@ -15,7 +15,7 @@ export default function Menu() {
     if (animalsRes.error) return
     setNewestAnimals(animalsRes.animals)
   }
-  console.log("newestAnimals", newestAnimals)
+
   useEffect(() => {
     fetchNewestAnimals()
   }, [])

@@ -1,5 +1,4 @@
-import { IGameState } from "../context/HandsContext"
-import { HandKey, IAnimal, Poisoned } from "../interfaces"
+import { HandKey, IAnimal, Poisoned, IGameState } from "../interfaces"
 
 const poisonEnemy = (arr: IAnimal[], defender: IAnimal, poisoned: Poisoned) => {
   return arr.map(card => {
@@ -379,7 +378,7 @@ const wolfFn = (state: IGameState, hand: HandKey): IGameState => {
   return setHandInState(state, otherHand, newHand)
 }
 
-export const getExtraDamageIfApplies = (attacker: IAnimal, defender: IAnimal): number => {
+export const getExtraDamage = (attacker: IAnimal, defender: IAnimal): number => {
   if (attacker.paralyzed > 0) return 0
   switch (attacker.name) {
     case "Alligator":

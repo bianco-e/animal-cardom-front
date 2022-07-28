@@ -65,14 +65,5 @@ export const slice = createSlice({
     },
   },
 })
-
-export const {
-  SET_TOKEN,
-  CLEAR_TOKEN,
-  SET_COINS,
-  SET_USER_REQUEST,
-  SET_USER_SUCCESS,
-  SET_USER_ERROR,
-} = slice.actions
-
+export const AUTH_ACTIONS = slice.actions
 export default slice.reducer

@@ -63,6 +63,7 @@ export interface IAnimal {
   paralyzed: number
   poisoned: Poisoned
   price: number
+  sell_price: number
   skill: Skill
   species: string
   targeteable: boolean

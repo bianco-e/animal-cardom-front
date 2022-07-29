@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react"
-import { useAppSelector } from "../../hooks/redux-hooks"
-import { IAnimal } from "../../interfaces"
-import { getFilteredAnimalsCards } from "../../queries/animalsCards"
-import { sortCardsAlphabetically } from "../../utils"
-import Dropdown from "../Common/Dropdown"
+import { useAppSelector } from "../../../hooks/redux-hooks"
+import { IAnimal } from "../../../interfaces"
+import { getFilteredAnimalsCards } from "../../../queries/animalsCards"
+import { sortCardsAlphabetically } from "../../../utils"
+import Dropdown from "../../Common/Dropdown"
 import { DropdownsContainer, Text, Wrapper } from "./styled"
 
 interface IProps {

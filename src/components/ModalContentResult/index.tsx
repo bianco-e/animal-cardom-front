@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react"
 import { useHistory, useParams } from "react-router-dom"
-import { GAME_ACTIONS } from "../../redux/reducers/game"
-import { useAppDispatch, useAppSelector } from "../../hooks/redux-hooks"
 import { GameParams, HandKey, User, IGameState } from "../../interfaces"
-import { newRandomGame, newTerrain, saveGameResult } from "../../queries/games"
+import { saveGameResult } from "../../queries/games"
 import Spinner from "../Spinner"
 import { ACButton, ModalTitle, Text } from "../styled-components"
 import CampaignRewards from "./CampaignRewards"
 import { Wrapper } from "./styled"
-import { setGame } from "../../redux/actions/game"
+import { GAME_ACTIONS } from "../../redux/reducers/game"
+import { startGuestGame } from "../../redux/actions/game"
 import { AUTH_ACTIONS } from "../../redux/reducers/auth"
+import { useAppDispatch, useAppSelector } from "../../hooks/redux-hooks"
 
 interface IProps {
   closeModal: () => void
@@ -80,23 +80,9 @@ export default function ModalContentResult({
 
   const handlePlayAgain = () => {
     dispatch(GAME_ACTIONS.EMPTY_STATE({ isLoading: true }))
-    newTerrain().then(terrainRes => {
-      if (terrainRes && terrainRes.name) {
-        newRandomGame().then(gameRes => {
-          if (gameRes && gameRes.pc && gameRes.user) {
-            closeModal()
-            dispatch(
-              //@ts-ignore
-              setGame(
-                { pc: gameRes.pc.animals, user: gameRes.user.animals },
-                { pc: gameRes.pc.plants, user: gameRes.user.plants },
-                terrainRes
-              )
-            )
-          }
-        })
-      }
-    })
+    //@ts-ignore
+    dispatch(startGuestGame())
+    closeModal()
   }
 
   return (

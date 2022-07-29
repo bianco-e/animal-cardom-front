@@ -18,6 +18,7 @@ export default function ModalContentSellCard({ animalToSell, closeModal }: IProp
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const user: User = useAppSelector(({ auth }) => auth.user)
   const { owned_cards: ownedCards, coins, auth_id: authId } = user
+  const ableToSell = ownedCards.length > 5
 
   const handleConfirm = async () => {
     setIsLoading(true)
@@ -37,7 +38,7 @@ export default function ModalContentSellCard({ animalToSell, closeModal }: IProp
     <Wrapper>
       {isLoading ? (
         <Spinner />
-      ) : (
+      ) : ableToSell ? (
         <>
           <Text>
             Are you sure you want to sell <b>{animalToSell.name}</b> for{" "}
@@ -53,8 +54,18 @@ export default function ModalContentSellCard({ animalToSell, closeModal }: IProp
             You can get it back whenever you want for <b>{animalToSell.price} coins</b>
           </Text>
         </>
+      ) : (
+        <>
+          <Text className="remaining-coins">
+            You are not able to sell <b>{animalToSell.name}</b> for{" "}
+            <b>{animalToSell.sell_price} coins</b>
+          </Text>
+          <Text className="remaining-coins">
+            Remaining owned animals would be lower than a hand size
+          </Text>
+        </>
       )}
-      <ACButton fWeight="bold" onClick={handleConfirm}>
+      <ACButton disabled={!ableToSell} fWeight="bold" onClick={handleConfirm}>
         {isLoading ? "Buying..." : "Confirm"}
       </ACButton>
     </Wrapper>

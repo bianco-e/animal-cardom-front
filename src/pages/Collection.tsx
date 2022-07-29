@@ -76,18 +76,18 @@ export default function Collection() {
             />
           )}
         </Accordion>
-        {modal === "editHand" ? (
-          <Modal closeModal={() => setModal("")} withCloseButton={false}>
+        {modal === "editHand" && animalToAdd ? (
+          <Modal closeModal={() => setModal("")}>
             <ModalHandEditContent
               closeModal={() => setModal("")}
-              animalToAdd={animalToAdd!}
+              animalToAdd={animalToAdd}
               currentHand={currentHand}
               setCurrentHand={setCurrentHand}
             />
           </Modal>
         ) : null}
         {modal === "cardPurchase" && animalToBuy ? (
-          <Modal closeModal={() => setModal("")} withCloseButton={false}>
+          <Modal closeModal={() => setModal("")}>
             <ModalCardPurchaseContent
               closeModal={() => setModal("")}
               animalToBuy={animalToBuy}
@@ -95,7 +95,7 @@ export default function Collection() {
           </Modal>
         ) : null}
         {modal === "cardSell" && animalToSell ? (
-          <Modal closeModal={() => setModal("")} withCloseButton={false}>
+          <Modal closeModal={() => setModal("")}>
             <ModalContentSellCard
               closeModal={() => setModal("")}
               animalToSell={animalToSell}

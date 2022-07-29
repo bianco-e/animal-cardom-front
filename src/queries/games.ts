@@ -16,6 +16,12 @@ export const newRandomGame = () => {
     .catch(err => console.error(err))
 }
 
+export const getAllTerrains = () => {
+  return fetch(`${API_BASE_URL}terrains/all`)
+    .then(res => res.json())
+    .catch(err => console.error(err))
+}
+
 export const newTerrain = (xp?: number) => {
   return fetch(`${API_BASE_URL}terrains/new${xp !== undefined ? `?xp=${xp}` : ""}`)
     .then(res => res.json())

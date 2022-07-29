@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { useHistory } from "react-router-dom"
 import Plant from "../Plant"
 import Modal from "../Common/Modal"
@@ -7,21 +7,22 @@ import { IPlants, ITerrain } from "../../interfaces/index"
 import Tooltip from "../Tooltip"
 import { HalfPanel, LeftPanel, OptionsPanel, PlayerNameTab, TerrainName } from "./styled"
 import { IPlant } from "../../interfaces"
-import { EMPTY_STATE } from "../../context/HandsContext/types"
-import HandsContext, { IHandsContext } from "../../context/HandsContext"
+import { GAME_ACTIONS } from "../../redux/reducers/game"
+import { useAppDispatch } from "../../hooks/redux-hooks"
 
 interface IProps {
   plants: IPlants
   terrain: ITerrain
   userName: string
+  isCampaign?: boolean
 }
 
-export default function SidePanel({ plants, terrain, userName }: IProps) {
-  const [, dispatch] = useContext<IHandsContext>(HandsContext)
+export default function SidePanel({ plants, isCampaign, terrain, userName }: IProps) {
   const [showTerrainTooltip, setShowTerrainTooltip] = useState<boolean>(false)
   const [soundState, setSoundState] = useState<"off" | "on">("on")
   const [showExitModal, setShowExitModal] = useState<boolean>(false)
   const history = useHistory()
+  const dispatch = useAppDispatch()
 
   useEffect(() => {
     const currentSoundState = localStorage.getItem("sound")
@@ -42,9 +43,9 @@ export default function SidePanel({ plants, terrain, userName }: IProps) {
     setSoundState(soundToSet)
   }
 
-  const handleLeave = () => {
-    dispatch({ type: EMPTY_STATE })
-    history.push("/menu")
+  const handleExit = () => {
+    dispatch(GAME_ACTIONS.EMPTY_STATE())
+    history.push(isCampaign ? "/menu" : "/")
   }
 
   return (
@@ -106,7 +107,7 @@ export default function SidePanel({ plants, terrain, userName }: IProps) {
               onClick={() => setShowExitModal(false)}>
               Stay
             </ACButton>
-            <ACButton onClick={handleLeave}>Leave</ACButton>
+            <ACButton onClick={handleExit}>Exit</ACButton>
           </>
         </Modal>
       )}

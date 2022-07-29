@@ -1,5 +1,4 @@
-import { IGameState } from "../context/HandsContext"
-import { HandKey, IAnimal, Poisoned } from "../interfaces"
+import { HandKey, IAnimal, Poisoned, IGameState } from "../interfaces"
 
 const updateCardBleeding = (
   arr: IAnimal[],

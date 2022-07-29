@@ -7,32 +7,25 @@ import { animalPurchase } from "../queries/user"
 import Spinner from "./Spinner"
 import { BREAKPOINTS } from "../utils/constants"
 import { useAppDispatch, useAppSelector } from "../hooks/redux-hooks"
-import { SET_COINS } from "../redux/reducers/auth"
+import { AUTH_ACTIONS } from "../redux/reducers/auth"
 
 interface IProps {
   animalToBuy: IAnimal
   closeModal: () => void
-  ownedCards: string[]
-  setOwnedCards: (cards: string[]) => void
 }
-export default function ModalHandEditContent({
-  animalToBuy,
-  closeModal,
-  ownedCards,
-  setOwnedCards,
-}: IProps) {
+export default function ModalHandEditContent({ animalToBuy, closeModal }: IProps) {
   const dispatch = useAppDispatch()
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const user: User = useAppSelector(({ auth }) => auth.user)
-  const { coins, auth_id: authId } = user
+  const { owned_cards: ownedCards, coins, auth_id: authId } = user
 
   const handleConfirm = () => {
     setIsLoading(true)
     animalPurchase(authId, animalToBuy.name, animalToBuy.price).then(res => {
       if (res && res.new_card) {
         setIsLoading(false)
-        dispatch(SET_COINS(coins - animalToBuy.price))
-        setOwnedCards(ownedCards.concat(res.new_card))
+        dispatch(AUTH_ACTIONS.SET_COINS(coins - animalToBuy.price))
+        dispatch(AUTH_ACTIONS.SET_OWNED_CARDS(ownedCards.concat(res.new_card)))
         closeModal()
       }
     })

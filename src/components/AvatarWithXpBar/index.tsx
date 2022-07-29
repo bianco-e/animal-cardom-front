@@ -1,13 +1,16 @@
 import { useEffect, useState } from "react"
+import { useAppSelector } from "../../hooks/redux-hooks"
+import { User } from "../../interfaces"
 import { Wrapper } from "./styled"
 const MAX_XP = 1000
 const STROKE_WIDTH = 11
 const CIRCLE_RADIUS = 70
 const CIRCLE_CIRCUMFERENCE = CIRCLE_RADIUS * 2 * Math.PI
 
-export default function AvatarWithXpBar({ xp }: { xp: number }) {
+export default function AvatarWithXpBar() {
   const [dashoffset, setDashoffset] = useState<number>(CIRCLE_CIRCUMFERENCE)
   const [level, setLevel] = useState<number>()
+  const { xp }: User = useAppSelector(({ auth }) => auth.user)
 
   useEffect(() => {
     const currentLvlXp = xp % MAX_XP

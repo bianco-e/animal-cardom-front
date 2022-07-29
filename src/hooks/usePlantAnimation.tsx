@@ -1,6 +1,5 @@
-import { useEffect, useState } from "react";
-import { FlattenSimpleInterpolation } from "styled-components";
-import HandsContext from "../context/HandsContext";
+import { useEffect, useState } from "react"
+import { FlattenSimpleInterpolation } from "styled-components"
 import {
   buffAnimation,
   cleaningAnimation,
@@ -8,30 +7,30 @@ import {
   paralyzeAnimation,
   healingAnimation,
   audioFiles,
-} from "../animations/plant-animations";
-import { useContext } from "react";
-import { injuryAnimation } from "../animations/card-animations";
+} from "../animations/plant-animations"
+import { injuryAnimation } from "../animations/card-animations"
+import { useAppSelector } from "./redux-hooks"
 
 interface IProps {
-  name: string;
-  soundState: string | null;
+  name: string
+  soundState: string | null
 }
 
 export interface AnimationProps {
-  animation: FlattenSimpleInterpolation;
-  src: string;
-  fullWidth?: boolean;
+  animation: FlattenSimpleInterpolation
+  src: string
+  fullWidth?: boolean
 }
 
 interface PlantData {
-  audio: HTMLAudioElement;
-  animation: FlattenSimpleInterpolation;
-  img: string;
-  fullWidth?: boolean;
+  audio: HTMLAudioElement
+  animation: FlattenSimpleInterpolation
+  img: string
+  fullWidth?: boolean
 }
 
 interface PlantsData {
-  [plant: string]: PlantData;
+  [plant: string]: PlantData
 }
 
 const plantsAnimationsData: PlantsData = {
@@ -83,36 +82,34 @@ const plantsAnimationsData: PlantsData = {
     animation: cleaningAnimation,
     img: "/images/plants/yellow-stars.png",
   },
-};
+}
 
 export default function usePlantAnimation({ name, soundState }: IProps) {
-  const [animationProps, setAnimationProps] = useState<
-    AnimationProps | undefined
-  >();
-  const [state] = useContext(HandsContext);
+  const [animationProps, setAnimationProps] = useState<AnimationProps | undefined>()
+  const game = useAppSelector(({ game }) => game)
 
   useEffect(() => {
     if (animationProps) {
       setTimeout(() => {
-        setAnimationProps(undefined);
-      }, 910);
+        setAnimationProps(undefined)
+      }, 910)
     }
-  }, [animationProps]);
+  }, [animationProps])
 
   useEffect(() => {
-    if (state.treatedAnimal?.name === name && state.usedPlants.length > 0) {
-      const plantName = state.usedPlants[state.usedPlants.length - 1].name;
-      const plantData = plantsAnimationsData[plantName];
+    if (game.treatedAnimal?.name === name && game.usedPlants.length > 0) {
+      const plantName = game.usedPlants[game.usedPlants.length - 1].name
+      const plantData = plantsAnimationsData[plantName]
       if (soundState === "on") {
-        plantData.audio.play();
+        plantData.audio.play()
       }
       setAnimationProps({
         fullWidth: plantData.fullWidth,
         animation: plantData.animation,
         src: plantData.img,
-      });
+      })
     }
-  }, [state.treatedAnimal, state.usedPlants]); //eslint-disable-line
+  }, [game.treatedAnimal, game.usedPlants]) //eslint-disable-line
 
-  return [animationProps];
+  return [animationProps]
 }

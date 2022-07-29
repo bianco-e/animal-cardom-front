@@ -7,7 +7,7 @@ import { getCurrentSection } from "../../utils"
 import HowToPlay from "../HowToPlay"
 import { CloseButton, LogoutButton, UserInfoContainer, Wrapper } from "./styled"
 import { useAppDispatch, useAppSelector } from "../../hooks/redux-hooks"
-import { CLEAR_TOKEN } from "../../redux/reducers/auth"
+import { AUTH_ACTIONS } from "../../redux/reducers/auth"
 
 export default function SideMenu() {
   const [currentSection, setCurrentSection] = useState<string>()
@@ -39,7 +39,7 @@ export default function SideMenu() {
     },
   ]
   const handleLogout = () => {
-    dispatch(CLEAR_TOKEN())
+    dispatch(AUTH_ACTIONS.CLEAR_TOKEN())
     logout({ returnTo: window.location.origin })
   }
   const hideSideMenu = () => {

@@ -1,4 +1,4 @@
-import { CardBuyButton } from "../../Card/styled"
+import { CardInnerButton } from "../styled"
 
 interface IProps {
   disabled: boolean
@@ -8,9 +8,9 @@ interface IProps {
 
 export default function BuyButton({ disabled, price, onClick }: IProps) {
   return (
-    <CardBuyButton disabled={disabled} onClick={onClick}>
-      <img alt="coins" src="/images/icons/coins.png" width={16} />
+    <CardInnerButton disabled={disabled} onClick={onClick}>
+      <img alt="coins" src="/icons/coins.png" width={16} />
       {price}
-    </CardBuyButton>
+    </CardInnerButton>
   )
 }

@@ -24,7 +24,6 @@ import { selectCard } from "../../redux/actions/game"
 
 interface IProps extends IAnimal {
   belongsToUser?: boolean
-  displayInHandSign?: boolean
   onPreviewClick?: (name: string) => void
   opacityForPreview?: string
   width?: string
@@ -34,7 +33,6 @@ export default function Card({
   attack,
   belongsToUser,
   bleeding,
-  displayInHandSign,
   image,
   life,
   missing_chance: missingChance,
@@ -93,8 +91,6 @@ export default function Card({
 
   return (
     <AnimalCard {...styledProps} width={width}>
-      {displayInHandSign ? <span className="in-hand spaced-title">HAND</span> : null}
-
       {isCardUnderAttack ? (
         <Injury alt="under-attack" src="/images/svg/blood-splatter.svg" />
       ) : null}

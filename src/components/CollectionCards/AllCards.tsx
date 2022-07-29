@@ -5,6 +5,8 @@ import CollectionFilter from "../CollectionFilter"
 import { CardsContainer, SingleCardContainer } from "./styled"
 import { useAppSelector } from "../../hooks/redux-hooks"
 import { Message } from "../styled-components"
+import AddButton from "./Buttons/AddButton"
+import InHandButton from "./Buttons/InHandButton"
 
 interface IProps {
   cardsToShow: IAnimal[]
@@ -34,25 +36,23 @@ export default function CollectionCards({
       {cardsToShow.length > 0 ? (
         <CardsContainer>
           {cardsToShow.map(card => {
-            const onPreviewClick =
-              ownedCards.includes(card.name) && !hand.includes(card.name)
-                ? handleEditHandModal
-                : undefined
             return (
               <SingleCardContainer key={card.name}>
                 <Card
                   {...card}
                   belongsToUser={false}
-                  displayInHandSign={hand.includes(card.name)}
-                  onPreviewClick={onPreviewClick}
                   opacityForPreview={getCardOpacityForPreview(ownedCards, card.name)}
                 />
-                {!ownedCards.includes(card.name) && (
+                {!ownedCards.includes(card.name) ? (
                   <BuyButton
                     price={card.price}
                     disabled={coins < card.price}
                     onClick={() => handlePurchaseModal(card)}
                   />
+                ) : !hand.includes(card.name) ? (
+                  <AddButton onClick={() => handleEditHandModal(card.name)} />
+                ) : (
+                  <InHandButton />
                 )}
               </SingleCardContainer>
             )

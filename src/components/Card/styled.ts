@@ -65,7 +65,8 @@ export const Injury = styled.img<InjuryProps>`
 export const AnimalCard = styled.button<AnimalCardProps>`
   align-items: center;
   ${({ attackAnimation }) => attackAnimation};
-  background: ${({ theme }) => theme.primary_brown};
+  background: ${({ theme }) => theme.secondary_brown};
+  background-image: url("/images/backgrounds/card-bg.svg");
   border: 2px solid ${({ theme }) => theme.secondary_brown};
   box-shadow: inset 0px 0px 10px rgba(0, 0, 0, 0.6);
   border-radius: 8px;
@@ -99,19 +100,18 @@ export const AnimalCard = styled.button<AnimalCardProps>`
     width: 35%;
     background: ${({
       opacity,
-      theme: { primary_violet, secondary_violet, light_brown },
+      theme: { primary_violet, secondary_violet, light_brown, primary_brown },
     }) =>
       opacity === "1"
         ? `linear-gradient(90deg, ${primary_violet}, ${light_brown}, ${secondary_violet})`
-        : "none"};
-    z-index: -2;
-    background-size: 300% 300%;
+        : primary_brown};
+    z-index: -1;
     ${({ selectionAnimation }) => selectionAnimation};
   }
   &::after {
     -webkit-transform: translateX(-50%);
-    background-size: 300% 300%;
-    background: ${({ theme }) => theme.primary_brown};
+    background: ${({ theme }) => theme.secondary_brown};
+    background-image: url("/images/backgrounds/card-bg.svg");
     border-radius: 4px;
     content: "";
     height: calc(100% - 8px);
@@ -329,9 +329,9 @@ export const FlexSection = styled.div<FlexSectionProps>`
 `
 export const DescriptionContainer = styled.div`
   align-items: center;
-  background: ${({ theme }) => theme.secondary_brown};
+  background: ${({ theme }) => theme.primary_brown};
+  box-shadow: inset 0px 0px 8px rgba(0, 0, 0, 0.4);
   border-radius: 5px;
-  box-shadow: inset 0px 0px 10px ${({ theme }) => theme.light_brown};
   display: flex;
   flex-direction: column;
   height: 28%;
@@ -382,38 +382,5 @@ export const CardThumbnail = styled(AnimalCard)`
     }
     height: 60px;
     width: 20%;
-  }
-`
-export const CardBuyButton = styled.button`
-  align-items: center;
-  background: ${({ theme }) => theme.secondary_brown};
-  border-radius: 8px;
-  border: 2px solid ${({ theme }) => theme.primary_brown};
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
-  color: ${({ theme }) => theme.primary_yellow};
-  display: flex;
-  font-size: 16px;
-  font-weight: bold;
-  justify-content: center;
-  height: 40px;
-  left: calc(50% - 40px);
-  position: absolute;
-  top: calc(50% - 20px);
-  transition: all 0.1s linear;
-  width: 80px;
-  z-index: 1;
-  > img {
-    margin-right: 4px;
-  }
-  &:hover:enabled {
-    background: ${({ theme }) => theme.primary_brown};
-  }
-  &:active:enabled {
-    box-shadow: none;
-  }
-  &:disabled {
-    background: ${({ theme }) => theme.light_brown};
-    color: ${({ theme }) => theme.primary_red};
-    cursor: not-allowed;
   }
 `

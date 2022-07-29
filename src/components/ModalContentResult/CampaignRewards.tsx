@@ -51,7 +51,7 @@ export default function CampaignRewards({ earnedAnimal, earnedCoins }: IProps) {
           <span>
             You have earned <b>{earnedCoins}</b>
           </span>
-          <img alt="coins" src="/images/icons/coins.png" width={15} />
+          <img alt="coins" src="/icons/coins.png" width={15} />
         </div>
       ) : null}
       {earnedCard && (

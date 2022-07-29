@@ -7,6 +7,7 @@ import Spinner from "../components/Spinner"
 import Modal from "../components/Common/Modal"
 import ModalHandEditContent from "../components/ModalHandEditContent"
 import ModalCardPurchaseContent from "../components/ModalCardPurchaseContent"
+import ModalContentSellCard from "../components/ModalContentSellCard"
 import Accordion from "../components/Common/Accordion"
 import { useAppSelector } from "../hooks/redux-hooks"
 import AllCards from "../components/CollectionCards/AllCards"
@@ -20,6 +21,7 @@ export default function Collection() {
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [animalToAdd, setAnimalToAdd] = useState<IAnimal>()
   const [animalToBuy, setAnimalToBuy] = useState<IAnimal>()
+  const [animalToSell, setAnimalToSell] = useState<IAnimal>()
   const [currentHand, setCurrentHand] = useState<IAnimal[]>([])
 
   const fetchAllAnimals = async () => {
@@ -50,6 +52,11 @@ export default function Collection() {
     setAnimalToBuy(card)
   }
 
+  const handleSellModal = (card: IAnimal) => {
+    setModal("cardSell")
+    setAnimalToSell(card)
+  }
+
   return (
     <MenuLayout>
       <>
@@ -64,29 +71,37 @@ export default function Collection() {
               cardsToShow={cardsToShow}
               handleEditHandModal={handleEditHandModal}
               handlePurchaseModal={handlePurchaseModal}
+              handleSellModal={handleSellModal}
               setCardsToShow={setCardsToShow}
             />
           )}
         </Accordion>
-        {modal === "editHand" ? (
-          <Modal closeModal={() => setModal("")} withCloseButton={false}>
+        {modal === "editHand" && animalToAdd ? (
+          <Modal closeModal={() => setModal("")}>
             <ModalHandEditContent
               closeModal={() => setModal("")}
-              animalToAdd={animalToAdd!}
+              animalToAdd={animalToAdd}
               currentHand={currentHand}
               setCurrentHand={setCurrentHand}
             />
           </Modal>
-        ) : (
-          modal === "cardPurchase" && (
-            <Modal closeModal={() => setModal("")} withCloseButton={false}>
-              <ModalCardPurchaseContent
-                closeModal={() => setModal("")}
-                animalToBuy={animalToBuy!}
-              />
-            </Modal>
-          )
-        )}
+        ) : null}
+        {modal === "cardPurchase" && animalToBuy ? (
+          <Modal closeModal={() => setModal("")}>
+            <ModalCardPurchaseContent
+              closeModal={() => setModal("")}
+              animalToBuy={animalToBuy}
+            />
+          </Modal>
+        ) : null}
+        {modal === "cardSell" && animalToSell ? (
+          <Modal closeModal={() => setModal("")}>
+            <ModalContentSellCard
+              closeModal={() => setModal("")}
+              animalToSell={animalToSell}
+            />
+          </Modal>
+        ) : null}
       </>
     </MenuLayout>
   )

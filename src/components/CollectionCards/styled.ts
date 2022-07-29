@@ -52,18 +52,22 @@ export const CardInnerButton = styled.button`
   font-weight: bold;
   justify-content: center;
   height: 40px;
-  left: calc(50% - 40px);
+  left: calc(50% - 36px);
   position: absolute;
   top: calc(50% - 20px);
   transition: all 0.1s linear;
-  width: 80px;
+  width: 72px;
   z-index: 1;
-  &.add,
-  &.in-hand {
-    font-size: 12px;
+  font-size: 10px;
+  &.buy {
+    font-size: 14px;
   }
   &.add {
     color: ${({ theme }) => theme.primary_green};
+    left: calc(50% - 80px);
+  }
+  &.sell {
+    left: calc(50% + 8px);
   }
   > img {
     margin-right: 4px;

@@ -13,7 +13,7 @@ interface IProps {
   animalToBuy: IAnimal
   closeModal: () => void
 }
-export default function ModalHandEditContent({ animalToBuy, closeModal }: IProps) {
+export default function ModalCardPurchaseContent({ animalToBuy, closeModal }: IProps) {
   const dispatch = useAppDispatch()
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const user: User = useAppSelector(({ auth }) => auth.user)

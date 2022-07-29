@@ -49,3 +49,11 @@ export const animalPurchase = (auth_id: string, new_card: string, price: number)
     .then(res => res.json())
     .catch(err => console.error(err))
 }
+
+export const animalSell = (auth_id: string, card_to_sell: string) => {
+  return fetch(`${API_BASE_URL}users/animal_sell`, {
+    ...postMethod({ auth_id, card_to_sell }),
+  })
+    .then(res => res.json())
+    .catch(err => console.error(err))
+}

@@ -1,18 +1,20 @@
 import { IAnimal, User } from "../../interfaces"
 import Card from "../Card"
 import BuyButton from "./Buttons/BuyButton"
-import CollectionFilter from "../CollectionFilter"
+import CollectionFilter from "./CollectionFilter"
 import { CardsContainer, SingleCardContainer } from "./styled"
 import { useAppSelector } from "../../hooks/redux-hooks"
 import { Message } from "../styled-components"
 import AddButton from "./Buttons/AddButton"
 import InHandButton from "./Buttons/InHandButton"
+import SellButton from "./Buttons/SellButton"
 
 interface IProps {
   cardsToShow: IAnimal[]
   setCardsToShow: (cards: IAnimal[]) => void
   handleEditHandModal: (name: string) => void
   handlePurchaseModal: (card: IAnimal) => void
+  handleSellModal: (card: IAnimal) => void
 }
 
 const getCardOpacityForPreview = (cards: string[], name: string): string =>
@@ -23,6 +25,7 @@ export default function CollectionCards({
   setCardsToShow,
   handleEditHandModal,
   handlePurchaseModal,
+  handleSellModal,
 }: IProps) {
   const {
     owned_cards: ownedCards,
@@ -50,7 +53,10 @@ export default function CollectionCards({
                     onClick={() => handlePurchaseModal(card)}
                   />
                 ) : !hand.includes(card.name) ? (
-                  <AddButton onClick={() => handleEditHandModal(card.name)} />
+                  <>
+                    <AddButton onClick={() => handleEditHandModal(card.name)} />
+                    <SellButton onClick={() => handleSellModal(card)} />
+                  </>
                 ) : (
                   <InHandButton />
                 )}

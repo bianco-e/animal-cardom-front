@@ -27,6 +27,7 @@ const BUTTERFLY_ANIMAL: IAnimal = {
   targeteable: true,
   bleeding: false,
   price: 45,
+  sell_price: 23,
 }
 
 const applyDmg = (animal: IAnimal, statsDiff: number): IAnimal => ({

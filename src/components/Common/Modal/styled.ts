@@ -39,6 +39,6 @@ export const ModalContainer = styled.div<ContentProps>`
 export const CloseButton = styled.button`
   font-size: ${({ theme }) => theme.$3};
   position: absolute;
-  right: ${({ theme }) => theme.$1};
-  top: ${({ theme }) => theme.$1};
+  right: ${({ theme }) => theme.$4};
+  top: ${({ theme }) => theme.$4};
 `

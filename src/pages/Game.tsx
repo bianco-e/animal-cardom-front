@@ -65,33 +65,24 @@ export default function Game({ isCampaign }: IProps) {
       ...(authId ? { auth_id: authId } : {}),
       ...(guestName ? { guest_name: guestName } : {}),
     }
-    if (getLiveCards(hands.user).length === 0) {
+    if (!getLiveCards(hands.user).length) {
       setModal("lose")
-      trackAction({
-        ...baseAction,
-        action: "user-lost",
-      })
+      trackAction({ ...baseAction, action: "user-lost" })
     }
-    if (getLiveCards(hands.pc).length === 0) {
+    if (!getLiveCards(hands.pc).length) {
       setModal("win")
-      trackAction({
-        ...baseAction,
-        action: "user-won",
-      })
+      trackAction({ ...baseAction, action: "user-won" })
     }
   }, [hands.pc, hands.user]) //eslint-disable-line
 
   useEffect(() => {
-    if (pcTurn) {
-      if (triggerPcAttack) {
-        setTimeout(() => {
-          //@ts-ignore
-          dispatch(computerPlay())
-        }, 1800)
-      } else {
-        dispatch(GAME_ACTIONS.COMPUTER_THINK())
-      }
-    }
+    if (!pcTurn) return
+    if (triggerPcAttack) {
+      setTimeout(() => {
+        //@ts-ignore
+        dispatch(computerPlay())
+      }, 1800)
+    } else dispatch(GAME_ACTIONS.COMPUTER_THINK())
   }, [pcTurn, triggerPcAttack]) //eslint-disable-line
 
   return (

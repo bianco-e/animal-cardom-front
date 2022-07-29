@@ -1,17 +1,37 @@
+import { useEffect, useState } from "react"
+import { useAppSelector } from "../../hooks/redux-hooks"
+import { IAnimal } from "../../interfaces"
+import { getFilteredAnimalsCards } from "../../queries/animalsCards"
+import { sortCardsAlphabetically } from "../../utils"
 import Dropdown from "../Common/Dropdown"
 import { DropdownsContainer, Text, Wrapper } from "./styled"
 
 interface IProps {
-  setSpeciesFilter: (cards: string) => void
-  setSkillTypeFilter: (cards: string) => void
-  setOwningFilter: (bool: boolean | undefined) => void
+  setCardsToShow: (cards: IAnimal[]) => void
 }
 
-export default function CollectionFilter({
-  setSpeciesFilter,
-  setSkillTypeFilter,
-  setOwningFilter,
-}: IProps) {
+export default function CollectionFilter({ setCardsToShow }: IProps) {
+  const [speciesFilter, setSpeciesFilter] = useState<string>()
+  const [skillTypeFilter, setSkillTypeFilter] = useState<string>()
+  const [owningFilter, setOwningFilter] = useState<boolean | undefined>()
+  const { owned_cards: ownedCards } = useAppSelector(({ auth }) => auth.user)
+
+  useEffect(() => {
+    const sendingOwnedCards = owningFilter ? ownedCards.map(card => card) : undefined
+    const sendingOwnedCardsToFilter =
+      owningFilter === false ? ownedCards.map(card => card) : undefined
+    getFilteredAnimalsCards(
+      speciesFilter,
+      skillTypeFilter,
+      sendingOwnedCards,
+      sendingOwnedCardsToFilter
+    ).then(res => {
+      if (res && res.animals) {
+        setCardsToShow(sortCardsAlphabetically(res.animals))
+      }
+    })
+  }, [speciesFilter, skillTypeFilter, owningFilter]) //eslint-disable-line
+
   const speciesDropdownOptions = [
     {
       text: "Species",

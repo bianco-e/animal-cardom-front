@@ -13,6 +13,8 @@ export const slice = createSlice({
       role: undefined,
       coins: 0,
       xp: 0,
+      hand: [],
+      owned_cards: [],
     },
   },
   reducers: {
@@ -45,6 +47,24 @@ export const slice = createSlice({
         user: {
           ...state.user,
           xp: action.payload,
+        },
+      }
+    },
+    SET_HAND: (state, action) => {
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          hand: action.payload,
+        },
+      }
+    },
+    SET_OWNED_CARDS: (state, action) => {
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          owned_cards: action.payload,
         },
       }
     },

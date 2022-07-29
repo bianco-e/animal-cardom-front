@@ -22,7 +22,6 @@ export default function History({ lastGames }: IProps) {
       {lastGames.length > 0 ? (
         lastGames.map((game, idx) => {
           const { won, used_animals, used_plants, terrain, created_at, earned_xp } = game
-          console.log("game", game)
           const gameDate = new Date(created_at!)
           return (
             <HistoryCard terrain={terrain.toLowerCase()} key={idx}>

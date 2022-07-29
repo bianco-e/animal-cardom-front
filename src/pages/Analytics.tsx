@@ -1,48 +1,40 @@
-import styled from "styled-components";
-import NavBar from "../components/NavBar";
-import { useAuth0 } from "@auth0/auth0-react";
-import { useEffect, useState } from "react";
-import { getAllActionStats } from "../queries/tracking";
-import { capitalize } from "../utils";
-import Spinner from "../components/Spinner";
-import { Action, AuthUser } from "../interfaces";
-import { BREAKPOINTS } from "../utils/constants";
+import styled from "styled-components"
+import NavBar from "../components/NavBar"
+import { useEffect, useState } from "react"
+import { getAllActionStats } from "../queries/tracking"
+import { capitalize } from "../utils"
+import Spinner from "../components/Spinner"
+import { Action } from "../interfaces"
+import { BREAKPOINTS } from "../utils/constants"
 
 export interface ActionsStats {
-  _id: string;
-  actions: Action[];
+  _id: string
+  actions: Action[]
 }
 
 const getActionTitle = (actionName: string): string =>
   actionName
     .split("-")
     .map((w, idx) => (idx === 0 ? capitalize(w) : w))
-    .join(" ");
+    .join(" ")
 
 export default function Analytics() {
-  const { user, isAuthenticated } = useAuth0<AuthUser>();
-  const [allActions, setAllActions] = useState<ActionsStats[]>([]);
+  const [allActions, setAllActions] = useState<ActionsStats[]>([])
 
   useEffect(() => {
-    (async () => {
-      const actionsRes = await getAllActionStats();
+    ;(async () => {
+      const actionsRes = await getAllActionStats()
       if (actionsRes.ok) {
-        const data = await actionsRes.json();
-        if (!data) return;
-        setAllActions(data);
+        const data = await actionsRes.json()
+        if (!data) return
+        setAllActions(data)
       }
-    })();
-  }, []);
+    })()
+  }, [])
 
   return (
     <Wrapper>
-      <NavBar
-        isHome={false}
-        isAuthenticated={isAuthenticated}
-        username={user && user.given_name && user.given_name}
-        auth_id={user && user.sub && user.sub}
-        picture={user && user.picture && user.picture}
-      />
+      <NavBar />
       <Title>Analytics</Title>
       {Array.isArray(allActions) && allActions.length > 0 ? (
         allActions.map(({ _id, actions }) => {
@@ -83,16 +75,16 @@ export default function Analytics() {
                       ) : null}
                     </ul>
                   </ActionContainer>
-                );
+                )
               })}
             </Container>
-          );
+          )
         })
       ) : (
         <Spinner />
       )}
     </Wrapper>
-  );
+  )
 }
 
 const Wrapper = styled.div`
@@ -102,7 +94,7 @@ const Wrapper = styled.div`
   flex-direction: column;
   min-height: 100vh;
   width: 100%;
-`;
+`
 const Container = styled.div`
   margin: 0 0 32px;
   width: 50%;
@@ -110,7 +102,7 @@ const Container = styled.div`
   ${BREAKPOINTS.MOBILE} {
     width: 100%;
   }
-`;
+`
 const ActionName = styled.span`
   border: 3px solid ${({ theme }) => theme.secondary_brown};
   border-top: 0;
@@ -118,7 +110,7 @@ const ActionName = styled.span`
   font-size: 16px;
   font-weight: bold;
   padding: 0 16px 4px;
-`;
+`
 const Title = styled.h1`
   color: #000;
   font-size: ${({ theme }) => theme.$1};
@@ -128,7 +120,7 @@ const Title = styled.h1`
     margin: 96px 0 32px;
     font-size: ${({ theme }) => theme.$2};
   }
-`;
+`
 const ActionContainer = styled.div`
   margin: 16px 0;
   ${BREAKPOINTS.MOBILE} {
@@ -137,4 +129,4 @@ const ActionContainer = styled.div`
   li {
     font-size: 12px;
   }
-`;
+`

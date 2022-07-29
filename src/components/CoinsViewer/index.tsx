@@ -6,7 +6,7 @@ export default function CoinsViewer() {
 
   return (
     <Wrapper>
-      <img alt="coins" src="/images/icons/coins.png" width={24} />
+      <img alt="coins" src="/icons/coins.png" width={24} />
       <span>{coins}</span>
     </Wrapper>
   )

@@ -12,6 +12,9 @@ export const slice = createSlice({
       auth_id: undefined,
       role: undefined,
       coins: 0,
+      xp: 0,
+      hand: [],
+      owned_cards: [],
     },
   },
   reducers: {
@@ -35,6 +38,33 @@ export const slice = createSlice({
         user: {
           ...state.user,
           coins: action.payload,
+        },
+      }
+    },
+    SET_XP: (state, action) => {
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          xp: action.payload,
+        },
+      }
+    },
+    SET_HAND: (state, action) => {
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          hand: action.payload,
+        },
+      }
+    },
+    SET_OWNED_CARDS: (state, action) => {
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          owned_cards: action.payload,
         },
       }
     },
@@ -65,14 +95,5 @@ export const slice = createSlice({
     },
   },
 })
-
-export const {
-  SET_TOKEN,
-  CLEAR_TOKEN,
-  SET_COINS,
-  SET_USER_REQUEST,
-  SET_USER_SUCCESS,
-  SET_USER_ERROR,
-} = slice.actions
-
+export const AUTH_ACTIONS = slice.actions
 export default slice.reducer

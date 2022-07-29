@@ -1,5 +1,4 @@
-import { IGameState } from "../context/HandsContext"
-import { HandKey, IAnimal } from "../interfaces"
+import { HandKey, IAnimal, IGameState } from "../interfaces"
 import { getRandomChance } from "../utils"
 
 const BUTTERFLY_ANIMAL: IAnimal = {

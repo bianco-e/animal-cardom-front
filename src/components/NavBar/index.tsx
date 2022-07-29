@@ -7,21 +7,14 @@ import { getUtm } from "../../utils"
 import { Container, FeedbackButton, OptionButton, UserImage, Wrapper } from "./styled"
 
 interface IProps {
-  isAuthenticated: boolean
-  username?: string
-  auth_id?: string
-  picture?: string
   isHome?: boolean
 }
 
-export default function NavBar({
-  auth_id,
-  isAuthenticated,
-  isHome,
-  picture,
-  username,
-}: IProps) {
-  const { loginWithRedirect } = useAuth0()
+export default function NavBar({ isHome }: IProps) {
+  const { loginWithRedirect, user, isAuthenticated } = useAuth0()
+  const username = user?.given_name
+  const picture = user?.picture
+  const auth_id = user?.sub
   const history = useHistory()
   const location = useLocation()
 

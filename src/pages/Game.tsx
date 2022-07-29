@@ -1,94 +1,62 @@
-import { useContext, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import styled from "styled-components"
 import Modal from "../components/Common/Modal"
-import { useLocation, useHistory, useParams } from "react-router-dom"
+import { useHistory, useParams } from "react-router-dom"
 import { BREAKPOINTS } from "../utils/constants"
-import HandsContext, { IHandsContext } from "../context/HandsContext"
-import { COMPUTER_PLAY, COMPUTER_THINK, SET_CARDS } from "../context/HandsContext/types"
+import { GAME_ACTIONS } from "../redux/reducers/game"
 import SidePanel from "../components/GamePanel"
-import { GameParams, IAnimal, IPlant, ITerrain, User } from "../interfaces"
-import { getUserMe } from "../queries/user"
-import { newTerrain, newCampaignGame, newRandomGame } from "../queries/games"
+import { GameParams, IAnimal, User } from "../interfaces"
 import Spinner from "../components/Spinner"
 import ModalContentResult from "../components/ModalContentResult"
 import { getLiveCards } from "../utils"
 import { trackAction } from "../queries/tracking"
 import { HandContainer } from "../components/styled-components"
 import Card from "../components/Card"
-import { useAppSelector } from "../hooks/redux-hooks"
+import { useAppDispatch, useAppSelector } from "../hooks/redux-hooks"
+import { computerPlay, startCampaignGame, startGuestGame } from "../redux/actions/game"
 
-const emptyTerrain = {
-  name: "",
-  color: "#fff",
-  speciesToBuff: "",
-  image: "",
-  getRequiredXp: (current: number) => 0,
+interface IProps {
+  isCampaign?: boolean
 }
 
-export default function App() {
-  const [state, dispatch] = useContext<IHandsContext>(HandsContext)
-  const [isCampaignGame, setIsCampaignGame] = useState<boolean>(false)
-  const [currentXp, setCurrentXp] = useState<number>(0)
-  const [isLoading, setIsLoading] = useState<boolean>(false)
+export default function Game({ isCampaign }: IProps) {
+  const game = useAppSelector(({ game }) => game)
+  const dispatch = useAppDispatch()
   const [userName, setUserName] = useState<string>("")
-  const [terrain, setTerrain] = useState<ITerrain>(emptyTerrain)
   const [modal, setModal] = useState<string>("")
-  const history = useHistory()
+  const { push } = useHistory()
   const { requiredXp } = useParams<GameParams>()
-  const { pathname } = useLocation()
-  const { hands, plants, pcTurn, pcPlay, triggerPcAttack } = state
+  const {
+    hands,
+    plants,
+    pcTurn,
+    pcPlay,
+    triggerPcAttack,
+    terrain,
+    gameError,
+    isLoading,
+  } = game
   const { auth_id: authId }: User = useAppSelector(({ auth }) => auth.user)
 
-  interface Response {
-    user: { animals: IAnimal[]; plants: IPlant[] }
-    pc: { animals: IAnimal[]; plants: IPlant[] }
-  }
-
-  const newGameResHandler = (terrain: ITerrain, res?: Response) => {
-    setIsLoading(false)
-    if (res && res.user && res.pc) {
-      dispatch({
-        type: SET_CARDS,
-        hands: { pc: res.pc.animals, user: res.user.animals },
-        plants: { pc: res.pc.plants, user: res.user.plants },
-        terrain,
-      })
-    }
-  }
-
-  const checkUserAndStartGame = async () => {
-    setIsLoading(true)
-    if (!pathname.startsWith("/game")) {
-      // is game for guests
-      const guest = localStorage.getItem("ac-guest-name")
-      guest ? setUserName(guest) : history.push("/")
-      const terrainRes = await newTerrain()
-      const newGameRes = await newRandomGame()
-      if (terrainRes.error || newGameRes.error) return history.push("/error")
-      setTerrain(terrainRes)
-      newGameResHandler(terrainRes, newGameRes)
-    } else {
-      // is campaign game
-      setIsCampaignGame(true)
-      if (!authId) return history.push("/")
-      const userRes = await getUserMe(authId)
-      if (userRes.error) return history.push("/")
-      const { first_name, hand, xp } = userRes
-      setUserName(first_name)
-      const parsedReqXp = parseInt(requiredXp)
-      if (xp < parsedReqXp) return history.push("/campaign")
-      setCurrentXp(xp)
-      const terrainRes = await newTerrain(parsedReqXp)
-      const gameRes = await newCampaignGame(parsedReqXp, hand)
-      if (terrainRes.error || gameRes.error) return history.push("/campaign")
-      newGameResHandler(terrainRes, gameRes)
-      setTerrain(terrainRes)
-    }
-  }
+  useEffect(() => {
+    if (gameError) return push(isCampaign ? "/campaign" : "/")
+  }, [gameError]) //eslint-disable-line
 
   useEffect(() => {
-    checkUserAndStartGame()
-  }, []) //eslint-disable-line
+    dispatch(GAME_ACTIONS.SET_LOADING_GAME(true))
+    if (!isCampaign) {
+      // is game for guests
+      const guest = localStorage.getItem("ac-guest-name")
+      guest ? setUserName(guest) : push("/")
+      //@ts-ignore
+      dispatch(startGuestGame())
+    } else {
+      // is campaign game
+      const parsedReqXp = parseInt(requiredXp)
+      //@ts-ignore
+      dispatch(startCampaignGame(setUserName, parsedReqXp))
+    }
+  }, [isCampaign]) //eslint-disable-line
 
   useEffect(() => {
     if (!hands.pc.length || !hands.user.length) return
@@ -97,38 +65,35 @@ export default function App() {
       ...(authId ? { auth_id: authId } : {}),
       ...(guestName ? { guest_name: guestName } : {}),
     }
-    if (getLiveCards(hands.user).length === 0) {
+    if (!getLiveCards(hands.user).length) {
       setModal("lose")
-      trackAction({
-        ...baseAction,
-        action: "user-lost",
-      })
+      trackAction({ ...baseAction, action: "user-lost" })
     }
-    if (getLiveCards(hands.pc).length === 0) {
+    if (!getLiveCards(hands.pc).length) {
       setModal("win")
-      trackAction({
-        ...baseAction,
-        action: "user-won",
-      })
+      trackAction({ ...baseAction, action: "user-won" })
     }
   }, [hands.pc, hands.user]) //eslint-disable-line
 
   useEffect(() => {
-    if (pcTurn) {
-      if (triggerPcAttack) {
-        setTimeout(() => {
-          dispatch({ type: COMPUTER_PLAY })
-        }, 1800)
-      } else {
-        dispatch({ type: COMPUTER_THINK })
-      }
-    }
+    if (!pcTurn) return
+    if (triggerPcAttack) {
+      setTimeout(() => {
+        //@ts-ignore
+        dispatch(computerPlay())
+      }, 1800)
+    } else dispatch(GAME_ACTIONS.COMPUTER_THINK())
   }, [pcTurn, triggerPcAttack]) //eslint-disable-line
 
   return (
     <>
       <Wrapper bgImg={terrain!.image}>
-        <SidePanel plants={plants} terrain={terrain!} userName={userName} />
+        <SidePanel
+          isCampaign={isCampaign}
+          plants={plants}
+          terrain={terrain!}
+          userName={userName}
+        />
         <Board>
           <HandContainer>
             {hands.pc.map((animal: IAnimal) => (
@@ -148,9 +113,7 @@ export default function App() {
           <ModalContentResult
             closeModal={() => setModal("")}
             modalType={modal}
-            isCampaignGame={isCampaignGame}
-            setTerrain={setTerrain}
-            currentXp={currentXp}
+            isCampaignGame={isCampaign}
           />
         </Modal>
       )}

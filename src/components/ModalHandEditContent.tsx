@@ -6,22 +6,23 @@ import { ACButton } from "./styled-components"
 import { updateHand } from "../queries/user"
 import Spinner from "./Spinner"
 import { BREAKPOINTS } from "../utils/constants"
-import { useAppSelector } from "../hooks/redux-hooks"
+import { useAppDispatch, useAppSelector } from "../hooks/redux-hooks"
+import { AUTH_ACTIONS } from "../redux/reducers/auth"
 
 interface IProps {
-  hand: IAnimal[]
   animalToAdd: IAnimal
   closeModal: () => void
-  handSetter: (newHand: string[]) => void
+  currentHand: IAnimal[]
+  setCurrentHand: (animals: IAnimal[]) => void
 }
 export default function ModalHandEditContent({
   animalToAdd,
   closeModal,
-  hand,
-  handSetter,
+  currentHand,
+  setCurrentHand,
 }: IProps) {
+  const dispatch = useAppDispatch()
   const [isLoading, setIsLoading] = useState<boolean>(false)
-  const [currentHand, setCurrentHand] = useState<IAnimal[]>(hand)
   const [enteringAnimal, setEnteringAnimal] = useState<IAnimal>(animalToAdd)
   const user: User = useAppSelector(({ auth }) => auth.user)
   const { auth_id: authId } = user
@@ -29,9 +30,8 @@ export default function ModalHandEditContent({
   const handleSelection = (name: string) => {
     if (!currentHand.find(card => card.name === enteringAnimal.name)) {
       const newHand = currentHand.map(card => {
-        if (card.name === name) {
-          return enteringAnimal
-        } else return card
+        if (card.name !== name) return card
+        return enteringAnimal
       })
       setEnteringAnimal(currentHand.find(card => card.name === name)!)
       setCurrentHand(newHand)
@@ -45,7 +45,7 @@ export default function ModalHandEditContent({
     updateHand(authId, handNames).then(res => {
       if (res && res.length) {
         setIsLoading(false)
-        handSetter(res)
+        dispatch(AUTH_ACTIONS.SET_HAND(res))
         closeModal()
       }
     })

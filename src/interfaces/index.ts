@@ -1,3 +1,22 @@
+export interface IGameState {
+  isLoading: boolean
+  gameError: boolean
+  hands: IHands
+  plants: IPlants
+  animalToTreat?: IAnimal
+  treatedAnimal?: IAnimal
+  selectedPlant?: IPlant
+  usedPlants: IPlant[]
+  attacker?: IAnimal
+  defender?: IAnimal
+  terrain: ITerrain
+  underAttack?: string
+  dodgedAttack?: string
+  pcTurn: boolean
+  triggerPcAttack: boolean
+  pcPlay: string
+}
+
 export type HandKey = "pc" | "user"
 
 export interface Stat<T> {
@@ -54,7 +73,7 @@ export interface ITerrain {
   image: string
   name: string
   color: string
-  getRequiredXp: (current: number) => number
+  campaign_xp: number[]
 }
 
 export interface Game {
@@ -131,4 +150,5 @@ export interface IRootState {
     token: string | null
     user: User
   }
+  game: IGameState
 }

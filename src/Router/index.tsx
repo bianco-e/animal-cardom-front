@@ -36,7 +36,7 @@ const MainRouter = () => {
         <PrivateRoute
           exact
           path={"/game/:requiredXp(0|450|900|1350|1800|2250|2700|3150|3600)"}
-          render={() => <Game />}
+          render={() => <Game isCampaign />}
         />
         <PrivateRoute exact path="/menu" render={() => <Menu />} />
         <PrivateRoute exact path="/campaign" render={() => <Campaign />} />

@@ -28,10 +28,8 @@ export default function WelcomePage() {
   }
 
   useEffect(() => {
-    if (guestName) {
-      setInputValue(guestName)
-    }
-  }, []) //eslint-disable-line
+    if (guestName) return setInputValue(guestName)
+  }, [guestName])
 
   useEffect(() => {
     if (!isLoading) {
@@ -44,15 +42,13 @@ export default function WelcomePage() {
   }, [isLoading]) //eslint-disable-line
 
   const goToPlay = () => {
-    if (inputValue !== "") {
-      localStorage.setItem("ac-guest-name", inputValue)
-      trackAction({
-        ...baseAction,
-        action: "play-as-guest-button",
-      })
-      history.push(`/play`)
-      setInputValue("")
-    } else setShowErrorMessage(true)
+    if (inputValue.trim() === "") return setShowErrorMessage(true)
+    localStorage.setItem("ac-guest-name", inputValue)
+    trackAction({
+      ...baseAction,
+      action: "play-as-guest-button",
+    })
+    history.push(`/play`)
   }
 
   const onKeyDownFn = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -83,13 +79,7 @@ export default function WelcomePage() {
 
   return (
     <Wrapper>
-      <NavBar
-        isHome={true}
-        isAuthenticated={isAuthenticated}
-        username={user?.given_name ? user.given_name : undefined}
-        auth_id={user?.sub ? user.sub : undefined}
-        picture={user?.picture ? user.picture : undefined}
-      />
+      <NavBar isHome />
       <Title>Welcome to Animal Cardom!</Title>
 
       <Container>

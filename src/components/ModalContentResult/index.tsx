@@ -1,54 +1,51 @@
-import { useContext, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { useHistory, useParams } from "react-router-dom"
-import HandsContext, { IHandsContext, IGameState } from "../../context/HandsContext"
-import { EMPTY_STATE, SET_CARDS } from "../../context/HandsContext/types"
-import { useAppSelector } from "../../hooks/redux-hooks"
-import { GameParams, HandKey, ITerrain, User } from "../../interfaces"
-import { newRandomGame, newTerrain, saveGameResult } from "../../queries/games"
+import { GameParams, HandKey, User, IGameState } from "../../interfaces"
+import { saveGameResult } from "../../queries/games"
 import Spinner from "../Spinner"
 import { ACButton, ModalTitle, Text } from "../styled-components"
 import CampaignRewards from "./CampaignRewards"
 import { Wrapper } from "./styled"
+import { GAME_ACTIONS } from "../../redux/reducers/game"
+import { startGuestGame } from "../../redux/actions/game"
+import { AUTH_ACTIONS } from "../../redux/reducers/auth"
+import { useAppDispatch, useAppSelector } from "../../hooks/redux-hooks"
 
 interface IProps {
   closeModal: () => void
-  currentXp: number
-  isCampaignGame: boolean
+  isCampaignGame?: boolean
   modalType: string
-  setTerrain: (terrain: ITerrain) => void
 }
 
 export default function ModalContentResult({
   closeModal,
-  currentXp,
   isCampaignGame,
   modalType,
-  setTerrain,
 }: IProps) {
-  const [state, dispatch] = useContext<IHandsContext>(HandsContext)
-  const [isLoadingNewGame, setisLoadingNewGame] = useState<boolean>(false)
   const [earnedAnimal, setEarnedAnimal] = useState<string>()
   const [earnedCoins, setEarnedCoins] = useState<number>()
-  const [havingXp, setHavingXp] = useState<number>(0)
   const { requiredXp } = useParams<GameParams>()
   const user: User = useAppSelector(({ auth }) => auth.user)
-  const { auth_id: authId } = user
+  const { auth_id: authId, xp } = user
   const history = useHistory()
+  const dispatch = useAppDispatch()
+  const game = useAppSelector(({ game }) => game)
+  const { isLoading } = game
 
-  const getStatsToSaveGame = (authId: string, won: boolean, state: IGameState): void => {
+  const getStatsToSaveGame = (authId: string, won: boolean, game: IGameState): void => {
     const mapCardsToSave = (handKey: HandKey) =>
-      state.hands[handKey].map(card => ({
+      game.hands[handKey].map(card => ({
         name: card.name,
         survived: card.life.current !== "DEAD",
       }))
     const mapPlantsToSave = (handKey: HandKey) =>
-      state.plants[handKey].map(plant => ({
+      game.plants[handKey].map(plant => ({
         name: plant.name,
-        applied: !!state.usedPlants.find(pl => pl.name === plant.name),
+        applied: !!game.usedPlants.find(pl => pl.name === plant.name),
       }))
 
     const gameToSave = {
-      terrain: state.terrainName!,
+      terrain: game.terrain.name,
       won,
       used_animals: {
         pc: mapCardsToSave("pc"),
@@ -60,46 +57,32 @@ export default function ModalContentResult({
       },
     }
     const parsedReqXp = parseInt(requiredXp)
-    saveGameResult(authId, gameToSave, currentXp, parsedReqXp).then(res => {
+    saveGameResult(authId, gameToSave, xp, parsedReqXp).then(res => {
       if (res && !res.error) {
-        setHavingXp(res.current_xp)
-        setEarnedAnimal(res.earned_animal)
+        dispatch(AUTH_ACTIONS.SET_XP(res.current_xp))
+        dispatch(AUTH_ACTIONS.SET_COINS(res.current_coins))
         setEarnedCoins(res.earned_coins)
+        setEarnedAnimal(res.earned_animal)
       }
     })
   }
 
   useEffect(() => {
     if (isCampaignGame && authId) {
-      getStatsToSaveGame(authId, modalType === "win", state)
+      getStatsToSaveGame(authId, modalType === "win", game)
     }
   }, []) //eslint-disable-line
 
   const handleRoute = (path: string) => {
-    dispatch({ type: EMPTY_STATE })
+    dispatch(GAME_ACTIONS.EMPTY_STATE())
     history.push(path)
   }
 
   const handlePlayAgain = () => {
-    dispatch({ type: EMPTY_STATE })
-    setisLoadingNewGame(true)
-    newTerrain().then(terrainRes => {
-      if (terrainRes && terrainRes.name) {
-        setTerrain(terrainRes)
-        newRandomGame().then(gameRes => {
-          if (gameRes && gameRes.pc && gameRes.user) {
-            setisLoadingNewGame(false)
-            closeModal()
-            dispatch({
-              type: SET_CARDS,
-              hands: { pc: gameRes.pc.animals, user: gameRes.user.animals },
-              plants: { pc: gameRes.pc.plants, user: gameRes.user.plants },
-              terrain: terrainRes,
-            })
-          }
-        })
-      }
-    })
+    dispatch(GAME_ACTIONS.EMPTY_STATE({ isLoading: true }))
+    //@ts-ignore
+    dispatch(startGuestGame())
+    closeModal()
   }
 
   return (
@@ -122,14 +105,10 @@ export default function ModalContentResult({
         )
       )}
       {isCampaignGame ? (
-        <CampaignRewards
-          earnedAnimal={earnedAnimal}
-          earnedCoins={earnedCoins}
-          currentXp={havingXp}
-        />
+        <CampaignRewards earnedAnimal={earnedAnimal} earnedCoins={earnedCoins} />
       ) : (
         <>
-          {isLoadingNewGame ? (
+          {isLoading ? (
             <Spinner />
           ) : (
             <>

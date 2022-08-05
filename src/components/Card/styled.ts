@@ -1,4 +1,4 @@
-import styled from "styled-components"
+import styled, { css } from "styled-components"
 import { injuryAnimation, missAnimation } from "../../animations/card-animations"
 import { BREAKPOINTS } from "../../utils/constants"
 
@@ -188,40 +188,59 @@ export const StatsWrapper = styled.div`
   }
 `
 
-export const CornerIconContainer = styled.div`
+interface IconContainerProps {
+  placement?: "LEFT" | "CENTER" | "RIGHT"
+}
+
+const ICON_CSS = {
+  LEFT: css`
+    left: -24px;
+    right: auto;
+  `,
+  RIGHT: css`
+    left: auto;
+    right: -24px;
+  `,
+  CENTER: css`
+    left: calc(50% - 24px);
+  `,
+}
+
+export const IconContainer = styled.div<IconContainerProps>`
   background: ${({ theme }) => theme.primary_brown};
   border-radius: 50%;
   border: 2px solid ${({ theme }) => theme.secondary_brown};
   box-shadow: inset 0px 0px 10px rgba(0, 0, 0, 0.6);
   font-size: 20px;
-  height: 48px;
-  left: -24px;
+  height: 44px;
   position: absolute;
-  top: -24px;
-  width: 48px;
+  top: -32px;
+  width: 44px;
   > span {
-    font-size: 12px;
+    font-size: 11px;
     line-height: 16px;
     position: absolute;
-    left: 28px;
-    top: 24px;
+    left: calc(50% - 6px);
+    top: 28px;
   }
-  &.animal-condition {
+  ${({ placement = "CENTER" }) => ICON_CSS[placement]};
+  ${({ placement = "CENTER" }) =>
+    placement !== "CENTER"
+      ? `
+    cursor: help;
+    top: -22px;
     > img,
     span {
-      cursor: help;
+      top: 22px;
     }
-    left: auto;
-    right: -24px;
     > img {
       position: absolute;
-      right: 24px;
-      top: 24px;
+      right: 6px;
     }
     > span {
+      font-size: 12px;
       left: auto;
-      right: 24px;
-      top: 24px;
+      right: 26px;
     }
     > div.tooltip {
       display: none;
@@ -230,8 +249,8 @@ export const CornerIconContainer = styled.div`
       > div.tooltip {
         display: flex;
       }
-    }
-  }
+    }`
+      : ""};
   ${BREAKPOINTS.MOBILE} {
     font-size: 16px;
   }

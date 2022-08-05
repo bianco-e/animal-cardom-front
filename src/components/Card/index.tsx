@@ -10,7 +10,7 @@ import usePlantAnimation from "../../hooks/usePlantAnimation"
 import Tooltip from "../Tooltip"
 import {
   AnimalCard,
-  CornerIconContainer,
+  IconContainer,
   DescriptionContainer,
   FlexSection,
   Image,
@@ -53,7 +53,6 @@ export default function Card({
   const isCardSelected = !isForPreview && game.attacker?.name === name
   const isCardUnderAttack = game.underAttack === name
   const hasDodgedAttack = game.dodgedAttack === name
-  const hasCondition = !targeteable || missing.chance > 0
   const soundState = localStorage.getItem("sound")
   const [animationProps] = usePlantAnimation({ name, soundState })
 
@@ -98,33 +97,32 @@ export default function Card({
 
       {animationProps ? <PlantEffectImage {...animationProps} /> : null}
 
-      <CornerIconContainer>
-        <span>{species}</span>
-      </CornerIconContainer>
+      {missing.chance ? (
+        <IconContainer placement="LEFT">
+          <Tooltip
+            direction="BOTTOM-RIGHT"
+            title="Missing chance"
+            description={`${name} has ${missing.chance}% chance of missing the attack`}
+          />
+          <Image className="missing-chance-icon" src={CARD_ICONS.MISSING} />
+        </IconContainer>
+      ) : null}
 
-      {hasCondition ? (
-        <CornerIconContainer className="animal-condition">
-          {!targeteable ? (
-            <>
-              <Tooltip
-                direction="BOTTOM-LEFT"
-                title="Untargeteable"
-                description={`${name} can't be attacked until it attacks first`}
-              />
-              <span>{`\u{1F6AB}`}</span>
-            </>
-          ) : null}
-          {missing.chance ? (
-            <>
-              <Tooltip
-                direction="BOTTOM-LEFT"
-                title="Missing chance"
-                description={`${name} has ${missing.chance}% chance of missing the attack`}
-              />
-              <Image className="missing-chance-icon" src={CARD_ICONS.MISSING} />
-            </>
-          ) : null}
-        </CornerIconContainer>
+      <IconContainer>
+        <span>{species}</span>
+      </IconContainer>
+
+      {!targeteable ? (
+        <IconContainer placement="RIGHT">
+          <>
+            <Tooltip
+              direction="BOTTOM-LEFT"
+              title="Untargeteable"
+              description={`${name} can't be attacked until it attacks first`}
+            />
+            <span>{`\u{1F6AB}`}</span>
+          </>
+        </IconContainer>
       ) : null}
 
       <Text className="animal-name spaced-title">{name}</Text>

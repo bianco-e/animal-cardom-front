@@ -10,7 +10,7 @@ import usePlantAnimation from "../../hooks/usePlantAnimation"
 import Tooltip from "../Tooltip"
 import {
   AnimalCard,
-  CornerIconContainer,
+  IconContainer,
   DescriptionContainer,
   FlexSection,
   Image,
@@ -35,7 +35,7 @@ export default function Card({
   bleeding,
   image,
   life,
-  missing_chance: missingChance,
+  missing,
   name,
   onPreviewClick,
   opacityForPreview,
@@ -53,7 +53,6 @@ export default function Card({
   const isCardSelected = !isForPreview && game.attacker?.name === name
   const isCardUnderAttack = game.underAttack === name
   const hasDodgedAttack = game.dodgedAttack === name
-  const hasCondition = !targeteable || missingChance
   const soundState = localStorage.getItem("sound")
   const [animationProps] = usePlantAnimation({ name, soundState })
 
@@ -90,7 +89,7 @@ export default function Card({
     stat.current > stat.initial ? "#a4508b" : stat.current < stat.initial ? "red" : ""
 
   return (
-    <AnimalCard {...styledProps} width={width}>
+    <AnimalCard {...styledProps} width={width} species={species}>
       {isCardUnderAttack ? (
         <Injury alt="under-attack" src="/images/svg/blood-splatter.svg" />
       ) : null}
@@ -98,33 +97,30 @@ export default function Card({
 
       {animationProps ? <PlantEffectImage {...animationProps} /> : null}
 
-      <CornerIconContainer>
-        <span>{species}</span>
-      </CornerIconContainer>
+      {missing.chance ? (
+        <IconContainer placement="LEFT">
+          <Tooltip
+            direction="BOTTOM-RIGHT"
+            title="Missing chance"
+            description={`${name} has ${missing.chance}% chance of missing the attack`}
+          />
+          <Image className="missing-chance-icon" src={CARD_ICONS.MISSING} />
+        </IconContainer>
+      ) : null}
 
-      {hasCondition ? (
-        <CornerIconContainer className="animal-condition">
-          {!targeteable ? (
-            <>
-              <Tooltip
-                direction="BOTTOM-LEFT"
-                title="Untargeteable"
-                description={`${name} can't be attacked until it attacks first`}
-              />
-              <span>{`\u{1F6AB}`}</span>
-            </>
-          ) : null}
-          {missingChance ? (
-            <>
-              <Tooltip
-                direction="BOTTOM-LEFT"
-                title="Missing chance"
-                description={`${name} has ${missingChance}% chance of missing the attack`}
-              />
-              <Image className="missing-chance-icon" src={CARD_ICONS.MISSING} />
-            </>
-          ) : null}
-        </CornerIconContainer>
+      <IconContainer>
+        <span>{species}</span>
+      </IconContainer>
+
+      {!targeteable ? (
+        <IconContainer placement="RIGHT">
+          <Tooltip
+            direction="BOTTOM-LEFT"
+            title="Untargeteable"
+            description={`${name} can't be attacked until it attacks first`}
+          />
+          <span>{`\u{1F6AB}`}</span>
+        </IconContainer>
       ) : null}
 
       <Text className="animal-name spaced-title">{name}</Text>

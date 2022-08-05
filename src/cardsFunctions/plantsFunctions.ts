@@ -21,14 +21,15 @@ const reduceMissingChanceCard = (
   animalToTreat: IAnimal
 ): IAnimal[] => {
   return arr.map(card => {
-    if (card.name !== animalToTreat.name || !card.missing_chance) return card
+    if (card.name !== animalToTreat.name || !card.missing.chance) return card
     const newMissingChance =
-      card.missing_chance - chanceToReduce < 0
-        ? undefined
-        : card.missing_chance - chanceToReduce
+      card.missing.chance - chanceToReduce < 0 ? 0 : card.missing.chance - chanceToReduce
     return {
       ...card,
-      missing_chance: newMissingChance,
+      missing: {
+        ...card.missing,
+        chance: newMissingChance,
+      },
     }
   })
 }
@@ -182,7 +183,7 @@ const jewelweedFn = (state: IGameState, enemyHandKey: HandKey): IGameState => {
 const marigoldFn = (state: IGameState, enemyHandKey: HandKey): IGameState => {
   const { animalToTreat, hands } = state
   const allyHandKey = enemyHandKey === "pc" ? "user" : "pc"
-  if (hands[allyHandKey].includes(animalToTreat!) && animalToTreat!.missing_chance) {
+  if (hands[allyHandKey].includes(animalToTreat!) && animalToTreat!.missing.chance) {
     const newHand = reduceMissingChanceCard(hands[allyHandKey], 20, animalToTreat!)
     return setHandInState(state, allyHandKey, newHand)
   } else return state

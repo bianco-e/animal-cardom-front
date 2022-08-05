@@ -9,6 +9,7 @@ const positions = {
   TOP: `bottom: 120%; flex-direction: column; left: calc(50% - 49px);`,
   BOTTOM: `top: 120%; flex-direction: column-reverse; left: calc(50% - 49px);`,
   "BOTTOM-LEFT": `top: 100%; flex-direction: column-reverse; right: 90%;`,
+  "BOTTOM-RIGHT": `top: 100%; flex-direction: column-reverse; left: 90%;`,
 }
 
 const descriptionContainer = {
@@ -16,6 +17,7 @@ const descriptionContainer = {
     TOP: `4px 4px 0 0;`,
     BOTTOM: `0 0 4px 4px;`,
     "BOTTOM-LEFT": `0 0 4px 4px;`,
+    "BOTTOM-RIGHT": `0 0 4px 4px;`,
   },
 }
 
@@ -24,11 +26,13 @@ const titleContainer = {
     TOP: `bottom: -4px; left: calc(50% - 4px); transform: rotate(45deg);`,
     BOTTOM: `top: -4px; left: calc(50% - 4px); transform: rotate(45deg);`,
     "BOTTOM-LEFT": `display: none;`,
+    "BOTTOM-RIGHT": `display: none;`,
   },
   borderRadius: {
     TOP: `0 0 4px 4px;`,
     BOTTOM: `4px 4px 0 0;`,
     "BOTTOM-LEFT": `4px 0 0 0;`,
+    "BOTTOM-RIGHT": `0 4px 0 0;`,
   },
 }
 

@@ -1,6 +1,6 @@
 import { TooltipWrapper } from "./styled"
 
-export type Direction = "TOP" | "BOTTOM" | "BOTTOM-LEFT"
+export type Direction = "TOP" | "BOTTOM" | "BOTTOM-LEFT" | "BOTTOM-RIGHT"
 
 interface IProps {
   direction?: Direction

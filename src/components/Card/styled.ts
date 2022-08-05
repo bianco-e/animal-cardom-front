@@ -12,6 +12,7 @@ interface AnimalCardProps {
   isCardSelected?: boolean
   isParalyzed?: boolean
   opacity: string
+  species?: string
   transform?: string
   width?: string
 }
@@ -66,7 +67,8 @@ export const AnimalCard = styled.button<AnimalCardProps>`
   align-items: center;
   ${({ attackAnimation }) => attackAnimation};
   background: ${({ theme }) => theme.secondary_brown};
-  background-image: url("/images/backgrounds/card-bg.svg");
+  background-image: ${({ species }) =>
+    `url("/images/backgrounds/${species ? `${species}-` : ""}card-bg.svg")`};
   border: 2px solid ${({ theme }) => theme.secondary_brown};
   box-shadow: inset 0px 0px 10px rgba(0, 0, 0, 0.6);
   border-radius: 8px;
@@ -111,7 +113,8 @@ export const AnimalCard = styled.button<AnimalCardProps>`
   &::after {
     -webkit-transform: translateX(-50%);
     background: ${({ theme }) => theme.secondary_brown};
-    background-image: url("/images/backgrounds/card-bg.svg");
+    background-image: ${({ species }) =>
+      `url("/images/backgrounds/${species ? `${species}-` : ""}card-bg.svg")`};
     border-radius: 4px;
     content: "";
     height: calc(100% - 8px);
@@ -167,9 +170,9 @@ export const StatsWrapper = styled.div`
   }
   > div.stats-container {
     align-items: center;
-    background: ${({ theme }) => theme.primary_brown};
+    background: ${({ theme }) => theme.light_brown};
     border-radius: 8px 8px 0 0;
-    border: 2px solid ${({ theme }) => theme.secondary_brown};
+    border: 2px solid ${({ theme }) => theme.primary_brown};
     border-bottom: 0;
     box-shadow: inset 0px 0px 8px rgba(0, 0, 0, 0.4);
     display: flex;
@@ -348,8 +351,9 @@ export const FlexSection = styled.div<FlexSectionProps>`
 `
 export const DescriptionContainer = styled.div`
   align-items: center;
-  background: ${({ theme }) => theme.primary_brown};
+  background: ${({ theme }) => theme.light_brown};
   box-shadow: inset 0px 0px 8px rgba(0, 0, 0, 0.4);
+  border: 1px solid ${({ theme }) => theme.primary_brown};
   border-radius: 5px;
   display: flex;
   flex-direction: column;

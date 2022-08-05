@@ -89,7 +89,7 @@ export default function Card({
     stat.current > stat.initial ? "#a4508b" : stat.current < stat.initial ? "red" : ""
 
   return (
-    <AnimalCard {...styledProps} width={width}>
+    <AnimalCard {...styledProps} width={width} species={species}>
       {isCardUnderAttack ? (
         <Injury alt="under-attack" src="/images/svg/blood-splatter.svg" />
       ) : null}
@@ -114,14 +114,12 @@ export default function Card({
 
       {!targeteable ? (
         <IconContainer placement="RIGHT">
-          <>
-            <Tooltip
-              direction="BOTTOM-LEFT"
-              title="Untargeteable"
-              description={`${name} can't be attacked until it attacks first`}
-            />
-            <span>{`\u{1F6AB}`}</span>
-          </>
+          <Tooltip
+            direction="BOTTOM-LEFT"
+            title="Untargeteable"
+            description={`${name} can't be attacked until it attacks first`}
+          />
+          <span>{`\u{1F6AB}`}</span>
         </IconContainer>
       ) : null}
 

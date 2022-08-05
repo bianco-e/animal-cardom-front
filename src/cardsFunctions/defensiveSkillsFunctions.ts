@@ -28,6 +28,10 @@ const BUTTERFLY_ANIMAL: IAnimal = {
   bleeding: false,
   price: 45,
   sell_price: 23,
+  missing: {
+    chance: 0,
+    exceptions: [],
+  },
 }
 
 const applyDmg = (animal: IAnimal, statsDiff: number): IAnimal => ({

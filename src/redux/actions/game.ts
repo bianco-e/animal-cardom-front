@@ -110,7 +110,7 @@ const checkWhatPlantToUse = (game: IGameState): IGameState => {
   )
   const poisonedCard = pcLiveCards.find((card: IAnimal) => card.poisoned.rounds > 0)
   const paralyzedCard = pcLiveCards.find((card: IAnimal) => card.paralyzed > 0)
-  const blindCard = pcLiveCards.find((card: IAnimal) => card.missing_chance)
+  const blindCard = pcLiveCards.find((card: IAnimal) => card.missing.chance > 0)
 
   const findAPlant = (plantName: string) =>
     plants.pc.find(
@@ -296,7 +296,11 @@ const applyAttackDamage = (game: IGameState, enemyHandKey: HandKey): IGameState 
   if (typeof defender.life.current !== "number")
     return { ...game, underAttack: undefined, dodgedAttack: undefined }
 
-  if (attacker.missing_chance && getRandomChance(attacker.missing_chance))
+  if (
+    attacker.missing.chance > 0 &&
+    !attacker.missing.exceptions.includes(defender.species) &&
+    getRandomChance(attacker.missing.chance)
+  )
     return { ...game, underAttack: undefined, dodgedAttack: defender.name }
 
   const statsDiff =

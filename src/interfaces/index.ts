@@ -24,6 +24,11 @@ export interface Stat<T> {
   initial: number
 }
 
+export interface Missing {
+  chance: number
+  exceptions: string[]
+}
+
 export interface Poisoned {
   damage: number
   rounds: number
@@ -58,7 +63,7 @@ export interface IAnimal {
   bleeding: boolean
   image: string
   life: Stat<number | string>
-  missing_chance?: number
+  missing: Missing
   name: string
   paralyzed: number
   poisoned: Poisoned

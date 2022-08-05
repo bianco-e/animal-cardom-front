@@ -35,7 +35,7 @@ export default function Card({
   bleeding,
   image,
   life,
-  missing_chance: missingChance,
+  missing,
   name,
   onPreviewClick,
   opacityForPreview,
@@ -53,7 +53,7 @@ export default function Card({
   const isCardSelected = !isForPreview && game.attacker?.name === name
   const isCardUnderAttack = game.underAttack === name
   const hasDodgedAttack = game.dodgedAttack === name
-  const hasCondition = !targeteable || missingChance
+  const hasCondition = !targeteable || missing.chance > 0
   const soundState = localStorage.getItem("sound")
   const [animationProps] = usePlantAnimation({ name, soundState })
 
@@ -114,12 +114,12 @@ export default function Card({
               <span>{`\u{1F6AB}`}</span>
             </>
           ) : null}
-          {missingChance ? (
+          {missing.chance ? (
             <>
               <Tooltip
                 direction="BOTTOM-LEFT"
                 title="Missing chance"
-                description={`${name} has ${missingChance}% chance of missing the attack`}
+                description={`${name} has ${missing.chance}% chance of missing the attack`}
               />
               <Image className="missing-chance-icon" src={CARD_ICONS.MISSING} />
             </>

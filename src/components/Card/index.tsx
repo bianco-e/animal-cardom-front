@@ -88,6 +88,8 @@ export default function Card({
   const getStatColor = (stat: Stat<number | string>): string =>
     stat.current > stat.initial ? "#a4508b" : stat.current < stat.initial ? "red" : ""
 
+  const getImageName = (name: string) => name.toLowerCase().split(" ").join("-")
+
   return (
     <AnimalCard {...styledProps} width={width} species={species}>
       {isCardUnderAttack ? (
@@ -125,7 +127,11 @@ export default function Card({
 
       <Text className="animal-name spaced-title">{name}</Text>
 
-      <Image className="animal-picture" draggable="false" src={image} />
+      <Image
+        className="animal-picture"
+        draggable="false"
+        src={`/images/animals/adult-${getImageName(name)}.webp`}
+      />
 
       <DescriptionContainer>
         <FlexSection mBottom="1px">

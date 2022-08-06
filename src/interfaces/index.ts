@@ -14,7 +14,7 @@ export interface IGameState {
   dodgedAttack?: string
   pcTurn: boolean
   triggerPcAttack: boolean
-  pcPlay: string
+  pcPlays: string[]
 }
 
 export type HandKey = "pc" | "user"

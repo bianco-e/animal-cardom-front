@@ -22,7 +22,7 @@ const initialState: IGameState = {
   },
   pcTurn: false,
   triggerPcAttack: false,
-  pcPlay: "",
+  pcPlays: [],
 }
 
 export const slice = createSlice({
@@ -53,7 +53,7 @@ export const slice = createSlice({
       return {
         ...state,
         triggerPcAttack: true,
-        pcPlay: "Thinking...",
+        pcPlays: state.pcPlays.concat("Thinking..."),
       }
     },
   },

@@ -1,14 +1,13 @@
 import { useEffect, useState } from "react"
 import { useHistory } from "react-router-dom"
-import Plant from "../Plant"
 import Modal from "../Common/Modal"
 import { ACButton, ModalTitle, Text } from "../styled-components"
 import { IPlants, ITerrain } from "../../interfaces/index"
 import Tooltip from "../Tooltip"
-import { HalfPanel, LeftPanel, OptionsPanel, PlayerNameTab, TerrainName } from "./styled"
-import { IPlant } from "../../interfaces"
+import { LeftPanel, OptionsPanel, TerrainName } from "./styled"
 import { GAME_ACTIONS } from "../../redux/reducers/game"
 import { useAppDispatch } from "../../hooks/redux-hooks"
+import PlayerPlants from "./PlayerPlants"
 
 interface IProps {
   plants: IPlants
@@ -50,15 +49,8 @@ export default function SidePanel({ plants, isCampaign, terrain, userName }: IPr
 
   return (
     <LeftPanel bgImage={terrain.image}>
-      <HalfPanel>
-        <Text fSize="18px" fWeight="bold" padding="5px">
-          PC
-        </Text>
-        <PlayerNameTab>PC</PlayerNameTab>
-        {plants.pc.map((plant: IPlant) => (
-          <Plant plant={plant} key={plant.name} />
-        ))}
-      </HalfPanel>
+      <PlayerPlants name="PC" plants={plants.pc} />
+
       <TerrainName color={terrain.color}>
         <OptionsPanel>
           <button onClick={handleSoundButton}>
@@ -68,6 +60,7 @@ export default function SidePanel({ plants, isCampaign, terrain, userName }: IPr
             <img alt="exit-button" src={`/icons/exit-icon.png`} />
           </button>
         </OptionsPanel>
+
         <div
           className="name-container"
           onMouseEnter={() => setShowTerrainTooltip(true)}
@@ -86,15 +79,9 @@ export default function SidePanel({ plants, isCampaign, terrain, userName }: IPr
           )}
         </div>
       </TerrainName>
-      <HalfPanel>
-        <Text fSize="18px" fWeight="bold" padding="5px">
-          {userName}
-        </Text>
-        <PlayerNameTab>{userName}</PlayerNameTab>
-        {plants.user.map((plant: IPlant) => (
-          <Plant plant={plant} key={plant.name} />
-        ))}
-      </HalfPanel>
+
+      <PlayerPlants name={userName} plants={plants.user} />
+
       {showExitModal && (
         <Modal closeModal={() => setShowExitModal(false)} withCloseButton={false}>
           <>

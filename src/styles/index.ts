@@ -42,12 +42,14 @@ const styles = {
   poison_green: "#23954B",
 
   //sizes
-  $1: "40px",
-  $2: "32px",
-  $3: "24px",
-  $4: "16px",
-  $5: "12px",
-  $6: "8px",
-  $7: "4px",
+  $1: "64px",
+  $2: "48px",
+  $3: "40px",
+  $4: "32px",
+  $5: "24px",
+  $6: "16px",
+  $7: "12px",
+  $8: "8px",
+  $9: "4px",
 }
 export default styles

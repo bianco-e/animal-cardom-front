@@ -132,12 +132,12 @@ const Wrapper = styled.div`
   justify-content: space-around;
 `
 const Title = styled.h4`
-  font-size: ${({ theme }) => theme.$2};
+  font-size: ${({ theme }) => theme.$4};
   text-align: center;
   padding-top: 64px;
   ${BREAKPOINTS.MOBILE} {
     margin-bottom: 5px;
-    font-size: ${({ theme }) => theme.$3};
+    font-size: ${({ theme }) => theme.$5};
   }
 `
 const Container = styled.div`
@@ -149,7 +149,7 @@ const Container = styled.div`
   position: relative;
   width: 40%;
   & > *:not(:last-child) {
-    margin-bottom: ${({ theme }) => theme.$5};
+    margin-bottom: ${({ theme }) => theme.$7};
   }
   ${BREAKPOINTS.MOBILE} {
     height: 65vh;

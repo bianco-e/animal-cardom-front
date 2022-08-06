@@ -22,7 +22,6 @@ const BUTTERFLY_ANIMAL: IAnimal = {
   },
   species: "🦂",
   name: "Butterfly",
-  image: "/images/animals/adult-butterfly.webp",
   paralyzed: 0,
   targeteable: true,
   bleeding: false,

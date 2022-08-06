@@ -61,7 +61,6 @@ export interface IPlant {
 export interface IAnimal {
   attack: Stat<number>
   bleeding: boolean
-  image: string
   life: Stat<number | string>
   missing: Missing
   name: string

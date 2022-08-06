@@ -22,7 +22,8 @@ export const PlantContainer = styled.div`
 
 export const PlantCard = styled.button<PlantCardProps>`
   align-items: center;
-  background-color: ${({ theme }) => theme.primary_brown};
+  background-color: ${({ theme }) => theme.secondary_brown};
+  background-image: url("/images/backgrounds/card-bg.svg");
   border-radius: 4px;
   box-shadow: inset 0px 0px 2px black;
   cursor: ${({ belongsToUser }) => (belongsToUser ? "pointer" : "default")};
@@ -35,6 +36,7 @@ export const PlantCard = styled.button<PlantCardProps>`
   opacity: ${({ opacity }) => opacity};
   overflow: hidden;
   padding: 3px 3px 5px;
+  position: relative;
   transform: ${({ transform }) => transform};
   transition: transform 0.2s ease;
   width: 100%;
@@ -65,21 +67,18 @@ export const PlantCard = styled.button<PlantCardProps>`
       opacity === "1" && belongsToUser
         ? `linear-gradient(90deg, ${primary_violet}, ${light_brown}, ${secondary_violet})`
         : "none"};
-    background-size: 300% 300%;
     content: "";
     height: 165%;
-    left: 50%;
-    margin-left: -25%;
-    margin-top: -85%;
+    left: 32%;
     position: absolute;
-    top: 50%;
-    width: 50%;
-    z-index: -2;
+    top: -35%;
+    width: 45%;
+    z-index: -1;
     ${({ selectionAnimation }) => selectionAnimation};
   }
   &::after {
-    background-size: 300% 300%;
-    background: ${({ theme }) => theme.primary_brown};
+    background-color: ${({ theme }) => theme.secondary_brown};
+    background-image: url("/images/backgrounds/card-bg.svg");
     border-radius: 4px;
     content: "";
     height: calc(100% - 6px);

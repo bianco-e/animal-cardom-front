@@ -60,7 +60,7 @@ export const Wrapper = styled.div<WrapperProps>`
   width: 200px;
   z-index: 5;
   & > *:not(:last-child) {
-    margin-bottom: ${({ theme }) => theme.$2};
+    margin-bottom: ${({ theme }) => theme.$4};
   }
   > .logo {
     cursor: pointer;
@@ -101,8 +101,8 @@ export const LogoutButton = styled.button`
   border-top: 0;
   box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
   color: ${({ theme }) => theme.primary_red};
-  font-size: ${({ theme }) => theme.$4};
-  padding: ${({ theme }) => `${theme.$7} ${theme.$5}`};
+  font-size: ${({ theme }) => theme.$6};
+  padding: ${({ theme }) => `${theme.$9} ${theme.$7}`};
   position: absolute;
   right: calc(50% - 44px);
   top: 0;

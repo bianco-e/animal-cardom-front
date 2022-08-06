@@ -14,6 +14,7 @@ import { HandContainer } from "../components/styled-components"
 import Card from "../components/Card"
 import { useAppDispatch, useAppSelector } from "../hooks/redux-hooks"
 import { computerPlay, startCampaignGame, startGuestGame } from "../redux/actions/game"
+import PcPlaysCaster from "../components/PcPlaysCaster"
 
 interface IProps {
   isCampaign?: boolean
@@ -26,16 +27,7 @@ export default function Game({ isCampaign }: IProps) {
   const [modal, setModal] = useState<string>("")
   const { push } = useHistory()
   const { requiredXp } = useParams<GameParams>()
-  const {
-    hands,
-    plants,
-    pcTurn,
-    pcPlay,
-    triggerPcAttack,
-    terrain,
-    gameError,
-    isLoading,
-  } = game
+  const { hands, plants, pcTurn, triggerPcAttack, terrain, gameError, isLoading } = game
   const { auth_id: authId }: User = useAppSelector(({ auth }) => auth.user)
 
   useEffect(() => {
@@ -100,7 +92,9 @@ export default function Game({ isCampaign }: IProps) {
               <Card {...animal} belongsToUser={false} key={animal.name} />
             ))}
           </HandContainer>
-          <BoardText>{pcPlay}</BoardText>
+
+          <PcPlaysCaster />
+
           <HandContainer>
             {hands.user.map((animal: IAnimal) => (
               <Card {...animal} belongsToUser={true} key={animal.name} />
@@ -154,22 +148,5 @@ const Board = styled.div`
   }
   ${BREAKPOINTS.MOBILE} {
     min-height: 285px;
-  }
-`
-const BoardText = styled.h4`
-  align-items: center;
-  border-radius: 5px;
-  color: ${({ color }) => color};
-  display: flex;
-  font-size: 20px;
-  height: 45px;
-  justify-content: center;
-  margin: 0;
-  text-shadow: rgba(255, 255, 255, 0.8) 2px 2px 3px;
-  ${BREAKPOINTS.TABLET} {
-    font-size: 16px;
-  }
-  ${BREAKPOINTS.MOBILE} {
-    font-size: 12px;
   }
 `

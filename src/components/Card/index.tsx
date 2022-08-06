@@ -33,7 +33,6 @@ export default function Card({
   attack,
   belongsToUser,
   bleeding,
-  image,
   life,
   missing,
   name,

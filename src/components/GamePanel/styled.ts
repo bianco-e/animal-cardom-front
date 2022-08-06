@@ -107,6 +107,7 @@ export const OptionsPanel = styled.div`
   right: -27px;
   top: calc(50% - 55);
   width: 25px;
+  z-index: 10;
   > button {
     height: 15px;
     margin-bottom: 25px;

@@ -113,12 +113,12 @@ const ActionName = styled.span`
 `
 const Title = styled.h1`
   color: #000;
-  font-size: ${({ theme }) => theme.$1};
+  font-size: ${({ theme }) => theme.$3};
   font-weight: bold;
   margin: 96px 0 44px;
   ${BREAKPOINTS.MOBILE} {
     margin: 96px 0 32px;
-    font-size: ${({ theme }) => theme.$2};
+    font-size: ${({ theme }) => theme.$4};
   }
 `
 const ActionContainer = styled.div`

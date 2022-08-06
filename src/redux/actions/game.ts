@@ -86,15 +86,19 @@ const applyPlantToCard = (
 ): IGameState => {
   const plantMessage =
     enemyHandKey === "user"
-      ? ` and applied ${plant.name} on ${card.name.toUpperCase()}`
+      ? ` and ${plant.name} was applied on ${card.name.toUpperCase()}`
       : ""
   if (!card.targeteable) return game
+  const newTurns = game.pcPlays.map((t, i) => {
+    if (i !== game.pcPlays.length - 1) return t
+    return t + plantMessage
+  })
   return getPlantFn(plant.name)(
     {
       ...game,
       selectedPlant: plant,
       animalToTreat: card,
-      pcPlay: game.pcPlay + plantMessage,
+      pcPlays: newTurns,
     },
     enemyHandKey
   )
@@ -111,6 +115,7 @@ const checkWhatPlantToUse = (game: IGameState): IGameState => {
   const poisonedCard = pcLiveCards.find((card: IAnimal) => card.poisoned.rounds > 0)
   const paralyzedCard = pcLiveCards.find((card: IAnimal) => card.paralyzed > 0)
   const blindCard = pcLiveCards.find((card: IAnimal) => card.missing.chance > 0)
+  const bleedingCard = pcLiveCards.find((card: IAnimal) => card.bleeding)
 
   const findAPlant = (plantName: string) =>
     plants.pc.find(
@@ -121,6 +126,7 @@ const checkWhatPlantToUse = (game: IGameState): IGameState => {
   const jewelweedPlant = findAPlant("Jewelweed")
   const coffeePlant = findAPlant("Coffee")
   const withaniaPlant = findAPlant("Withania")
+  const horsetailPlant = findAPlant("Horsetail")
   const peyotePlant = findAPlant("Peyote")
   const ricinumPlant = findAPlant("Ricinum")
   const marigoldPlant = findAPlant("Marigold")
@@ -134,6 +140,8 @@ const checkWhatPlantToUse = (game: IGameState): IGameState => {
     return applyPlantToCard(jewelweedPlant, poisonedCard, game, "user")
   if (paralyzedCard && coffeePlant)
     return applyPlantToCard(coffeePlant, paralyzedCard, game, "user")
+  if (bleedingCard && horsetailPlant)
+    return applyPlantToCard(horsetailPlant, bleedingCard, game, "user")
   if (blindCard && marigoldPlant)
     return applyPlantToCard(marigoldPlant, blindCard, game, "user")
   if (randomBoolean && withaniaPlant && randomAlly)
@@ -147,8 +155,9 @@ const checkWhatPlantToUse = (game: IGameState): IGameState => {
 
 const computerDamage = (game: IGameState) => {
   const { defender, attacker, pcTurn, hands } = game
-  const pcAnswer = `${attacker!.name.toUpperCase()} attacked ${defender!.name.toUpperCase()}`
   const updatedGame = attackAndApplySkill(game, "user")
+  const pcAnswer = `${attacker!.name.toUpperCase()} attacked ${defender!.name.toUpperCase()}`
+
   if (!getLiveCards(hands.user).length) return game
   return checkWhatPlantToUse({
     ...updatedGame,
@@ -156,7 +165,7 @@ const computerDamage = (game: IGameState) => {
     defender: undefined,
     pcTurn: !pcTurn,
     triggerPcAttack: false,
-    pcPlay: pcAnswer,
+    pcPlays: game.pcPlays.concat(pcAnswer),
   })
 }
 

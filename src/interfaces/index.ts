@@ -14,7 +14,7 @@ export interface IGameState {
   dodgedAttack?: string
   pcTurn: boolean
   triggerPcAttack: boolean
-  pcPlay: string
+  pcPlays: string[]
 }
 
 export type HandKey = "pc" | "user"
@@ -61,7 +61,6 @@ export interface IPlant {
 export interface IAnimal {
   attack: Stat<number>
   bleeding: boolean
-  image: string
   life: Stat<number | string>
   missing: Missing
   name: string

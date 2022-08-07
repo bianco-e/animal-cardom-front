@@ -34,6 +34,7 @@ const styles = {
   primary_brown: "#d4a257",
   secondary_brown: "#b9935a",
   light_brown: "#e3cdac",
+  not_white: "#fdffdf",
   primary_violet: "#5f0a87",
   secondary_violet: "#a4508b",
   primary_red: "#dd5540",

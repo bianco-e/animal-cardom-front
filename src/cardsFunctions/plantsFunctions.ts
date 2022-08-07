@@ -55,7 +55,7 @@ const healCardInAHand = (
   animalToTreat: IAnimal
 ): IAnimal[] => {
   return arr.map(card => {
-    if (card === animalToTreat && typeof card.life.current === "number") {
+    if (card === animalToTreat && card.life.current > 0) {
       return {
         ...card,
         life: {

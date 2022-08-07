@@ -4,13 +4,21 @@ import { Wrapper } from "./styled"
 interface IProps {
   children: JSX.Element
   disclaimer?: string
+  startClosed?: boolean
   title: string
+  width?: string
 }
-export default function AccordionSection({ children, disclaimer, title }: IProps) {
-  const [isOpened, setIsOpened] = useState<boolean>(true)
+export default function AccordionSection({
+  children,
+  disclaimer,
+  startClosed = false,
+  title,
+  width = "100%",
+}: IProps) {
+  const [isOpened, setIsOpened] = useState<boolean>(!startClosed)
   const toggleAccordion = () => setIsOpened(!isOpened)
   return (
-    <Wrapper isOpened={isOpened}>
+    <Wrapper isOpened={isOpened} width={width}>
       <button className="accordion-handler" onClick={toggleAccordion}>
         <span>
           {title}

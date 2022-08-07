@@ -38,3 +38,8 @@ export const getFilteredAnimalsCards = (
     .then(res => res.json())
     .catch(err => console.error(err))
 }
+
+export const getAnimalsStatistics = () =>
+  fetch(`${API_BASE_URL}animals/all/statistics`)
+    .then(res => res.json())
+    .catch(err => console.error(err))

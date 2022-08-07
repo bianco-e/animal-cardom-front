@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import styled from "styled-components"
 import Card from "../components/Card"
 import MenuLayout from "../components/MenuLayout"
+import ReleaseNotes from "../components/ReleaseNotes"
 import Spinner from "../components/Spinner"
 import { IAnimal } from "../interfaces"
 import { getNewestAnimals } from "../queries/animalsCards"
@@ -22,18 +23,21 @@ export default function Menu() {
 
   return (
     <MenuLayout>
-      <Wrapper>
-        <Title>Newest animals</Title>
-        {!(newestAnimals.length > 0) ? (
-          <Spinner />
-        ) : (
-          <div>
-            {newestAnimals.map(card => (
-              <Card {...card} key={card.name} opacityForPreview="1" />
-            ))}
-          </div>
-        )}
-      </Wrapper>
+      <>
+        <Wrapper>
+          <Title>Newest animals</Title>
+          {!(newestAnimals.length > 0) ? (
+            <Spinner />
+          ) : (
+            <div>
+              {newestAnimals.map(card => (
+                <Card {...card} key={card.name} opacityForPreview="1" />
+              ))}
+            </div>
+          )}
+        </Wrapper>
+        <ReleaseNotes />
+      </>
     </MenuLayout>
   )
 }
@@ -43,7 +47,7 @@ const Wrapper = styled.div`
   background-image: url("/images/welcome-background.png");
   background-size: cover;
   background-position: bottom;
-  border-radius: 5px;
+  border-radius: 4px;
   box-shadow: 0 0 10px 10px rgba(95, 57, 0, 0.2);
   box-sizing: border-box;
   display: flex;

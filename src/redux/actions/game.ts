@@ -61,7 +61,7 @@ const getHighestAttackCard = (hand: IAnimal[]) =>
 
 const attackAndApplySkill = (game: IGameState, enemyHandKey: HandKey): IGameState => {
   const { defender, attacker, hands } = game
-  if (!defender || !attacker || !hands || defender.life.current === "DEAD") return game
+  if (!defender || !attacker || !hands || defender.life.current === 0) return game
 
   const stateAfterAttack = applyAttackDamage(game, enemyHandKey)
 
@@ -286,15 +286,14 @@ const passRoundAndApplyEffects = (hands: IHands, enemyHandKey: HandKey) => {
   return {
     ...hands,
     [enemyHandKey]: minusPoisonedRound.map(card => {
-      if (card.bleeding && typeof card.life.current === "number") {
-        return {
-          ...card,
-          life: {
-            ...card.life,
-            current: card.life.current - 1 < 1 ? "DEAD" : card.life.current - 1,
-          },
-        }
-      } else return card
+      if (!card.bleeding || card.life.current === 0) return card
+      return {
+        ...card,
+        life: {
+          ...card.life,
+          current: card.life.current - 1 < 1 ? 0 : card.life.current - 1,
+        },
+      }
     }),
   }
 }
@@ -302,7 +301,7 @@ const passRoundAndApplyEffects = (hands: IHands, enemyHandKey: HandKey) => {
 const applyAttackDamage = (game: IGameState, enemyHandKey: HandKey): IGameState => {
   const attacker = game.attacker!
   const defender = game.defender!
-  if (typeof defender.life.current !== "number")
+  if (defender.life.current === 0)
     return { ...game, underAttack: undefined, dodgedAttack: undefined }
 
   if (
@@ -321,18 +320,17 @@ const applyAttackDamage = (game: IGameState, enemyHandKey: HandKey): IGameState 
 const applyPoisonDamage = (hands: IHands, enemyHandKey: HandKey): IHands => {
   const applyPoisonInAHand = (arr: IAnimal[]) =>
     arr.map(card => {
-      if (card.poisoned.rounds > 0 && typeof card.life.current === "number") {
-        return {
-          ...card,
-          life: {
-            ...card.life,
-            current:
-              card.life.current - card.poisoned.damage < 1
-                ? "DEAD"
-                : card.life.current - card.poisoned.damage,
-          },
-        }
-      } else return card
+      if (card.poisoned.rounds > 0 && card.life.current > 0) return card
+      return {
+        ...card,
+        life: {
+          ...card.life,
+          current:
+            card.life.current - card.poisoned.damage < 1
+              ? 0
+              : card.life.current - card.poisoned.damage,
+        },
+      }
     })
   return { ...hands, [enemyHandKey]: applyPoisonInAHand(hands[enemyHandKey]) }
 }

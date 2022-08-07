@@ -2,6 +2,7 @@ import styled from "styled-components"
 
 interface WrapperProps {
   isOpened: boolean
+  width: string
 }
 
 export const Wrapper = styled.div<WrapperProps>`
@@ -12,7 +13,7 @@ export const Wrapper = styled.div<WrapperProps>`
   max-height: ${({ isOpened }) => (isOpened ? "9000px" : "90px")};
   overflow: hidden;
   transition: all 0.3s ease;
-  width: 100%;
+  width: ${({ width }) => width};
   > button.accordion-handler {
     align-items: center;
     display: flex;

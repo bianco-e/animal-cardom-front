@@ -19,8 +19,8 @@ export interface IGameState {
 
 export type HandKey = "pc" | "user"
 
-export interface Stat<T> {
-  current: T
+export interface Stat {
+  current: number
   initial: number
 }
 
@@ -59,9 +59,9 @@ export interface IPlant {
 }
 
 export interface IAnimal {
-  attack: Stat<number>
+  attack: Stat
   bleeding: boolean
-  life: Stat<number | string>
+  life: Stat
   missing: Missing
   name: string
   paralyzed: number

@@ -88,6 +88,10 @@ export default function CollectionFilter({ setCardsToShow }: IProps) {
       fn: () => setSkillTypeFilter("bleed"),
     },
     {
+      text: "Blind",
+      fn: () => setSkillTypeFilter("blind"),
+    },
+    {
       text: "Buff",
       fn: () => setSkillTypeFilter("buff"),
     },

@@ -36,7 +36,7 @@ export default function ModalContentResult({
     const mapCardsToSave = (handKey: HandKey) =>
       game.hands[handKey].map(card => ({
         name: card.name,
-        survived: card.life.current !== "DEAD",
+        survived: card.life.current > 0,
       }))
     const mapPlantsToSave = (handKey: HandKey) =>
       game.plants[handKey].map(plant => ({

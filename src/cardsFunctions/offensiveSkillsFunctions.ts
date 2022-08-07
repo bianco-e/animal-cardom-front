@@ -3,7 +3,7 @@ import { getRandomFromArr } from "../utils"
 
 const poisonEnemy = (arr: IAnimal[], defender: IAnimal, poisoned: Poisoned) => {
   return arr.map(card => {
-    if (card.name === defender.name && card.life.current !== "DEAD") {
+    if (card.name === defender.name && card.life.current > 0) {
       return {
         ...card,
         poisoned,
@@ -14,7 +14,7 @@ const poisonEnemy = (arr: IAnimal[], defender: IAnimal, poisoned: Poisoned) => {
 
 const makeEnemyBleed = (arr: IAnimal[], defender: IAnimal) => {
   return arr.map(card => {
-    if (card.name === defender.name && card.life.current !== "DEAD") {
+    if (card.name === defender.name && card.life.current > 0) {
       return {
         ...card,
         bleeding: true,
@@ -25,7 +25,7 @@ const makeEnemyBleed = (arr: IAnimal[], defender: IAnimal) => {
 
 const paralyzeEnemy = (arr: IAnimal[], defender: IAnimal, roundsNumber: number) => {
   return arr.map(card => {
-    if (card.name === defender.name && card.life.current !== "DEAD") {
+    if (card.name === defender.name && card.life.current > 0) {
       return {
         ...card,
         paralyzed: roundsNumber,
@@ -36,7 +36,7 @@ const paralyzeEnemy = (arr: IAnimal[], defender: IAnimal, roundsNumber: number) 
 
 const healItself = (arr: IAnimal[], attacker: IAnimal, healthAmount: number) => {
   return arr.map(card => {
-    if (card.name === attacker.name && typeof card.life.current === "number") {
+    if (card.name === attacker.name && card.life.current > 0) {
       return {
         ...card,
         life: {
@@ -55,7 +55,7 @@ const killInstantly = (arr: IAnimal[], animal: IAnimal) => {
         ...card,
         life: {
           ...card.life,
-          current: "DEAD",
+          current: 0,
         },
       }
     } else return card
@@ -86,7 +86,7 @@ const modifyAnimalAttack = (
 
 const increaseAlliesAttack = (arr: IAnimal[], attackAmount: number) => {
   return arr.map(card => {
-    if (card.life.current !== "DEAD") {
+    if (card.life.current > 0) {
       return {
         ...card,
         attack: {
@@ -100,7 +100,7 @@ const increaseAlliesAttack = (arr: IAnimal[], attackAmount: number) => {
 
 const decreaseEnemiesAttack = (arr: IAnimal[], attackAmount: number) => {
   return arr.map(card => {
-    if (card.life.current !== "DEAD" && card.attack.current > 1) {
+    if (card.life.current > 0 && card.attack.current > 1) {
       return {
         ...card,
         attack: {
@@ -306,7 +306,7 @@ const parrotFn = (state: IGameState, enemyHandKey: HandKey): IGameState => {
   const updatedDefender = hands[enemyHandKey].find(card => card.name === defender!.name)
   if (
     updatedDefender &&
-    updatedDefender.life.current === "DEAD" &&
+    updatedDefender.life.current === 0 &&
     !updatedDefender.skill.types.includes("none")
   ) {
     const newHand = copyDefenderSkill(hands[allyHandKey], defender!, attacker!)
@@ -379,9 +379,7 @@ const vultureFn = (state: IGameState, enemyHandKey: HandKey): IGameState => {
   const attackAmount = 4
   const allyHandKey = enemyHandKey === "pc" ? "user" : "pc"
   if (
-    hands[enemyHandKey]
-      .concat(hands[allyHandKey])
-      .some(card => card.life.current === "DEAD")
+    hands[enemyHandKey].concat(hands[allyHandKey]).some(card => card.life.current === 0)
   ) {
     const newHand = modifyAnimalAttack(hands[allyHandKey], attacker!, attackAmount, "+")
     return setHandInState(state, allyHandKey, newHand)

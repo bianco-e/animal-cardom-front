@@ -52,7 +52,7 @@ export const getUtm = (search?: string) => {
 export const getRandomChance = (percent: number) => Math.random() < percent / 100
 
 export const getLiveCards = (hand: IAnimal[]): IAnimal[] =>
-  hand.filter(card => card.life.current !== "DEAD")
+  hand.filter(card => card.life.current > 0)
 
 export const getRandomFromArr = (arr: any[]) => {
   const randomIdx = Math.floor(Math.random() * arr.length)

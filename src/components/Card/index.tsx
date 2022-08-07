@@ -80,11 +80,11 @@ export default function Card({
         isParalyzed,
         //@ts-ignore
         onClick: () => (!game.pcTurn ? dispatch(selectCard(name)) : null),
-        opacity: `${life.current === "DEAD" ? "0.5" : "1"}`,
+        opacity: `${life.current === 0 ? "0.5" : "1"}`,
         transform: belongsToUser ? "translateY(-8px)" : "",
       }
 
-  const getStatColor = (stat: Stat<number | string>): string =>
+  const getStatColor = (stat: Stat): string =>
     stat.current > stat.initial ? "#a4508b" : stat.current < stat.initial ? "red" : ""
 
   const getImageName = (name: string) => name.toLowerCase().split(" ").join("-")
@@ -180,7 +180,7 @@ export default function Card({
             src={poisoned.rounds > 0 ? CARD_ICONS.POISON : CARD_ICONS.LIFE}
           />
           <Text className="stats spaced-title" color={getStatColor(life)}>
-            {life.current}
+            {life.current === 0 ? "DEAD" : life.current}
           </Text>
         </div>
       </StatsWrapper>

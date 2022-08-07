@@ -37,7 +37,7 @@ const applyDmg = (animal: IAnimal, statsDiff: number): IAnimal => ({
   ...animal,
   life: {
     ...animal.life,
-    current: statsDiff < 1 ? "DEAD" : statsDiff,
+    current: statsDiff < 1 ? 0 : statsDiff,
   },
 })
 
@@ -175,7 +175,6 @@ const hedgehogFn = (
     hands: {
       [ownHandKey]: state.hands[ownHandKey].map(animal => {
         if (animal.name === attacker.name && defender.paralyzed === 0) {
-          if (typeof animal.life.current !== "number") return animal
           const diff = animal.life.current - defender.attack.current
           return applyDmg(animal, diff)
         } else return animal

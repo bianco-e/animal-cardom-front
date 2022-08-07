@@ -34,6 +34,17 @@ const paralyzeEnemy = (arr: IAnimal[], defender: IAnimal, roundsNumber: number) 
   })
 }
 
+const blindEnemy = (arr: IAnimal[], defender: IAnimal, percentage: number) => {
+  return arr.map(card => {
+    if (card.name === defender.name && card.life.current > 0) {
+      return {
+        ...card,
+        missing: { chance: card.missing.chance + percentage, exceptions: [] },
+      }
+    } else return card
+  })
+}
+
 const healItself = (arr: IAnimal[], attacker: IAnimal, healthAmount: number) => {
   return arr.map(card => {
     if (card.name === attacker.name && card.life.current > 0) {
@@ -251,8 +262,8 @@ const hummingbirdFn = (state: IGameState, enemyHandKey: HandKey): IGameState => 
 
 const hornedLizardFn = (state: IGameState, enemyHandKey: HandKey): IGameState => {
   const { hands, defender } = state
-  const roundsNumber = 3
-  const newHand = paralyzeEnemy(hands[enemyHandKey], defender!, roundsNumber)
+  const percentage = 25
+  const newHand = blindEnemy(hands[enemyHandKey], defender!, percentage)
   return setHandInState(state, enemyHandKey, newHand)
 }
 
@@ -288,15 +299,15 @@ const mosquitoFn = (state: IGameState, enemyHandKey: HandKey): IGameState => {
 
 const octopusFn = (state: IGameState, enemyHandKey: HandKey): IGameState => {
   const { hands, defender } = state
-  const roundsNumber = 1
-  const newHand = paralyzeEnemy(hands[enemyHandKey], defender!, roundsNumber)
+  const percentage = 10
+  const newHand = blindEnemy(hands[enemyHandKey], defender!, percentage)
   return setHandInState(state, enemyHandKey, newHand)
 }
 
 const orcFn = (state: IGameState, enemyHandKey: HandKey): IGameState => {
   const { hands, defender } = state
-  const roundsNumber = 1
-  const newHand = paralyzeEnemy(hands[enemyHandKey], defender!, roundsNumber)
+  const percentage = 15
+  const newHand = blindEnemy(hands[enemyHandKey], defender!, percentage)
   return setHandInState(state, enemyHandKey, newHand)
 }
 

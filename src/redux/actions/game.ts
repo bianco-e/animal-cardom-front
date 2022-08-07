@@ -320,17 +320,18 @@ const applyAttackDamage = (game: IGameState, enemyHandKey: HandKey): IGameState 
 const applyPoisonDamage = (hands: IHands, enemyHandKey: HandKey): IHands => {
   const applyPoisonInAHand = (arr: IAnimal[]) =>
     arr.map(card => {
-      if (card.poisoned.rounds > 0 && card.life.current > 0) return card
-      return {
-        ...card,
-        life: {
-          ...card.life,
-          current:
-            card.life.current - card.poisoned.damage < 1
-              ? 0
-              : card.life.current - card.poisoned.damage,
-        },
-      }
+      if (card.poisoned.rounds > 0 && card.life.current > 0) {
+        return {
+          ...card,
+          life: {
+            ...card.life,
+            current:
+              card.life.current - card.poisoned.damage < 1
+                ? 0
+                : card.life.current - card.poisoned.damage,
+          },
+        }
+      } else return card
     })
   return { ...hands, [enemyHandKey]: applyPoisonInAHand(hands[enemyHandKey]) }
 }

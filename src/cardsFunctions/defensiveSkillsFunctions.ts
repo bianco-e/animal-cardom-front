@@ -41,6 +41,27 @@ const applyDmg = (animal: IAnimal, statsDiff: number): IAnimal => ({
   },
 })
 
+const axolotlFn = (
+  state: IGameState,
+  enemyHandKey: HandKey,
+  statsDiff: number
+): IGameState => {
+  const defender = state.defender!
+  return {
+    ...state,
+    underAttack: defender.name,
+    dodgedAttack: undefined,
+    hands: {
+      ...state.hands,
+      [enemyHandKey]: state.hands[enemyHandKey].map(animal => {
+        if (animal.name !== defender.name) return animal
+        if (animal.paralyzed > 0 || statsDiff < 1) return applyDmg(animal, statsDiff)
+        return applyDmg(animal, statsDiff + 2)
+      }),
+    },
+  }
+}
+
 const ballBugFn = (
   state: IGameState,
   enemyHandKey: HandKey,
@@ -252,6 +273,8 @@ const peacockFn = (
 
 export default function getSkillFn(name: string) {
   switch (name) {
+    case "Axolotl":
+      return axolotlFn
     case "Ball Bug":
       return ballBugFn
     case "Basilisk Lizard":

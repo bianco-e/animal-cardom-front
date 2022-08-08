@@ -339,7 +339,7 @@ const applyPoisonDamage = (hands: IHands, enemyHandKey: HandKey): IHands => {
 const setCardsAndTerrain = (game: IGameState, terrain: ITerrain) => {
   const buffCards = (arr: IAnimal[]) => {
     return arr.map(card => {
-      if (card.species === terrain.speciesToBuff) {
+      if (card.habitat === terrain.name) {
         return {
           ...card,
           attack: { ...card.attack, current: card.attack.current + 1 },

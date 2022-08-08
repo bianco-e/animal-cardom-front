@@ -1,28 +1,38 @@
 import React, { useEffect, useState } from "react"
 import { getAnimalsStatistics } from "../../queries/animalsCards"
-import { NotesWrapper, Title } from "./styled"
+import { NotesContainer, NotesWrapper, Title } from "./styled"
 import Accordion from "../Common/Accordion"
 
 interface StatisticsData {
-  quantity: number
-  highestAttack: {
+  count: number
+  highest_attack: {
     name: string
     attack: number
   }
-  highestLife: {
+  highest_life: {
     name: string
     life: number
   }
 }
 
 interface Statistics {
-  all: number
-  "🐸": StatisticsData
-  "🦅": StatisticsData
-  "🦈": StatisticsData
-  "🦂": StatisticsData
-  "🐺": StatisticsData
-  "🦎": StatisticsData
+  count: number
+  species: {
+    "🐸": StatisticsData
+    "🦅": StatisticsData
+    "🦈": StatisticsData
+    "🦂": StatisticsData
+    "🐺": StatisticsData
+    "🦎": StatisticsData
+  }
+  habitat: {
+    Swamp: StatisticsData
+    Mountain: StatisticsData
+    Sea: StatisticsData
+    Desert: StatisticsData
+    Jungle: StatisticsData
+    Forest: StatisticsData
+  }
 }
 
 export default function ReleaseNotes() {
@@ -43,27 +53,26 @@ export default function ReleaseNotes() {
       <NotesWrapper>
         <Title>Version 0.7.0</Title>
         <span>
-          This version has <b>{statistics.all}</b> different animals:
+          This version has <b>{statistics.count}</b> different animals:
         </span>
-        {Object.entries(statistics)
-          .filter(([k]) => k !== "all")
+        {Object.entries(statistics.species)
+          .filter(([k]) => k !== "count")
           .map(([key, value]) => {
-            const { quantity, highestAttack, highestLife } = value
+            const { count, highest_attack, highest_life } = value
             return (
-              <React.Fragment key={key}>
-                <p>{key}</p>
+              <NotesContainer key={key}>
                 <span>
-                  <b>{quantity}</b> animals belong to this species
+                  <b>{count}</b> animals belong to {key} species
                 </span>
                 <span>
-                  <b className="spaced-title">{highestAttack.name}</b> is the one with the
-                  greatest attack <b>({highestAttack.attack})</b>
+                  <b className="spaced-title">{highest_attack.name}</b> is the {key} with
+                  the greatest attack <b>({highest_attack.attack})</b>
                 </span>
                 <span>
-                  <b className="spaced-title">{highestLife.name}</b> is the one with the
-                  greatest life <b>({highestLife.life})</b>
+                  <b className="spaced-title">{highest_life.name}</b> is the {key} with
+                  the greatest life <b>({highest_life.life})</b>
                 </span>
-              </React.Fragment>
+              </NotesContainer>
             )
           })}
       </NotesWrapper>

@@ -12,6 +12,7 @@ interface IProps {
 
 export default function CollectionFilter({ setCardsToShow }: IProps) {
   const [speciesFilter, setSpeciesFilter] = useState<string>()
+  const [habitatFilter, setHabitatFilter] = useState<string>()
   const [skillTypeFilter, setSkillTypeFilter] = useState<string>()
   const [owningFilter, setOwningFilter] = useState<boolean | undefined>()
   const { owned_cards: ownedCards } = useAppSelector(({ auth }) => auth.user)
@@ -21,6 +22,7 @@ export default function CollectionFilter({ setCardsToShow }: IProps) {
     const sendingOwnedCardsToFilter =
       owningFilter === false ? ownedCards.map(card => card) : undefined
     getFilteredAnimalsCards(
+      habitatFilter,
       speciesFilter,
       skillTypeFilter,
       sendingOwnedCards,
@@ -30,7 +32,7 @@ export default function CollectionFilter({ setCardsToShow }: IProps) {
         setCardsToShow(sortCardsAlphabetically(res.animals))
       }
     })
-  }, [speciesFilter, skillTypeFilter, owningFilter]) //eslint-disable-line
+  }, [habitatFilter, speciesFilter, skillTypeFilter, owningFilter]) //eslint-disable-line
 
   const speciesDropdownOptions = [
     {
@@ -60,6 +62,37 @@ export default function CollectionFilter({ setCardsToShow }: IProps) {
     {
       text: "🦎",
       fn: () => setSpeciesFilter("🦎"),
+    },
+  ]
+
+  const habitatDropdownOptions = [
+    {
+      text: "Habitat",
+      fn: () => setHabitatFilter(""),
+    },
+    {
+      text: "Sea",
+      fn: () => setHabitatFilter("Sea"),
+    },
+    {
+      text: "Swamp",
+      fn: () => setHabitatFilter("Swamp"),
+    },
+    {
+      text: "Jungle",
+      fn: () => setHabitatFilter("Jungle"),
+    },
+    {
+      text: "Desert",
+      fn: () => setHabitatFilter("Desert"),
+    },
+    {
+      text: "Mountain",
+      fn: () => setHabitatFilter("Mountain"),
+    },
+    {
+      text: "Forest",
+      fn: () => setHabitatFilter("Forest"),
     },
   ]
 
@@ -137,9 +170,10 @@ export default function CollectionFilter({ setCardsToShow }: IProps) {
     <Wrapper>
       <Text>Filter by</Text>
       <DropdownsContainer>
-        <Dropdown closedText="Species" options={speciesDropdownOptions} width="200px" />
-        <Dropdown closedText="Owning" options={ownedDropdownOptions} width="200px" />
-        <Dropdown closedText="Skill" options={skillDropdownOptions} width="200px" />
+        <Dropdown closedText="Species" options={speciesDropdownOptions} width="160px" />
+        <Dropdown closedText="Habitat" options={habitatDropdownOptions} width="160px" />
+        <Dropdown closedText="Owning" options={ownedDropdownOptions} width="160px" />
+        <Dropdown closedText="Skill" options={skillDropdownOptions} width="160px" />
       </DropdownsContainer>
     </Wrapper>
   )

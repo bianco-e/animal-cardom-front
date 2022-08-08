@@ -16,6 +16,7 @@ export const getNewestAnimals = () =>
     .catch(err => console.error(err))
 
 export const getFilteredAnimalsCards = (
+  habitat?: string,
   species?: string,
   skill_type?: string,
   owned?: string[],
@@ -27,7 +28,7 @@ export const getFilteredAnimalsCards = (
   return fetch(
     `${API_BASE_URL}animals/filter?${species ? `species=${species}&` : ""}${
       skill_type ? `skill_type=${skill_type}&` : ""
-    }${
+    }${habitat ? `habitat=${habitat}&` : ""}${
       ownedString
         ? `owned=${ownedString}`
         : ownedToFilterString

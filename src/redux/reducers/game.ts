@@ -16,7 +16,6 @@ const initialState: IGameState = {
   terrain: {
     name: "",
     color: "#fff",
-    speciesToBuff: "",
     image: "",
     campaign_xp: [0],
   },

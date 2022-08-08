@@ -12,7 +12,7 @@ interface AnimalCardProps {
   isCardSelected?: boolean
   isParalyzed?: boolean
   opacity: string
-  species?: string
+  habitat?: string
   transform?: string
   width?: string
 }
@@ -24,6 +24,7 @@ interface TextProps {
 }
 interface FlexSectionProps {
   mBottom?: string
+  fDirection?: string
 }
 interface PlantEffectProps {
   animation?: any
@@ -67,8 +68,8 @@ export const AnimalCard = styled.button<AnimalCardProps>`
   align-items: center;
   ${({ attackAnimation }) => attackAnimation};
   background: ${({ theme }) => theme.secondary_brown};
-  background-image: ${({ species }) =>
-    `url("/images/backgrounds/${species ? `${species}-` : ""}card-bg.svg")`};
+  background-image: ${({ habitat }) =>
+    `url("/images/backgrounds/${habitat ? `${habitat}-` : ""}card-bg.svg")`};
   border: 2px solid ${({ theme }) => theme.secondary_brown};
   box-shadow: inset 0px 0px 10px rgba(0, 0, 0, 0.6);
   border-radius: 8px;
@@ -113,8 +114,8 @@ export const AnimalCard = styled.button<AnimalCardProps>`
   &::after {
     -webkit-transform: translateX(-50%);
     background: ${({ theme }) => theme.secondary_brown};
-    background-image: ${({ species }) =>
-      `url("/images/backgrounds/${species ? `${species}-` : ""}card-bg.svg")`};
+    background-image: ${({ habitat }) =>
+      `url("/images/backgrounds/${habitat ? `${habitat}-` : ""}card-bg.svg")`};
     border-radius: 4px;
     content: "";
     height: calc(100% - 8px);
@@ -150,23 +151,21 @@ export const StatsWrapper = styled.div`
   width: 80%;
   bottom: 0;
   > div {
-    > div.tooltip {
-      display: none;
-    }
-    &:hover {
+    > div.statuses {
+      align-items: center;
+      display: flex;
+      flex-direction: column-reverse;
+      position: relative;
+      flex: 1;
       > div.tooltip {
-        display: flex;
+        display: none;
+      }
+      &:hover {
+        > div.tooltip {
+          display: flex;
+        }
       }
     }
-  }
-  > div.statuses {
-    align-items: center;
-    border-radius: 4px 4px 0 0;
-    display: flex;
-    flex-direction: column-reverse;
-    padding: 4px;
-    position: relative;
-    flex: 1;
   }
   > div.stats-container {
     align-items: center;
@@ -180,6 +179,14 @@ export const StatsWrapper = styled.div`
     justify-content: center;
     position: relative;
     width: calc(50% - 24px);
+    > div.tooltip {
+      display: none;
+    }
+    &:hover {
+      > div.tooltip {
+        display: flex;
+      }
+    }
   }
   ${BREAKPOINTS.MOBILE} {
     left: 5%;
@@ -280,13 +287,17 @@ export const Image = styled.img`
     }
   }
   &.small-icon {
-    height: 16px;
+    height: 14px;
     margin-right: 4px;
-    width: 16px;
+    width: 14px;
     ${BREAKPOINTS.MOBILE} {
       height: 12px;
       width: 12px;
     }
+  }
+  &.habitat-icon {
+    height: 10px;
+    width: 10px;
   }
 `
 export const Text = styled.span<TextProps>`
@@ -312,7 +323,7 @@ export const Text = styled.span<TextProps>`
       font-size: 8px;
     }
   }
-  &.skill-name {
+  &.card-sm-name {
     font-size: 8px;
   }
   &.animal-name {
@@ -340,6 +351,7 @@ export const FlexSection = styled.div<FlexSectionProps>`
   align-items: center;
   display: flex;
   justify-content: center;
+  flex-direction: ${({ fDirection }) => fDirection};
   margin-bottom: ${({ mBottom }) => mBottom};
   position: relative;
   > span.paralyzed {

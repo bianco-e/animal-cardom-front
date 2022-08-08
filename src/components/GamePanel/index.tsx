@@ -72,7 +72,7 @@ export default function SidePanel({ plants, isCampaign, terrain, userName }: IPr
               title="Bonus"
               description={
                 terrain.name !== "Neutral"
-                  ? `${terrain.speciesToBuff} feel like home in ${terrain.name}.`
+                  ? `Animals that feel like home in ${terrain.name} have their attacked increased by 1.`
                   : "In Neutral terrain there's no benefit"
               }
             />

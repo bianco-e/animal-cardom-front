@@ -71,10 +71,10 @@ export interface IAnimal {
   skill: Skill
   species: string
   targeteable: boolean
+  habitat: string
 }
 
 export interface ITerrain {
-  speciesToBuff: string
   image: string
   name: string
   color: string

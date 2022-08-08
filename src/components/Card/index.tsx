@@ -35,6 +35,7 @@ export default function Card({
   bleeding,
   life,
   missing,
+  habitat,
   name,
   onPreviewClick,
   opacityForPreview,
@@ -90,7 +91,7 @@ export default function Card({
   const getImageName = (name: string) => name.toLowerCase().split(" ").join("-")
 
   return (
-    <AnimalCard {...styledProps} width={width} species={species}>
+    <AnimalCard {...styledProps} width={width} habitat={habitat.toLowerCase()}>
       {isCardUnderAttack ? (
         <Injury alt="under-attack" src="/images/svg/blood-splatter.svg" />
       ) : null}
@@ -142,7 +143,7 @@ export default function Card({
               }
             />
           )}
-          <Text className="skill-name spaced-title" lineThrough={isParalyzed}>
+          <Text className="card-sm-name spaced-title" lineThrough={isParalyzed}>
             {skill.name}
           </Text>
           {isParalyzed ? <span className="paralyzed">({paralyzed})</span> : null}
@@ -159,15 +160,23 @@ export default function Card({
             {attack.current}
           </Text>
         </div>
-        {bleeding ? (
-          <div className="statuses">
-            <Tooltip
-              title={`${name} is bleeding`}
-              description={`Every turn ${name} gets 1 damage. It can be stopped with a plant`}
-            />
-            <Image className="blood-drop" src={CARD_ICONS.BLOOD} />
-          </div>
-        ) : null}
+
+        <FlexSection fDirection="column">
+          {bleeding ? (
+            <div className="statuses">
+              <Tooltip
+                title={`${name} is bleeding`}
+                description={`Every turn ${name} gets 1 damage. It can be stopped with a plant`}
+              />
+              <Image className="blood-drop" src={CARD_ICONS.BLOOD} />
+            </div>
+          ) : null}
+          <FlexSection fDirection="column">
+            <Image alt="habitat" className="habitat-icon" src={CARD_ICONS.HABITAT} />
+            <Text className="card-sm-name">{habitat}</Text>
+          </FlexSection>
+        </FlexSection>
+
         <div className="stats-container">
           {poisoned.rounds > 0 && (
             <Tooltip

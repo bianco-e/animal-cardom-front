@@ -6,4 +6,5 @@ export const CARD_ICONS = {
   LIFE: "/images/svg/life-icon.svg",
   POISON: "/images/svg/poison-life-icon.svg",
   MISSING: "/images/svg/missing-chance-icon.svg",
+  HABITAT: "/images/svg/habitat-icon.svg",
 }

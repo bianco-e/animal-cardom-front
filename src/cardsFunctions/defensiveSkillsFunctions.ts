@@ -27,6 +27,7 @@ const BUTTERFLY_ANIMAL: IAnimal = {
   bleeding: false,
   price: 45,
   sell_price: 23,
+  habitat: "Desert",
   missing: {
     chance: 0,
     exceptions: [],

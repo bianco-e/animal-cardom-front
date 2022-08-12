@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { Action } from "../../interfaces"
-import { trackAction } from "../../queries/tracking"
+import { createAction } from "../../queries/tracking"
 import Modal from "../Common/Modal"
 import {
   HowToPlayCTA,
@@ -19,7 +19,7 @@ export default function HowToPlay({ action }: IProps) {
 
   const handleToggle = () => {
     setOpenHowToPlay(!openHowToPlay)
-    if (action) return trackAction(action)
+    if (action) return createAction(action)
   }
 
   return (

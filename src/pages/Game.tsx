@@ -9,7 +9,7 @@ import { GameParams, IAnimal, User } from "../interfaces"
 import Spinner from "../components/Spinner"
 import ModalContentResult from "../components/ModalContentResult"
 import { getLiveCards } from "../utils"
-import { trackAction } from "../queries/tracking"
+import { createAction } from "../queries/tracking"
 import { HandContainer } from "../components/styled-components"
 import Card from "../components/Card"
 import { useAppDispatch, useAppSelector } from "../hooks/redux-hooks"
@@ -59,11 +59,11 @@ export default function Game({ isCampaign }: IProps) {
     }
     if (!getLiveCards(hands.user).length) {
       setModal("lose")
-      trackAction({ ...baseAction, action: "user-lost" })
+      createAction({ ...baseAction, action: "user-lost" })
     }
     if (!getLiveCards(hands.pc).length) {
       setModal("win")
-      trackAction({ ...baseAction, action: "user-won" })
+      createAction({ ...baseAction, action: "user-won" })
     }
   }, [hands.pc, hands.user]) //eslint-disable-line
 

@@ -5,7 +5,7 @@ import NavBar from "../components/NavBar"
 import { BREAKPOINTS } from "../utils/constants"
 import { ACButton, ACInput } from "../components/styled-components"
 import { useAuth0 } from "@auth0/auth0-react"
-import { trackAction } from "../queries/tracking"
+import { createAction } from "../queries/tracking"
 import { getUtm } from "../utils"
 import HowToPlay from "../components/HowToPlay"
 
@@ -37,14 +37,14 @@ export default function WelcomePage() {
         ...baseAction,
         action: "visit-landing",
       }
-      trackAction(visit)
+      createAction(visit)
     }
   }, [isLoading]) //eslint-disable-line
 
   const goToPlay = () => {
     if (inputValue.trim() === "") return setShowErrorMessage(true)
     localStorage.setItem("ac-guest-name", inputValue)
-    trackAction({
+    createAction({
       ...baseAction,
       action: "play-as-guest-button",
     })
@@ -53,7 +53,7 @@ export default function WelcomePage() {
 
   const onKeyDownFn = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
-      trackAction({
+      createAction({
         ...baseAction,
         action: "play-as-guest-enter",
       })
@@ -63,13 +63,13 @@ export default function WelcomePage() {
 
   const playCampaign = () => {
     if (isAuthenticated && user?.given_name) {
-      trackAction({
+      createAction({
         ...baseAction,
         action: "continue-campaign-button",
       })
       history.push("/campaign")
     } else {
-      trackAction({
+      createAction({
         ...baseAction,
         action: "start-campaign-button",
       })

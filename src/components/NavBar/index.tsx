@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import { Link, useHistory, useLocation } from "react-router-dom"
 import { useAuth0 } from "@auth0/auth0-react"
 import { LogButton } from "../../components/styled-components"
-import { trackAction } from "../../queries/tracking"
+import { createAction } from "../../queries/tracking"
 import { getUtm } from "../../utils"
 import { Container, FeedbackButton, OptionButton, UserImage, Wrapper } from "./styled"
 
@@ -48,13 +48,13 @@ export default function NavBar({ isHome }: IProps) {
       ...(guest ? { guest_name: guest } : {}),
     }
     if (isAuthenticated && username) {
-      trackAction({
+      createAction({
         ...action,
         action: "you-are-allowed-button",
       })
       history.push("/menu")
     } else {
-      trackAction({
+      createAction({
         ...action,
         action: "sign-in-button",
       })

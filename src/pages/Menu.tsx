@@ -92,6 +92,6 @@ const Wrapper = styled.div`
 
 const Title = styled.h2`
   font-weight: bold;
-  font-size: 24px;
+  font-size: ${({ theme }) => theme.$4};
   margin: 0;
 `

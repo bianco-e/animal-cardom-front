@@ -209,6 +209,36 @@ const hedgehogFn = (
   }
 }
 
+const llamaFn = (
+  state: IGameState,
+  enemyHandKey: HandKey,
+  statsDiff: number
+): IGameState => {
+  const ownHandKey = enemyHandKey === "pc" ? "user" : "pc"
+  const defender = state.defender!
+  const attacker = state.attacker!
+  const percentage = 15
+  return {
+    ...state,
+    underAttack: defender.name,
+    dodgedAttack: undefined,
+    hands: {
+      [ownHandKey]: state.hands[ownHandKey].map(animal => {
+        if (animal.name === attacker.name && defender.paralyzed === 0) {
+          return {
+            ...animal,
+            missing: { chance: animal.missing.chance + percentage, exceptions: [] },
+          }
+        } else return animal
+      }),
+      [enemyHandKey]: state.hands[enemyHandKey].map(animal => {
+        if (animal.name !== defender.name) return animal
+        return applyDmg(animal, statsDiff)
+      }),
+    },
+  }
+}
+
 const lizardFn = (
   state: IGameState,
   enemyHandKey: HandKey,
@@ -286,6 +316,8 @@ export default function getSkillFn(name: string) {
       return grasshoperFn
     case "Hedgehog":
       return hedgehogFn
+    case "Llama":
+      return llamaFn
     case "Lizard":
       return lizardFn
     case "Ostrich":

@@ -28,7 +28,7 @@ interface IProps extends IAnimal {
   opacityForPreview?: string
   width?: string
 }
-
+const DEFENSIVE_SKILL_TYPE = 4
 export default function Card({
   attack,
   belongsToUser,
@@ -111,7 +111,7 @@ export default function Card({
       ) : null}
 
       <IconContainer>
-        <span>{species}</span>
+        <span>{species.icon}</span>
       </IconContainer>
 
       {!targeteable ? (
@@ -135,14 +135,14 @@ export default function Card({
 
       <DescriptionContainer>
         <FlexSection mBottom="1px">
-          {!skill.types.includes("none") && (
-            <Image
-              className="small-icon"
-              src={
-                skill.types.includes("defensive") ? CARD_ICONS.DEFENSE : CARD_ICONS.FURY
-              }
-            />
-          )}
+          <Image
+            className="small-icon"
+            src={
+              skill.use_type_id === DEFENSIVE_SKILL_TYPE
+                ? CARD_ICONS.DEFENSE
+                : CARD_ICONS.FURY
+            }
+          />
           <Text className="card-sm-name spaced-title" lineThrough={isParalyzed}>
             {skill.name}
           </Text>
@@ -165,8 +165,8 @@ export default function Card({
           {bleeding ? (
             <div className="statuses">
               <Tooltip
-                title={`${name} is bleeding`}
-                description={`Every turn ${name} gets 1 damage. It can be stopped with a plant`}
+                title="Bleeding"
+                description="Takes 1 life point every turn. It might be stopped with a plant"
               />
               <Image className="blood-drop" src={CARD_ICONS.BLOOD} />
             </div>

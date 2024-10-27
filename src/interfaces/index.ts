@@ -9,7 +9,7 @@ export interface IGameState {
   usedPlants: IPlant[]
   attacker?: IAnimal
   defender?: IAnimal
-  terrain: ITerrain
+  habitat: IHabitat
   underAttack?: string
   dodgedAttack?: string
   pcTurn: boolean
@@ -38,7 +38,14 @@ export interface Skill {
   name: string
   description: string
   types: string[]
-  toDo: (state: any, hand: HandKey) => any
+  use_type_id: number
+}
+
+export interface Species {
+  id: number
+  name: string
+  description: string
+  icon: string
 }
 
 export interface IHands {
@@ -53,12 +60,11 @@ export interface IPlants {
 export interface IPlant {
   name: string
   description: string
-  image: string
-  appliable_on: string
-  toDo: (state: any, hand: HandKey) => any
+  use_type_id: number
 }
 
 export interface IAnimal {
+  id: number
   attack: Stat
   bleeding: boolean
   life: Stat
@@ -69,14 +75,15 @@ export interface IAnimal {
   price: number
   sell_price: number
   skill: Skill
-  species: string
+  species: Species
   targeteable: boolean
   habitat: string
 }
 
-export interface ITerrain {
-  image: string
+export interface IHabitat {
+  id: number
   name: string
+  description: string
   color: string
   campaign_xp: number[]
 }
@@ -85,7 +92,7 @@ export interface Game {
   created_at?: Date
   earned_animal?: string
   earned_xp?: number
-  terrain: string
+  habitat: string
   won: boolean
   used_animals: {
     user: { name: string; survived: boolean }[]
@@ -156,4 +163,42 @@ export interface IRootState {
     user: User
   }
   game: IGameState
+}
+
+export interface DBAnimal {
+  id: number
+  name: string
+  scientific_name: string
+  description: string
+  species_id: number
+  habitat_id: number
+  attack: number
+  life: number
+  price: number
+  created_at: string
+  updated_at: string
+  skill_name: string
+  skill_description: string
+  skill_type_id: number
+  skill_use_type_id: number
+  targeteable: boolean
+  bleeding: boolean
+  missing_chance: number
+  species_description: string
+  species_name: string
+  species_icon: string
+  habitat_name: string
+}
+
+export interface SkillType {
+  id: number
+  name: string
+  description: number
+}
+
+export interface FiltersData {
+  loading: boolean
+  species: Species[]
+  habitats: IHabitat[]
+  skillTypes: SkillType[]
 }

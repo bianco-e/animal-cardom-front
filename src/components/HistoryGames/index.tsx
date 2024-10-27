@@ -21,10 +21,10 @@ export default function History({ lastGames }: IProps) {
     <Wrapper>
       {lastGames.length > 0 ? (
         lastGames.map((game, idx) => {
-          const { won, used_animals, used_plants, terrain, created_at, earned_xp } = game
+          const { won, used_animals, used_plants, habitat, created_at, earned_xp } = game
           const gameDate = new Date(created_at!)
           return (
-            <HistoryCard terrain={terrain.toLowerCase()} key={idx}>
+            <HistoryCard habitat={habitat.toLowerCase()} key={idx}>
               <Result bgColor={won ? "#0B8A37" : "#dd5540"} className="spaced-title">
                 {won ? "Won" : "Lost"}
               </Result>

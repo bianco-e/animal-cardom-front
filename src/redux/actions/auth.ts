@@ -11,8 +11,8 @@ export const loginUser = (userData: AuthUser) => {
 
     //check if current user
     const tokenRes = await validateToken()
-    if (tokenRes.is_valid) {
-      const userRes = await getUserMe(userData.sub)
+    if (tokenRes?.is_valid) {
+      const userRes = await getUserMe(userData.email)
       if (userRes.error) return dispatch(AUTH_ACTIONS.SET_USER_ERROR())
       return dispatch(AUTH_ACTIONS.SET_USER_SUCCESS(userRes))
     }

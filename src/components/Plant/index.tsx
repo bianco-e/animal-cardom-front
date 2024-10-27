@@ -6,12 +6,14 @@ import { PlantCard, PlantContainer } from "./styled"
 import { useAppDispatch, useAppSelector } from "../../hooks/redux-hooks"
 import { selectPlant } from "../../redux/actions/game"
 
+const OFFENSIVE_USE_TYPE = 3
+
 export default function Plant({ plant }: { plant: IPlant }) {
   const [showTooltip, setShowTooltip] = useState<boolean>(false)
   const dispatch = useAppDispatch()
   const game = useAppSelector(({ game }) => game)
   const { selectedPlant, pcTurn, usedPlants, plants } = game
-  const { name, description, image, appliable_on } = plant
+  const { name, description, use_type_id } = plant
   const isPlantSelected = selectedPlant?.name === name
   const plantBelongsToUser = !!plants.user.find((pl: IPlant) => pl.name === name)
   const onPlantClick = () => {
@@ -23,7 +25,7 @@ export default function Plant({ plant }: { plant: IPlant }) {
     <PlantContainer>
       {showTooltip && (
         <Tooltip
-          title={`Appliable on ${appliable_on}`}
+          title={`Appliable on ${use_type_id === OFFENSIVE_USE_TYPE ? 'enemies' : 'allies'}`}
           description={description}
           direction={plantBelongsToUser ? "TOP" : "BOTTOM"}
         />
@@ -37,7 +39,7 @@ export default function Plant({ plant }: { plant: IPlant }) {
         selectionAnimation={isPlantSelected && selectionAnimation}
         transform={isPlantSelected ? "scale(1.1);" : ""}>
         <span className="spaced-title">{name}</span>
-        <img alt={name} src={image} />
+        <img alt={name} src={`/images/plants/${name.toLowerCase()}.webp`} />
       </PlantCard>
     </PlantContainer>
   )

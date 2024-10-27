@@ -2,13 +2,13 @@ import { useEffect, useState } from "react"
 import { useHistory } from "react-router"
 import { GAME_ACTIONS } from "../../redux/reducers/game"
 import { IAnimal } from "../../interfaces"
-import { getAnimalByName } from "../../queries/animalsCards"
+import { getAnimalById } from "../../queries/animalsCards"
 import AvatarWithXpBar from "../AvatarWithXpBar"
 import Card from "../Card"
 import { ACButton, Text } from "../styled-components"
 import { useAppDispatch } from "../../hooks/redux-hooks"
 interface IProps {
-  earnedAnimal?: string
+  earnedAnimal?: { id: IAnimal['id']; name: IAnimal['name']  }
   earnedCoins?: number
 }
 
@@ -17,8 +17,8 @@ export default function CampaignRewards({ earnedAnimal, earnedCoins }: IProps) {
   const [earnedCard, setEarnedCard] = useState<IAnimal>()
   const dispatch = useAppDispatch()
 
-  const getEarnedCard = async (earnedAnimal: string) => {
-    const res = await getAnimalByName(earnedAnimal)
+  const getEarnedCard = async (earnedAnimalId: number) => {
+    const res = await getAnimalById(earnedAnimalId)
     if (res.error) return
     setEarnedCard(res)
   }
@@ -30,7 +30,7 @@ export default function CampaignRewards({ earnedAnimal, earnedCoins }: IProps) {
 
   useEffect(() => {
     if (!earnedAnimal) return
-    getEarnedCard(earnedAnimal)
+    getEarnedCard(earnedAnimal.id)
   }, [earnedAnimal])
 
   const tweetVictory = () => {

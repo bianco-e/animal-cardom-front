@@ -6,7 +6,7 @@ interface ResultProps {
 }
 
 interface HistoryCardProps {
-  terrain?: string
+  habitat?: string
 }
 export const Wrapper = styled.div`
   align-items: center;
@@ -18,7 +18,7 @@ export const Wrapper = styled.div`
 `
 export const HistoryCard = styled.div<HistoryCardProps>`
   align-items: center;
-  background-image: ${({ terrain }) => `url('/images/terrains/${terrain}.webp')`};
+  background-image: ${({ habitat }) => `url('/images/terrains/${habitat}.webp')`};
   background-position: center;
   background-size: cover;
   border-radius: 5px;

@@ -1,4 +1,4 @@
-import { AuthUser, IAnimal } from "../interfaces"
+import { AuthUser, DBAnimal, IAnimal } from "../interfaces"
 
 export const cardSpeciesToLowerCase = (species: string): string => {
   const splittedSpecies = species.split(" ")
@@ -6,18 +6,6 @@ export const cardSpeciesToLowerCase = (species: string): string => {
     return splittedSpecies.join("-").toLowerCase()
   }
   return species.toLowerCase()
-}
-
-export const sortCardsAlphabetically = (cards: IAnimal[]): IAnimal[] => {
-  return cards.sort(function (a, b) {
-    if (a.name < b.name) {
-      return -1
-    }
-    if (a.name > b.name) {
-      return 1
-    }
-    return 0
-  })
 }
 
 export const capitalize = (string: string): string =>
@@ -57,4 +45,45 @@ export const getLiveCards = (hand: IAnimal[]): IAnimal[] =>
 export const getRandomFromArr = (arr: any[]) => {
   const randomIdx = Math.floor(Math.random() * arr.length)
   return arr[randomIdx]
+}
+
+export const parseAnimalsFromDB = (dbAnimals: DBAnimal[]): IAnimal[] => {
+  return dbAnimals.map(dbAnimal => ({
+    id: dbAnimal.id,
+    attack: {
+      initial: dbAnimal.attack,
+      current: dbAnimal.attack,
+    },
+    bleeding: dbAnimal.bleeding,
+    life: {
+      initial: dbAnimal.life,
+      current: dbAnimal.life,
+    },
+    missing: {
+      chance: dbAnimal.missing_chance,
+      exceptions: [],
+    },
+    name: dbAnimal.name,
+    paralyzed: 0,
+    poisoned: {
+      damage: 0,
+      rounds: 0
+    },
+    price: dbAnimal.price,
+    sell_price: Math.floor(dbAnimal.price / 2),
+    skill: {
+      name: dbAnimal.skill_name,
+      description: dbAnimal.skill_description,
+      types: [dbAnimal.skill_type_id.toString()],
+      use_type_id: dbAnimal.skill_use_type_id
+    },
+    species: {
+      id: dbAnimal.species_id,
+      icon: dbAnimal.species_icon,
+      name: dbAnimal.species_name,
+      description: dbAnimal.species_description,
+    },
+    targeteable: dbAnimal.targeteable,
+    habitat: dbAnimal.habitat_name
+  }))
 }

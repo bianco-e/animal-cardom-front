@@ -7,14 +7,16 @@ import Spinner from "../components/Spinner"
 import { IAnimal } from "../interfaces"
 import { getNewestAnimals } from "../queries/animalsCards"
 import { BREAKPOINTS } from "../utils/constants"
+import { parseAnimalsFromDB } from "../utils"
 
 export default function Menu() {
   const [newestAnimals, setNewestAnimals] = useState<IAnimal[]>([])
 
   const fetchNewestAnimals = async () => {
-    const animalsRes = await getNewestAnimals()
-    if (animalsRes.error) return
-    setNewestAnimals(animalsRes.animals)
+    const newestAnimals = await getNewestAnimals()
+    if (newestAnimals) {
+      setNewestAnimals(parseAnimalsFromDB(newestAnimals))
+    }
   }
 
   useEffect(() => {

@@ -3,7 +3,7 @@ import getOffensiveSkillFn, {
   getExtraDamage,
 } from "../../cardsFunctions/offensiveSkillsFunctions"
 import getDefensiveSkillFn from "../../cardsFunctions/defensiveSkillsFunctions"
-import { getLiveCards, getRandomChance, getRandomFromArr } from "../../utils"
+import { getLiveCards, getRandomChance, getRandomFromArr, parseAnimalsFromDB } from "../../utils"
 import {
   HandKey,
   IAnimal,
@@ -12,7 +12,7 @@ import {
   IPlant,
   IPlants,
   IRootState,
-  ITerrain,
+  IHabitat,
 } from "../../interfaces"
 import { GAME_ACTIONS } from "../reducers/game"
 import { AppDispatch } from ".."
@@ -20,16 +20,15 @@ import { newCampaignGame, newRandomGame, newTerrain } from "../../queries/games"
 
 export const startGuestGame = () => {
   return async (dispatch: AppDispatch) => {
-    const terrainRes = await newTerrain()
     const gameRes = await newRandomGame()
-    if (terrainRes.error || gameRes.error)
+    if (gameRes.error)
       return dispatch(GAME_ACTIONS.SET_GAME_ERROR(true))
     dispatch(
       //@ts-ignore
       setGame(
-        { pc: gameRes.pc.animals, user: gameRes.user.animals },
+        { pc: parseAnimalsFromDB(gameRes.pc.animals), user: parseAnimalsFromDB(gameRes.user.animals) },
         { pc: gameRes.pc.plants, user: gameRes.user.plants },
-        terrainRes
+        gameRes.habitat
       )
     )
   }
@@ -306,7 +305,7 @@ const applyAttackDamage = (game: IGameState, enemyHandKey: HandKey): IGameState 
 
   if (
     attacker.missing.chance > 0 &&
-    !attacker.missing.exceptions.includes(defender.species) &&
+    !attacker.missing.exceptions.includes(defender.species.icon) &&
     getRandomChance(attacker.missing.chance)
   )
     return { ...game, underAttack: undefined, dodgedAttack: defender.name }
@@ -336,7 +335,7 @@ const applyPoisonDamage = (hands: IHands, enemyHandKey: HandKey): IHands => {
   return { ...hands, [enemyHandKey]: applyPoisonInAHand(hands[enemyHandKey]) }
 }
 
-const setCardsAndTerrain = (game: IGameState, terrain: ITerrain) => {
+const setCardsAndTerrain = (game: IGameState, terrain: IHabitat) => {
   const buffCards = (arr: IAnimal[]) => {
     return arr.map(card => {
       if (card.habitat === terrain.name) {
@@ -359,10 +358,10 @@ const setCardsAndTerrain = (game: IGameState, terrain: ITerrain) => {
   }
 }
 
-export const setGame = (hands: IHands, plants: IPlants, terrain: ITerrain) => {
+export const setGame = (hands: IHands, plants: IPlants, habitat: IHabitat) => {
   return (dispatch: AppDispatch, getState: () => IRootState) => {
     const { game } = getState()
-    const updatedGame = setCardsAndTerrain({ ...game, hands, plants }, terrain)
+    const updatedGame = setCardsAndTerrain({ ...game, hands, plants }, habitat)
     dispatch(GAME_ACTIONS.SET_STATE(updatedGame))
   }
 }

@@ -2,11 +2,12 @@ import { HandKey, IAnimal, IGameState } from "../interfaces"
 import { getRandomChance } from "../utils"
 
 const BUTTERFLY_ANIMAL: IAnimal = {
+  id: 99,
   skill: {
     types: ["none"],
     name: "",
     description: "",
-    toDo: (state: any, hand: HandKey) => state,
+    use_type_id: 1
   },
   attack: {
     initial: 1,
@@ -20,7 +21,7 @@ const BUTTERFLY_ANIMAL: IAnimal = {
     damage: 0,
     rounds: 0,
   },
-  species: "🦂",
+  species: { id: 6, name: "Insect", description: "", icon: "🦂" },
   name: "Butterfly",
   paralyzed: 0,
   targeteable: true,

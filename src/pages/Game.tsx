@@ -27,7 +27,7 @@ export default function Game({ isCampaign }: IProps) {
   const [modal, setModal] = useState<string>("")
   const { push } = useHistory()
   const { requiredXp } = useParams<GameParams>()
-  const { hands, plants, pcTurn, triggerPcAttack, terrain, gameError, isLoading } = game
+  const { hands, plants, pcTurn, triggerPcAttack, habitat, gameError, isLoading } = game
   const { auth_id: authId }: User = useAppSelector(({ auth }) => auth.user)
 
   useEffect(() => {
@@ -79,11 +79,11 @@ export default function Game({ isCampaign }: IProps) {
 
   return (
     <>
-      <Wrapper bgImg={terrain!.image}>
+      <Wrapper bgImg={`/images/terrains/${habitat.name.toLowerCase()}.webp`}>
         <SidePanel
           isCampaign={isCampaign}
           plants={plants}
-          terrain={terrain!}
+          habitat={habitat}
           userName={userName}
         />
         <Board>

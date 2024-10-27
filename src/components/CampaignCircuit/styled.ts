@@ -1,7 +1,7 @@
 import styled from "styled-components"
 import { BREAKPOINTS } from "../../utils/constants"
 
-interface TerrainContainerProps {
+interface HabitatContainerProps {
   angle?: string
   bgImage?: string
   containerWidth: number
@@ -21,7 +21,7 @@ export const Wrapper = styled.div`
     width: 270px;
   }
 `
-export const TerrainContainer = styled.div<TerrainContainerProps>`
+export const HabitatContainer = styled.div<HabitatContainerProps>`
   align-items: center;
   background-image: ${({ bgImage }) => `url('${bgImage}')`};
   background-position: center;

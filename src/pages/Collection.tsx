@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
-import { IAnimal, User } from "../interfaces"
-import { sortCardsAlphabetically } from "../utils"
-import { getAllAnimalsCards } from "../queries/animalsCards"
+import { FiltersData, IAnimal, User } from "../interfaces"
+import { parseAnimalsFromDB } from "../utils"
+import { getAllAnimals } from "../queries/animalsCards"
 import MenuLayout from "../components/MenuLayout"
 import Spinner from "../components/Spinner"
 import Modal from "../components/Common/Modal"
@@ -12,6 +12,9 @@ import Accordion from "../components/Common/Accordion"
 import { useAppSelector } from "../hooks/redux-hooks"
 import AllCards from "../components/CollectionCards/AllCards"
 import CurrentHand from "../components/CollectionCards/CurrentHand"
+import { getAllSpecies } from "../queries/species"
+import { getAllHabitats } from "../queries/habitats"
+import { getAllSkillTypes } from "../queries/skillTypes"
 
 export default function Collection() {
   const { hand }: User = useAppSelector(({ auth }) => auth.user)
@@ -23,21 +26,38 @@ export default function Collection() {
   const [animalToBuy, setAnimalToBuy] = useState<IAnimal>()
   const [animalToSell, setAnimalToSell] = useState<IAnimal>()
   const [currentHand, setCurrentHand] = useState<IAnimal[]>([])
+  const [filtersData, setFiltersData] = useState<FiltersData>({ loading: false, species: [], habitats: [], skillTypes: [] })
 
   const fetchAllAnimals = async () => {
     setIsLoading(true)
-    const allAnimalsRes = await getAllAnimalsCards()
+    const animalsFromDB = await getAllAnimals()
     setIsLoading(false)
-    if (allAnimalsRes && !allAnimalsRes.error) {
-      const { animals } = allAnimalsRes
+    if (animalsFromDB) {
+      const animals = parseAnimalsFromDB(animalsFromDB)
       setAllCards(animals)
-      setCurrentHand(animals.filter((card: IAnimal) => hand.includes(card.name)))
-      setCardsToShow(sortCardsAlphabetically(animals))
+      setCurrentHand(animals.filter((card: IAnimal) => hand?.includes(card.name)))
+      setCardsToShow(animals)
     }
+  }
+
+  const fetchFiltersData = async () => {
+    setFiltersData({ ...filtersData, loading: true })
+    const [species, habitats, skillTypes] = await Promise.all([
+      getAllSpecies(),
+      getAllHabitats(),
+      getAllSkillTypes(),
+    ])
+    setFiltersData({
+      loading: false,
+      species,
+      habitats,
+      skillTypes,
+    })
   }
 
   useEffect(() => {
     fetchAllAnimals()
+    fetchFiltersData()
   }, []) //eslint-disable-line
 
   const handleEditHandModal = (name: string) => {
@@ -73,6 +93,7 @@ export default function Collection() {
               handlePurchaseModal={handlePurchaseModal}
               handleSellModal={handleSellModal}
               setCardsToShow={setCardsToShow}
+              filtersData={filtersData}
             />
           )}
         </Accordion>

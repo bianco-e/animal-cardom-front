@@ -1,4 +1,4 @@
-import { IAnimal, User } from "../../interfaces"
+import { FiltersData, IAnimal, User } from "../../interfaces"
 import Card from "../Card"
 import BuyButton from "./Buttons/BuyButton"
 import CollectionFilter from "./CollectionFilter"
@@ -15,6 +15,7 @@ interface IProps {
   handleEditHandModal: (name: string) => void
   handlePurchaseModal: (card: IAnimal) => void
   handleSellModal: (card: IAnimal) => void
+  filtersData: FiltersData
 }
 
 const getCardOpacityForPreview = (cards: string[], name: string): string =>
@@ -26,16 +27,17 @@ export default function CollectionCards({
   handleEditHandModal,
   handlePurchaseModal,
   handleSellModal,
+  filtersData
 }: IProps) {
   const {
-    owned_cards: ownedCards,
+    owned_cards = [],
     hand,
     coins,
   }: User = useAppSelector(({ auth }) => auth.user)
 
   return (
     <>
-      <CollectionFilter setCardsToShow={setCardsToShow} />
+      <CollectionFilter filtersData={filtersData} setCardsToShow={setCardsToShow} />
       {cardsToShow.length > 0 ? (
         <CardsContainer>
           {cardsToShow.map(card => {
@@ -44,9 +46,9 @@ export default function CollectionCards({
                 <Card
                   {...card}
                   belongsToUser={false}
-                  opacityForPreview={getCardOpacityForPreview(ownedCards, card.name)}
+                  opacityForPreview={getCardOpacityForPreview(owned_cards, card.name)}
                 />
-                {!ownedCards.includes(card.name) ? (
+                {!owned_cards.includes(card.name) ? (
                   <BuyButton
                     price={card.price}
                     disabled={coins < card.price}

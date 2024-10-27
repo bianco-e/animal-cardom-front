@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { useHistory, useParams } from "react-router-dom"
-import { GameParams, HandKey, User, IGameState } from "../../interfaces"
+import { GameParams, HandKey, User, IGameState, IAnimal } from "../../interfaces"
 import { saveGameResult } from "../../queries/games"
 import Spinner from "../Spinner"
 import { ACButton, ModalTitle, Text } from "../styled-components"
@@ -22,7 +22,7 @@ export default function ModalContentResult({
   isCampaignGame,
   modalType,
 }: IProps) {
-  const [earnedAnimal, setEarnedAnimal] = useState<string>()
+  const [earnedAnimal, setEarnedAnimal] = useState<{ id: IAnimal['id']; name: IAnimal['name']  }>()
   const [earnedCoins, setEarnedCoins] = useState<number>()
   const { requiredXp } = useParams<GameParams>()
   const user: User = useAppSelector(({ auth }) => auth.user)
@@ -45,7 +45,7 @@ export default function ModalContentResult({
       }))
 
     const gameToSave = {
-      terrain: game.terrain.name,
+      habitat: game.habitat.name,
       won,
       used_animals: {
         pc: mapCardsToSave("pc"),

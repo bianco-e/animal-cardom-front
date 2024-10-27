@@ -11,13 +11,7 @@ export const newCampaignGame = (xp: number, user_cards: string[]) => {
 }
 
 export const newRandomGame = () => {
-  return fetch(`${API_BASE_URL}games/new-random`)
-    .then(res => res.json())
-    .catch(err => console.error(err))
-}
-
-export const getAllTerrains = () => {
-  return fetch(`${API_BASE_URL}terrains/all`)
+  return fetch(`${API_BASE_URL}games`)
     .then(res => res.json())
     .catch(err => console.error(err))
 }

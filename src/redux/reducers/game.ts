@@ -13,10 +13,11 @@ const initialState: IGameState = {
   attacker: undefined,
   defender: undefined,
   underAttack: undefined,
-  terrain: {
+  habitat: {
+    id: 0,
     name: "",
+    description: "",
     color: "#fff",
-    image: "",
     campaign_xp: [0],
   },
   pcTurn: false,

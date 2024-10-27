@@ -3,16 +3,16 @@ import { API_BASE_URL } from "../utils/constants"
 import { postMethod } from "./methods"
 
 export const createUser = (user: UserTemplate) => {
-  return fetch(`${API_BASE_URL}users/create`, {
+  return fetch(`${API_BASE_URL}users`, {
     ...postMethod(user),
   })
     .then(res => res.json())
     .catch(err => console.error(err))
 }
 
-export const getUserMe = (auth_id: string) => {
+export const getUserMe = (email: string) => {
   return fetch(`${API_BASE_URL}users/me`, {
-    ...postMethod({ auth_id }),
+    ...postMethod({ email }),
   })
     .then(res => res.json())
     .catch(err => console.error(err))

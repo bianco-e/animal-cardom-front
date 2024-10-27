@@ -218,7 +218,7 @@ const cheetahFn = (state: IGameState, enemyHandKey: HandKey): IGameState => {
 
 const eagleFn = (state: IGameState, enemyHandKey: HandKey): IGameState => {
   const { hands, defender, attacker } = state
-  if (attacker!.species === "🦂") {
+  if (attacker!.species.icon === "🦂") {
     const newHand = killInstantly(hands[enemyHandKey], defender!)
     return setHandInState(state, enemyHandKey, newHand)
   }
@@ -371,7 +371,7 @@ const swordfishFn = (state: IGameState, enemyHandKey: HandKey): IGameState => {
 
 const toadAndFrogFn = (state: IGameState, enemyHandKey: HandKey): IGameState => {
   const { hands, defender } = state
-  if (defender!.species === "🦂") {
+  if (defender!.species.icon === "🦂") {
     const newHand = killInstantly(hands[enemyHandKey], defender!)
     return setHandInState(state, enemyHandKey, newHand)
   } else return state
@@ -415,15 +415,15 @@ export const getExtraDamage = (attacker: IAnimal, defender: IAnimal): number => 
     case "Crocodile":
       return 2
     case "Eagle":
-      return defender.species !== "🦂" ? 2 : 0
+      return defender.species.icon !== "🦂" ? 2 : 0
     case "Komodo Dragon":
       return 1
     case "Hyena":
       return defender.life.current < defender.life.initial ? 2 : 0
     case "Mole":
-      return defender.species === "🦂" ? 1 : 0
+      return defender.species.icon === "🦂" ? 1 : 0
     case "Pelican":
-      return defender.species === "🦈" ? 2 : 0
+      return defender.species.icon === "🦈" ? 2 : 0
     case "Shark":
       return defender.bleeding ? 2 : 0
     default:

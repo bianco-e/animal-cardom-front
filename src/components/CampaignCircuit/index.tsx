@@ -1,10 +1,10 @@
 import { useRef, useEffect, useState } from "react"
 import { useHistory } from "react-router-dom"
 import { useAppSelector } from "../../hooks/redux-hooks"
-import { ITerrain, User } from "../../interfaces"
-import { getAllTerrains } from "../../queries/games"
+import { IHabitat, User } from "../../interfaces"
+import { getAllHabitats } from "../../queries/habitats"
 import CampaignProgress from "./Progress"
-import { TerrainContainer, Wrapper } from "./styled"
+import { HabitatContainer, Wrapper } from "./styled"
 
 const firstLevelGames: { [x: number]: number } = {
   450: 1,
@@ -14,20 +14,18 @@ const firstLevelGames: { [x: number]: number } = {
 
 export default function CampaignCircuit() {
   const [containerWidth, setContainerWidth] = useState<number>(200)
-  const [terrains, setTerrains] = useState<ITerrain[]>([])
+  const [habitats, setHabitats] = useState<IHabitat[]>([])
   const { xp }: User = useAppSelector(({ auth }) => auth.user)
 
-  const ANGLE = terrains.length ? 360 / terrains.length : 0
+  const ANGLE = habitats.length ? 360 / habitats.length : 0
 
-  const fetchTerrains = async () => {
-    const terrainsRes = await getAllTerrains()
-    if (terrainsRes && !terrainsRes.error) {
-      setTerrains(terrainsRes.terrains)
-    }
+  const fetchHabitats = async () => {
+    const allHabitats = await getAllHabitats()
+    setHabitats(allHabitats)
   }
 
   useEffect(() => {
-    fetchTerrains()
+    fetchHabitats()
   }, [])
 
   const containerRef = useRef<HTMLDivElement>(null)
@@ -48,28 +46,28 @@ export default function CampaignCircuit() {
 
   return (
     <>
-      <CampaignProgress terrains={terrains} />
+      <CampaignProgress habitats={habitats} />
       <Wrapper ref={containerRef}>
-        {terrains.map((terrain, idx) => {
-          const { image, name, campaign_xp } = terrain
-          const terrainXp = !campaign_xp.includes(0)
+        {habitats.map((habitat, idx) => {
+          const { name, campaign_xp } = habitat
+          const habitatXp = !campaign_xp.includes(0)
             ? campaign_xp[0]
             : xp < 1350
             ? xp
             : 900
-          const isDisabled = terrainXp > xp
+          const isDisabled = habitatXp > xp
           const level = idx + 1
           return (
-            <TerrainContainer
+            <HabitatContainer
               angle={`${ANGLE * idx + 270}`}
-              bgImage={image}
+              bgImage={`/images/terrains/${habitat.name.toLowerCase()}.webp`}
               containerWidth={containerWidth}
               disabled={isDisabled}
               games={level === 1 ? getGames() : undefined}
               key={name}
               level={level}
-              onClick={() => !isDisabled && handleCampaignGame(terrainXp)}
-              title={isDisabled ? "Locked" : `${name} terrain`}
+              onClick={() => !isDisabled && handleCampaignGame(habitatXp)}
+              title={isDisabled ? "Locked" : `${name} habitat`}
             />
           )
         })}

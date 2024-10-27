@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import { useHistory } from "react-router-dom"
 import Modal from "../Common/Modal"
 import { ACButton, ModalTitle, Text } from "../styled-components"
-import { IPlants, ITerrain } from "../../interfaces/index"
+import { IPlants, IHabitat } from "../../interfaces/index"
 import Tooltip from "../Tooltip"
 import { LeftPanel, OptionsPanel, TerrainName } from "./styled"
 import { GAME_ACTIONS } from "../../redux/reducers/game"
@@ -11,12 +11,12 @@ import PlayerPlants from "./PlayerPlants"
 
 interface IProps {
   plants: IPlants
-  terrain: ITerrain
+  habitat: IHabitat
   userName: string
   isCampaign?: boolean
 }
 
-export default function SidePanel({ plants, isCampaign, terrain, userName }: IProps) {
+export default function SidePanel({ plants, isCampaign, habitat, userName }: IProps) {
   const [showTerrainTooltip, setShowTerrainTooltip] = useState<boolean>(false)
   const [soundState, setSoundState] = useState<"off" | "on">("on")
   const [showExitModal, setShowExitModal] = useState<boolean>(false)
@@ -48,10 +48,10 @@ export default function SidePanel({ plants, isCampaign, terrain, userName }: IPr
   }
 
   return (
-    <LeftPanel bgImage={terrain.image}>
+    <LeftPanel bgImage={`/images/terrains/${habitat.name.toLowerCase()}.webp`}>
       <PlayerPlants name="PC" plants={plants.pc} />
 
-      <TerrainName color={terrain.color}>
+      <TerrainName color={habitat.color}>
         <OptionsPanel>
           <button onClick={handleSoundButton}>
             <img alt="sound-button" src={`/icons/sound-${soundState}-icon.png`} />
@@ -65,15 +65,15 @@ export default function SidePanel({ plants, isCampaign, terrain, userName }: IPr
           className="name-container"
           onMouseEnter={() => setShowTerrainTooltip(true)}
           onMouseLeave={() => setShowTerrainTooltip(false)}>
-          {terrain.name}
+          {habitat.name}
           {showTerrainTooltip && (
             <Tooltip
               direction="BOTTOM"
               title="Bonus"
               description={
-                terrain.name !== "Neutral"
-                  ? `Animals that feel like home in ${terrain.name} have their attacked increased by 1.`
-                  : "In Neutral terrain there's no benefit"
+                habitat.name !== "Neutral"
+                  ? habitat.description
+                  : "In Neutral habitat there's no benefit"
               }
             />
           )}

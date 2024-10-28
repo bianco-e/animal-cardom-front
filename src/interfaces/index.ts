@@ -3,12 +3,12 @@ export interface IGameState {
   gameError: boolean
   hands: IHands
   plants: IPlants
-  animalToTreat?: IAnimal
-  treatedAnimal?: IAnimal
+  animalToTreat?: Animal
+  treatedAnimal?: Animal
   selectedPlant?: IPlant
   usedPlants: IPlant[]
-  attacker?: IAnimal
-  defender?: IAnimal
+  attacker?: Animal
+  defender?: Animal
   habitat: IHabitat
   underAttack?: string
   dodgedAttack?: string
@@ -49,7 +49,7 @@ export interface Species {
 }
 
 export interface IHands {
-  [x: string]: IAnimal[]
+  [x: string]: Animal[]
 }
 
 export interface IPlants {
@@ -63,7 +63,7 @@ export interface IPlant {
   use_type_id: number
 }
 
-export interface IAnimal {
+export interface Animal {
   id: number
   attack: Stat
   bleeding: boolean
@@ -78,6 +78,10 @@ export interface IAnimal {
   species: Species
   targeteable: boolean
   habitat: string
+}
+
+export interface CampaignAnimal extends Animal {
+  is_in_hand: boolean
 }
 
 export interface IHabitat {
@@ -107,7 +111,7 @@ export interface Game {
 export interface UserTemplate {
   sub?: string
   auth_id?: string
-  picture?: string
+  profileImg?: string
   email?: string
   given_name?: string
   first_name?: string
@@ -126,19 +130,12 @@ export interface AuthUser {
 }
 
 export interface User {
+  id: string
   auth_id: string
-  coins: number
-  picture: string
+  profileImg: string
   email: string
   first_name: string
   last_name: string
-  locale: string
-  preferences: {
-    language: string
-  }
-  xp: number
-  owned_cards: string[]
-  hand: string[]
 }
 
 export interface Action {
@@ -150,18 +147,23 @@ export interface Action {
   action: string
 }
 
-export interface GameParams {
-  requiredXp: string
+export interface CampaignState {
+  isLoading: boolean
+  error: string | null
+  coins: number
+  xp: number
+  hand: Animal[]
+  owned_animals: Animal[]
 }
 
 export interface IRootState {
   auth: {
-    isLogged: boolean
     error: boolean
     isLoading: boolean
     token: string | null
     user: User
   }
+  campaign: CampaignState
   game: IGameState
 }
 

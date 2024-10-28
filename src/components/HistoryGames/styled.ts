@@ -2,11 +2,11 @@ import styled from "styled-components"
 import { BREAKPOINTS } from "../../utils/constants"
 
 interface ResultProps {
-  bgColor?: string
+  $bgColor?: string
 }
 
 interface HistoryCardProps {
-  habitat?: string
+  $habitat?: string
 }
 export const Wrapper = styled.div`
   align-items: center;
@@ -18,7 +18,7 @@ export const Wrapper = styled.div`
 `
 export const HistoryCard = styled.div<HistoryCardProps>`
   align-items: center;
-  background-image: ${({ habitat }) => `url('/images/terrains/${habitat}.webp')`};
+  background-image: ${({ $habitat }) => `url('/images/habitats/${$habitat}.webp')`};
   background-position: center;
   background-size: cover;
   border-radius: 5px;
@@ -97,7 +97,7 @@ export const CardsContainer = styled.div`
   }
 `
 export const Result = styled.span<ResultProps>`
-  background: ${({ bgColor }) => bgColor};
+  background: ${({ $bgColor }) => $bgColor};
   border-radius: 5px;
   color: #fff;
   font-size: 12px;

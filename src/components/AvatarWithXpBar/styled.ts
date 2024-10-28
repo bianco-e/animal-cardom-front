@@ -1,8 +1,8 @@
 import styled from "styled-components"
 
 interface WrapperProps {
-  dasharray?: string
-  dashoffset?: number
+  $dasharray?: string
+  $dashoffset?: number
 }
 
 export const Wrapper = styled.div<WrapperProps>`
@@ -16,8 +16,8 @@ export const Wrapper = styled.div<WrapperProps>`
     top: -12px;
     .progress-ring__circle {
       stroke: url(#gradient);
-      stroke-dasharray: ${({ dasharray }) => dasharray};
-      stroke-dashoffset: ${({ dashoffset }) => dashoffset};
+      stroke-dasharray: ${({ $dasharray }) => $dasharray};
+      stroke-dashoffset: ${({ $dashoffset }) => $dashoffset};
       stroke-linecap: round;
       transform: rotate(-90deg);
       transform-origin: 50% 50%;

@@ -1,9 +1,9 @@
-import { IAnimal } from "../../interfaces"
+import { Animal } from "../../interfaces"
 import Card from "../Card"
 import { CardsContainer, SingleCardContainer } from "./styled"
 
 interface IProps {
-  currentHand: IAnimal[]
+  currentHand: Animal[]
 }
 
 export default function CurrentHand({ currentHand }: IProps) {

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { Link, useHistory, useLocation } from "react-router-dom"
+import { Link, useNavigate, useLocation } from "react-router-dom"
 import { useAuth0 } from "@auth0/auth0-react"
 import { LogButton } from "../../components/styled-components"
 import { createAction } from "../../queries/tracking"
@@ -13,9 +13,9 @@ interface IProps {
 export default function NavBar({ isHome }: IProps) {
   const { loginWithRedirect, user, isAuthenticated } = useAuth0()
   const username = user?.given_name
-  const picture = user?.picture
+  const profileImg = user?.picture
   const auth_id = user?.sub
-  const history = useHistory()
+  const navigate = useNavigate()
   const location = useLocation()
 
   const [soundState, setSoundState] = useState<"off" | "on">("on")
@@ -52,7 +52,7 @@ export default function NavBar({ isHome }: IProps) {
         ...action,
         action: "you-are-allowed-button",
       })
-      history.push("/menu")
+      navigate("/menu")
     } else {
       createAction({
         ...action,
@@ -81,10 +81,10 @@ export default function NavBar({ isHome }: IProps) {
         <Link className="logo-link" to="/">
           <img alt="ac-logo" src="/images/animal-cardom-logo.png" width={60} />
         </Link>
-        <LogButton onClick={handleLogin} overflow="visible">
-          {isAuthenticated && username && picture ? (
+        <LogButton onClick={handleLogin} $overflow="visible">
+          {isAuthenticated && username && profileImg ? (
             <>
-              <UserImage src={picture} alt={username} />
+              <UserImage src={profileImg} alt={username} />
               <span>
                 You're allowed, <b>{username}!</b>
               </span>

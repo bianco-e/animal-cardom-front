@@ -1,7 +1,7 @@
 import { useRef, useEffect, useState } from "react"
-import { useHistory } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 import { useAppSelector } from "../../hooks/redux-hooks"
-import { IHabitat, User } from "../../interfaces"
+import { CampaignState, IHabitat } from "../../interfaces"
 import { getAllHabitats } from "../../queries/habitats"
 import CampaignProgress from "./Progress"
 import { HabitatContainer, Wrapper } from "./styled"
@@ -15,7 +15,7 @@ const firstLevelGames: { [x: number]: number } = {
 export default function CampaignCircuit() {
   const [containerWidth, setContainerWidth] = useState<number>(200)
   const [habitats, setHabitats] = useState<IHabitat[]>([])
-  const { xp }: User = useAppSelector(({ auth }) => auth.user)
+  const { xp }: CampaignState = useAppSelector(({ campaign }) => campaign)
 
   const ANGLE = habitats.length ? 360 / habitats.length : 0
 
@@ -29,7 +29,7 @@ export default function CampaignCircuit() {
   }, [])
 
   const containerRef = useRef<HTMLDivElement>(null)
-  const history = useHistory()
+  const navigate = useNavigate()
 
   useEffect(() => {
     if (containerRef.current) {
@@ -37,7 +37,7 @@ export default function CampaignCircuit() {
     }
   }, [containerRef.current]) //eslint-disable-line
 
-  const handleCampaignGame = (xp: number) => history.push(`/game/${xp}`)
+  const handleCampaignGame = (xp: number) => navigate(`/game/${xp}`)
 
   const getGames = () => {
     if (firstLevelGames[xp]) return `${firstLevelGames[xp]}/3`
@@ -49,7 +49,7 @@ export default function CampaignCircuit() {
       <CampaignProgress habitats={habitats} />
       <Wrapper ref={containerRef}>
         {habitats.map((habitat, idx) => {
-          const { name, campaign_xp } = habitat
+          const { name, campaign_xp = [] } = habitat
           const habitatXp = !campaign_xp.includes(0)
             ? campaign_xp[0]
             : xp < 1350
@@ -59,13 +59,13 @@ export default function CampaignCircuit() {
           const level = idx + 1
           return (
             <HabitatContainer
-              angle={`${ANGLE * idx + 270}`}
-              bgImage={`/images/terrains/${habitat.name.toLowerCase()}.webp`}
-              containerWidth={containerWidth}
-              disabled={isDisabled}
-              games={level === 1 ? getGames() : undefined}
+              $angle={`${ANGLE * idx + 270}`}
+              $bgImage={`/images/habitats/${habitat.name.toLowerCase()}.webp`}
+              $containerWidth={containerWidth}
+              $disabled={isDisabled}
+              $games={level === 1 ? getGames() : undefined}
               key={name}
-              level={level}
+              $level={level}
               onClick={() => !isDisabled && handleCampaignGame(habitatXp)}
               title={isDisabled ? "Locked" : `${name} habitat`}
             />

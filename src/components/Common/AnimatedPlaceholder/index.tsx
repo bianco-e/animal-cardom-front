@@ -5,5 +5,5 @@ interface IProps {
   width?: string
 }
 export default function AnimatedPlaceholder({ height, width }: IProps) {
-  return <Wrapper height={height} width={width}></Wrapper>
+  return <Wrapper $height={height} $width={width}></Wrapper>
 }

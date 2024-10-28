@@ -2,7 +2,7 @@ import styled from "styled-components"
 import { BREAKPOINTS } from "../../utils/constants"
 
 interface LeftPanelProps {
-  bgImage?: string
+  $bgImage?: string
 }
 export const PlayerNameTab = styled.div`
   background: rgba(240, 240, 240, 0.6);
@@ -24,7 +24,7 @@ export const PlayerNameTab = styled.div`
   }
 `
 export const LeftPanel = styled.div<LeftPanelProps>`
-  background: url(${({ bgImage }) => bgImage});
+  background: url(${({ $bgImage }) => $bgImage});
   background-position: center;
   background-size: cover;
   background-repeat: no-repeat;
@@ -35,7 +35,7 @@ export const LeftPanel = styled.div<LeftPanelProps>`
   width: 110px;
   ${BREAKPOINTS.TABLET} {
     align-items: center;
-    background: url(${({ bgImage }) => bgImage});
+    background: url(${({ $bgImage }) => $bgImage});
     background-position: center;
     background-size: cover;
     background-repeat: no-repeat;
@@ -69,7 +69,7 @@ export const HalfPanel = styled.div`
     width: 40%;
   }
 `
-export const TerrainName = styled.h3`
+export const HabitatName = styled.h3`
   align-items: center;
   color: ${({ color }) => color};
   display: flex;

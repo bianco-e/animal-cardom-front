@@ -2,11 +2,11 @@ import styled from "styled-components"
 import { BREAKPOINTS } from "../../utils/constants"
 
 interface PlantCardProps {
-  selectionAnimation?: any
-  opacity?: string
-  isPlantSelected?: boolean
-  transform?: string
-  belongsToUser?: boolean
+  $selectionAnimation?: any
+  $opacity?: string
+  $isPlantSelected?: boolean
+  $transform?: string
+  $belongsToUser?: boolean
 }
 
 export const PlantContainer = styled.div`
@@ -26,18 +26,18 @@ export const PlantCard = styled.button<PlantCardProps>`
   background-image: url("/images/backgrounds/card-bg.svg");
   border-radius: 4px;
   box-shadow: inset 0px 0px 2px black;
-  cursor: ${({ belongsToUser }) => (belongsToUser ? "pointer" : "default")};
+  cursor: ${({ $belongsToUser }) => ($belongsToUser ? "pointer" : "default")};
   display: flex;
   flex-direction: column;
   height: 100%;
   margin: 0 auto;
   max-width: 64px;
   min-height: 45px;
-  opacity: ${({ opacity }) => opacity};
+  opacity: ${({ $opacity }) => $opacity};
   overflow: hidden;
   padding: 3px 3px 5px;
   position: relative;
-  transform: ${({ transform }) => transform};
+  transform: ${({ $transform }) => $transform};
   transition: transform 0.2s ease;
   width: 100%;
   > img {
@@ -60,11 +60,11 @@ export const PlantCard = styled.button<PlantCardProps>`
   }
   &::before {
     background: ${({
-      opacity,
-      belongsToUser,
+      $opacity,
+      $belongsToUser,
       theme: { primary_violet, secondary_violet, light_brown },
     }) =>
-      opacity === "1" && belongsToUser
+      $opacity === "1" && $belongsToUser
         ? `linear-gradient(90deg, ${primary_violet}, ${light_brown}, ${secondary_violet})`
         : "none"};
     content: "";
@@ -74,7 +74,7 @@ export const PlantCard = styled.button<PlantCardProps>`
     top: -35%;
     width: 45%;
     z-index: -1;
-    ${({ selectionAnimation }) => selectionAnimation};
+    ${({ $selectionAnimation }) => $selectionAnimation};
   }
   &::after {
     background-color: ${({ theme }) => theme.secondary_brown};
@@ -87,7 +87,7 @@ export const PlantCard = styled.button<PlantCardProps>`
     top: 3px;
     transform: translateX(-50%);
     -webkit-transform: translateX(-50%);
-    width: ${({ opacity }) => (opacity === "1" ? "calc(100% - 6px);" : "auto")};
+    width: ${({ $opacity }) => ($opacity === "1" ? "calc(100% - 6px);" : "auto")};
     z-index: -1;
   }
 `

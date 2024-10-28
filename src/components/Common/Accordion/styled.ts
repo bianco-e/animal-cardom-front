@@ -1,8 +1,8 @@
 import styled from "styled-components"
 
 interface WrapperProps {
-  isOpened: boolean
-  width: string
+  $isOpened: boolean
+  $width: string
 }
 
 export const Wrapper = styled.div<WrapperProps>`
@@ -10,10 +10,10 @@ export const Wrapper = styled.div<WrapperProps>`
   display: flex;
   flex-direction: column;
   margin-top: 60px;
-  max-height: ${({ isOpened }) => (isOpened ? "9000px" : "90px")};
+  max-height: ${({ $isOpened }) => ($isOpened ? "9000px" : "90px")};
   overflow: hidden;
   transition: all 0.3s ease;
-  width: ${({ width }) => width};
+  width: ${({ $width }) => $width};
   > button.accordion-handler {
     align-items: center;
     display: flex;
@@ -51,7 +51,7 @@ export const Wrapper = styled.div<WrapperProps>`
     > svg {
       margin-right: 10px;
       transition: transform 0.3s ease;
-      transform: ${({ isOpened }) => (isOpened ? "rotate(180deg)" : "")};
+      transform: ${({ $isOpened }) => ($isOpened ? "rotate(180deg)" : "")};
     }
   }
 `

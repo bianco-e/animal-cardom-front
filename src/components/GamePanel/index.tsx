@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react"
-import { useHistory } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 import Modal from "../Common/Modal"
 import { ACButton, ModalTitle, Text } from "../styled-components"
 import { IPlants, IHabitat } from "../../interfaces/index"
 import Tooltip from "../Tooltip"
-import { LeftPanel, OptionsPanel, TerrainName } from "./styled"
+import { LeftPanel, OptionsPanel, HabitatName } from "./styled"
 import { GAME_ACTIONS } from "../../redux/reducers/game"
 import { useAppDispatch } from "../../hooks/redux-hooks"
 import PlayerPlants from "./PlayerPlants"
@@ -17,10 +17,10 @@ interface IProps {
 }
 
 export default function SidePanel({ plants, isCampaign, habitat, userName }: IProps) {
-  const [showTerrainTooltip, setShowTerrainTooltip] = useState<boolean>(false)
+  const [showHabitatTooltip, setShowHabitatTooltip] = useState<boolean>(false)
   const [soundState, setSoundState] = useState<"off" | "on">("on")
   const [showExitModal, setShowExitModal] = useState<boolean>(false)
-  const history = useHistory()
+  const navigate = useNavigate()
   const dispatch = useAppDispatch()
 
   useEffect(() => {
@@ -44,14 +44,14 @@ export default function SidePanel({ plants, isCampaign, habitat, userName }: IPr
 
   const handleExit = () => {
     dispatch(GAME_ACTIONS.EMPTY_STATE())
-    history.push(isCampaign ? "/menu" : "/")
+    navigate(isCampaign ? "/menu" : "/")
   }
 
   return (
-    <LeftPanel bgImage={`/images/terrains/${habitat.name.toLowerCase()}.webp`}>
+    <LeftPanel $bgImage={`/images/habitats/${habitat.name.toLowerCase()}.webp`}>
       <PlayerPlants name="PC" plants={plants.pc} />
 
-      <TerrainName color={habitat.color}>
+      <HabitatName color={habitat.color}>
         <OptionsPanel>
           <button onClick={handleSoundButton}>
             <img alt="sound-button" src={`/icons/sound-${soundState}-icon.png`} />
@@ -63,10 +63,10 @@ export default function SidePanel({ plants, isCampaign, habitat, userName }: IPr
 
         <div
           className="name-container"
-          onMouseEnter={() => setShowTerrainTooltip(true)}
-          onMouseLeave={() => setShowTerrainTooltip(false)}>
+          onMouseEnter={() => setShowHabitatTooltip(true)}
+          onMouseLeave={() => setShowHabitatTooltip(false)}>
           {habitat.name}
-          {showTerrainTooltip && (
+          {showHabitatTooltip && (
             <Tooltip
               direction="BOTTOM"
               title="Bonus"
@@ -78,7 +78,7 @@ export default function SidePanel({ plants, isCampaign, habitat, userName }: IPr
             />
           )}
         </div>
-      </TerrainName>
+      </HabitatName>
 
       <PlayerPlants name={userName} plants={plants.user} />
 
@@ -86,11 +86,11 @@ export default function SidePanel({ plants, isCampaign, habitat, userName }: IPr
         <Modal closeModal={() => setShowExitModal(false)} withCloseButton={false}>
           <>
             <ModalTitle>You are about to exit</ModalTitle>
-            <Text margin="10px 0 5px">Current game progress will get lost.</Text>
+            <Text $margin="10px 0 5px">Current game progress will get lost.</Text>
             <Text>Are you sure?</Text>
             <ACButton
-              fWeight="bold"
-              margin="20px 0"
+              $fWeight="bold"
+              $margin="20px 0"
               onClick={() => setShowExitModal(false)}>
               Stay
             </ACButton>

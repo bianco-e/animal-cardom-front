@@ -1,31 +1,31 @@
 import { useState } from "react"
 import styled from "styled-components"
 import Card from "./Card"
-import { IAnimal, User } from "../interfaces"
+import { CampaignState, Animal, User } from "../interfaces"
 import { ACButton } from "./styled-components"
 import { animalPurchase } from "../queries/user"
 import Spinner from "./Spinner"
 import { BREAKPOINTS } from "../utils/constants"
 import { useAppDispatch, useAppSelector } from "../hooks/redux-hooks"
-import { AUTH_ACTIONS } from "../redux/reducers/auth"
+import { CAMPAIGN_ACTIONS } from "../redux/reducers/campaign"
 
 interface IProps {
-  animalToBuy: IAnimal
+  animalToBuy: Animal
   closeModal: () => void
 }
 export default function ModalCardPurchaseContent({ animalToBuy, closeModal }: IProps) {
   const dispatch = useAppDispatch()
   const [isLoading, setIsLoading] = useState<boolean>(false)
-  const user: User = useAppSelector(({ auth }) => auth.user)
-  const { owned_cards: ownedCards, coins, auth_id: authId } = user
+  const { auth_id }: User = useAppSelector(({ auth }) => auth.user)
+  const { owned_animals, coins }: CampaignState = useAppSelector(({ campaign }) => campaign)
 
   const handleConfirm = () => {
     setIsLoading(true)
-    animalPurchase(authId, animalToBuy.name, animalToBuy.price).then(res => {
+    animalPurchase(auth_id, animalToBuy.name, animalToBuy.price).then(res => {
       if (res && res.new_card) {
         setIsLoading(false)
-        dispatch(AUTH_ACTIONS.SET_COINS(coins - animalToBuy.price))
-        dispatch(AUTH_ACTIONS.SET_OWNED_CARDS(ownedCards.concat(res.new_card)))
+        dispatch(CAMPAIGN_ACTIONS.SET_COINS(coins - animalToBuy.price))
+        dispatch(CAMPAIGN_ACTIONS.SET_OWNED_CARDS(owned_animals.concat(res.new_card)))
         closeModal()
       }
     })
@@ -49,7 +49,7 @@ export default function ModalCardPurchaseContent({ animalToBuy, closeModal }: IP
           </Text>
         </>
       )}
-      <ACButton fWeight="bold" onClick={handleConfirm}>
+      <ACButton $fWeight="bold" onClick={handleConfirm}>
         {isLoading ? "Buying..." : "Confirm"}
       </ACButton>
     </Wrapper>

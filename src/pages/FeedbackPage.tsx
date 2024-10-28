@@ -43,7 +43,7 @@ export default function FeedbackPage() {
           value={messageValue}
           onChange={e => setMessageValue(e.target.value)}
         />
-        <ACButton onClick={handleSendFeedback} fWeight="bold">
+        <ACButton onClick={handleSendFeedback} $fWeight="bold">
           {feedbackStatus === "sending"
             ? ". . ."
             : feedbackStatus === "sent"

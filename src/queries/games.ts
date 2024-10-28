@@ -2,9 +2,9 @@ import { Game } from "../interfaces"
 import { postMethod } from "./methods"
 import { API_BASE_URL } from "../utils/constants"
 
-export const newCampaignGame = (xp: number, user_cards: string[]) => {
+export const newCampaignGame = (xp: number, user_animal_ids: number[]) => {
   return fetch(`${API_BASE_URL}games/new-campaign`, {
-    ...postMethod({ xp, user_cards }),
+    ...postMethod({ xp, user_cards: user_animal_ids }),
   })
     .then(res => res.json())
     .catch(err => console.error(err))
@@ -16,8 +16,8 @@ export const newRandomGame = () => {
     .catch(err => console.error(err))
 }
 
-export const newTerrain = (xp?: number) => {
-  return fetch(`${API_BASE_URL}terrains/new${xp !== undefined ? `?xp=${xp}` : ""}`)
+export const newHabitat = (xp?: number) => {
+  return fetch(`${API_BASE_URL}habitats/new${xp !== undefined ? `?xp=${xp}` : ""}`)
     .then(res => res.json())
     .catch(err => console.error(err))
 }

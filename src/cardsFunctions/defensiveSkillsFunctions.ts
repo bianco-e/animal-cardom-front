@@ -1,7 +1,7 @@
-import { HandKey, IAnimal, IGameState } from "../interfaces"
+import { HandKey, Animal, IGameState } from "../interfaces"
 import { getRandomChance } from "../utils"
 
-const BUTTERFLY_ANIMAL: IAnimal = {
+const BUTTERFLY_ANIMAL: Animal = {
   id: 99,
   skill: {
     types: ["none"],
@@ -35,7 +35,7 @@ const BUTTERFLY_ANIMAL: IAnimal = {
   },
 }
 
-const applyDmg = (animal: IAnimal, statsDiff: number): IAnimal => ({
+const applyDmg = (animal: Animal, statsDiff: number): Animal => ({
   ...animal,
   life: {
     ...animal.life,

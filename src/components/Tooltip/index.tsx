@@ -10,7 +10,7 @@ interface IProps {
 
 export default function Tooltip({ direction = "TOP", description, title }: IProps) {
   return (
-    <TooltipWrapper className="tooltip" direction={direction}>
+    <TooltipWrapper className="tooltip" $direction={direction}>
       <div className="description-container">
         <span>{description}</span>
       </div>

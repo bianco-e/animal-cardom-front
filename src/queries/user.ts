@@ -18,14 +18,6 @@ export const getUserMe = (email: string) => {
     .catch(err => console.error(err))
 }
 
-export const getUserProfile = (auth_id: string) => {
-  return fetch(`${API_BASE_URL}users/profile`, {
-    ...postMethod({ auth_id }),
-  })
-    .then(res => res.json())
-    .catch(err => console.error(err))
-}
-
 export const getLastGames = (auth_id: string) => {
   return fetch(`${API_BASE_URL}games/last-games?quantity=10`, {
     ...postMethod({ auth_id }),

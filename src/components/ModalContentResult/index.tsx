@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
-import { useHistory, useParams } from "react-router-dom"
-import { GameParams, HandKey, User, IGameState, IAnimal } from "../../interfaces"
+import { useNavigate, useParams } from "react-router-dom"
+import { HandKey, User, IGameState, Animal, CampaignState } from "../../interfaces"
 import { saveGameResult } from "../../queries/games"
 import Spinner from "../Spinner"
 import { ACButton, ModalTitle, Text } from "../styled-components"
@@ -8,8 +8,8 @@ import CampaignRewards from "./CampaignRewards"
 import { Wrapper } from "./styled"
 import { GAME_ACTIONS } from "../../redux/reducers/game"
 import { startGuestGame } from "../../redux/actions/game"
-import { AUTH_ACTIONS } from "../../redux/reducers/auth"
 import { useAppDispatch, useAppSelector } from "../../hooks/redux-hooks"
+import { CAMPAIGN_ACTIONS } from "../../redux/reducers/campaign"
 
 interface IProps {
   closeModal: () => void
@@ -22,12 +22,13 @@ export default function ModalContentResult({
   isCampaignGame,
   modalType,
 }: IProps) {
-  const [earnedAnimal, setEarnedAnimal] = useState<{ id: IAnimal['id']; name: IAnimal['name']  }>()
+  const [earnedAnimal, setEarnedAnimal] = useState<{ id: Animal['id']; name: Animal['name']  }>()
   const [earnedCoins, setEarnedCoins] = useState<number>()
-  const { requiredXp } = useParams<GameParams>()
+  const { requiredXp } = useParams<{ requiredXp: string }>()
   const user: User = useAppSelector(({ auth }) => auth.user)
-  const { auth_id: authId, xp } = user
-  const history = useHistory()
+  const { auth_id: authId } = user
+  const { xp }: CampaignState = useAppSelector(({ campaign }) => campaign)
+  const navigate = useNavigate()
   const dispatch = useAppDispatch()
   const game = useAppSelector(({ game }) => game)
   const { isLoading } = game
@@ -56,11 +57,11 @@ export default function ModalContentResult({
         user: mapPlantsToSave("user"),
       },
     }
-    const parsedReqXp = parseInt(requiredXp)
+    const parsedReqXp = parseInt(requiredXp as string)
     saveGameResult(authId, gameToSave, xp, parsedReqXp).then(res => {
       if (res && !res.error) {
-        dispatch(AUTH_ACTIONS.SET_XP(res.current_xp))
-        dispatch(AUTH_ACTIONS.SET_COINS(res.current_coins))
+        dispatch(CAMPAIGN_ACTIONS.SET_XP(res.current_xp))
+        dispatch(CAMPAIGN_ACTIONS.SET_COINS(res.current_coins))
         setEarnedCoins(res.earned_coins)
         setEarnedAnimal(res.earned_animal)
       }
@@ -75,7 +76,7 @@ export default function ModalContentResult({
 
   const handleRoute = (path: string) => {
     dispatch(GAME_ACTIONS.EMPTY_STATE())
-    history.push(path)
+    navigate(path)
   }
 
   const handlePlayAgain = () => {
@@ -90,7 +91,7 @@ export default function ModalContentResult({
       {modalType === "win" ? (
         <>
           <ModalTitle>You won!</ModalTitle>
-          <Text margin={isCampaignGame ? "0 0 16px 0" : "0"}>
+          <Text $margin={isCampaignGame ? "0 0 16px 0" : "0"}>
             Good game! Nature always wins against computers!
           </Text>
         </>
@@ -98,7 +99,7 @@ export default function ModalContentResult({
         modalType === "lose" && (
           <>
             <ModalTitle>You lost!</ModalTitle>
-            <Text margin={isCampaignGame ? "0 0 16px 0" : "0"}>
+            <Text $margin={isCampaignGame ? "0 0 16px 0" : "0"}>
               Nice try! PC defeated you this time, but nature always takes revenge!
             </Text>
           </>
@@ -112,10 +113,10 @@ export default function ModalContentResult({
             <Spinner />
           ) : (
             <>
-              <ACButton margin="10px 0 5px 0" onClick={handlePlayAgain}>
+              <ACButton $margin="10px 0 5px 0" onClick={handlePlayAgain}>
                 Play again
               </ACButton>
-              <ACButton margin="5px 0" onClick={() => handleRoute("/")}>
+              <ACButton $margin="5px 0" onClick={() => handleRoute("/")}>
                 Go to menu
               </ACButton>
             </>

@@ -18,7 +18,7 @@ export default function AccordionSection({
   const [isOpened, setIsOpened] = useState<boolean>(!startClosed)
   const toggleAccordion = () => setIsOpened(!isOpened)
   return (
-    <Wrapper isOpened={isOpened} width={width}>
+    <Wrapper $isOpened={isOpened} $width={width}>
       <button className="accordion-handler" onClick={toggleAccordion}>
         <span>
           {title}

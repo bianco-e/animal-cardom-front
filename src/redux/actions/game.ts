@@ -6,7 +6,7 @@ import getDefensiveSkillFn from "../../cardsFunctions/defensiveSkillsFunctions"
 import { getLiveCards, getRandomChance, getRandomFromArr, parseAnimalsFromDB } from "../../utils"
 import {
   HandKey,
-  IAnimal,
+  Animal,
   IGameState,
   IHands,
   IPlant,
@@ -16,7 +16,7 @@ import {
 } from "../../interfaces"
 import { GAME_ACTIONS } from "../reducers/game"
 import { AppDispatch } from ".."
-import { newCampaignGame, newRandomGame, newTerrain } from "../../queries/games"
+import { newCampaignGame, newRandomGame, newHabitat } from "../../queries/games"
 
 export const startGuestGame = () => {
   return async (dispatch: AppDispatch) => {
@@ -36,26 +36,27 @@ export const startGuestGame = () => {
 
 export const startCampaignGame = (setUserName: (str: string) => void, reqXp: number) => {
   return async (dispatch: AppDispatch, getState: () => IRootState) => {
-    const { auth } = getState()
-    const { first_name, hand, xp } = auth.user
+    const { auth, campaign } = getState()
+    const { first_name } = auth.user
+    const { hand, xp } = campaign
     setUserName(first_name)
     if (xp < reqXp) dispatch(GAME_ACTIONS.SET_GAME_ERROR(true))
-    const terrainRes = await newTerrain(reqXp)
-    const gameRes = await newCampaignGame(reqXp, hand)
-    if (terrainRes.error || gameRes.error)
+    const habitatRes = await newHabitat(reqXp)
+    const gameRes = await newCampaignGame(reqXp, hand.map(animal => animal.id))
+    if (habitatRes.error || gameRes.error)
       return dispatch(GAME_ACTIONS.SET_GAME_ERROR(true))
     dispatch(
       //@ts-ignore
       setGame(
         { pc: gameRes.pc.animals, user: gameRes.user.animals },
         { pc: gameRes.pc.plants, user: gameRes.user.plants },
-        terrainRes
+        habitatRes
       )
     )
   }
 }
 
-const getHighestAttackCard = (hand: IAnimal[]) =>
+const getHighestAttackCard = (hand: Animal[]) =>
   hand.reduce((acc, value) => (value.attack.current > acc.attack.current ? value : acc))
 
 const attackAndApplySkill = (game: IGameState, enemyHandKey: HandKey): IGameState => {
@@ -79,7 +80,7 @@ const attackAndApplySkill = (game: IGameState, enemyHandKey: HandKey): IGameStat
 
 const applyPlantToCard = (
   plant: IPlant,
-  card: IAnimal,
+  card: Animal,
   game: IGameState,
   enemyHandKey: HandKey
 ): IGameState => {
@@ -109,12 +110,12 @@ const checkWhatPlantToUse = (game: IGameState): IGameState => {
   const userLiveCards = getLiveCards(hands.user)
 
   const damagedCard = pcLiveCards.find(
-    (card: IAnimal) => card.life.current <= card.life.initial - 2
+    (card: Animal) => card.life.current <= card.life.initial - 2
   )
-  const poisonedCard = pcLiveCards.find((card: IAnimal) => card.poisoned.rounds > 0)
-  const paralyzedCard = pcLiveCards.find((card: IAnimal) => card.paralyzed > 0)
-  const blindCard = pcLiveCards.find((card: IAnimal) => card.missing.chance > 0)
-  const bleedingCard = pcLiveCards.find((card: IAnimal) => card.bleeding)
+  const poisonedCard = pcLiveCards.find((card: Animal) => card.poisoned.rounds > 0)
+  const paralyzedCard = pcLiveCards.find((card: Animal) => card.paralyzed > 0)
+  const blindCard = pcLiveCards.find((card: Animal) => card.missing.chance > 0)
+  const bleedingCard = pcLiveCards.find((card: Animal) => card.bleeding)
 
   const findAPlant = (plantName: string) =>
     plants.pc.find(
@@ -174,7 +175,7 @@ export const computerPlay = () => {
     const { hands } = game
     const pcLiveCards = getLiveCards(hands.pc)
     const userLiveCards = getLiveCards(hands.user).filter(
-      (card: IAnimal) => card.targeteable
+      (card: Animal) => card.targeteable
     )
     const pcAttacker = getRandomChance(90)
       ? getHighestAttackCard(pcLiveCards)
@@ -317,7 +318,7 @@ const applyAttackDamage = (game: IGameState, enemyHandKey: HandKey): IGameState 
 }
 
 const applyPoisonDamage = (hands: IHands, enemyHandKey: HandKey): IHands => {
-  const applyPoisonInAHand = (arr: IAnimal[]) =>
+  const applyPoisonInAHand = (arr: Animal[]) =>
     arr.map(card => {
       if (card.poisoned.rounds > 0 && card.life.current > 0) {
         return {
@@ -335,10 +336,10 @@ const applyPoisonDamage = (hands: IHands, enemyHandKey: HandKey): IHands => {
   return { ...hands, [enemyHandKey]: applyPoisonInAHand(hands[enemyHandKey]) }
 }
 
-const setCardsAndTerrain = (game: IGameState, terrain: IHabitat) => {
-  const buffCards = (arr: IAnimal[]) => {
+const setHabitatAndBuffAnimals = (game: IGameState, habitat: IHabitat): IGameState => {
+  const buffCards = (arr: Animal[]) => {
     return arr.map(card => {
-      if (card.habitat === terrain.name) {
+      if (card.habitat === habitat.name) {
         return {
           ...card,
           attack: { ...card.attack, current: card.attack.current + 1 },
@@ -348,7 +349,7 @@ const setCardsAndTerrain = (game: IGameState, terrain: IHabitat) => {
   }
   return {
     ...game,
-    terrain: terrain,
+    habitat: habitat,
     isLoading: false,
     gameError: false,
     hands: {
@@ -361,7 +362,7 @@ const setCardsAndTerrain = (game: IGameState, terrain: IHabitat) => {
 export const setGame = (hands: IHands, plants: IPlants, habitat: IHabitat) => {
   return (dispatch: AppDispatch, getState: () => IRootState) => {
     const { game } = getState()
-    const updatedGame = setCardsAndTerrain({ ...game, hands, plants }, habitat)
+    const updatedGame = setHabitatAndBuffAnimals({ ...game, hands, plants }, habitat)
     dispatch(GAME_ACTIONS.SET_STATE(updatedGame))
   }
 }

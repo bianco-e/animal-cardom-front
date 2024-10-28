@@ -44,7 +44,7 @@ export default function Dropdown({ closedText, options, width }: IProps) {
     callback()
   }
   return (
-    <Wrapper isOpened={isOpened} width={width}>
+    <Wrapper $isOpened={isOpened} width={width}>
       <LogButton onClick={handleDropdown}>
         <b>{selectedOption ? selectedOption : closedText}</b>
         <svg
@@ -61,12 +61,12 @@ export default function Dropdown({ closedText, options, width }: IProps) {
           />
         </svg>
       </LogButton>
-      <OptionsContainer ref={dropdownRef} display={isOpened ? "flex" : "none"}>
+      <OptionsContainer ref={dropdownRef} $display={isOpened ? "flex" : "none"}>
         {options.map((opt, idx) => {
           return (
             <StyledOption
               key={opt.text + idx}
-              fWeight={idx === 0 ? "normal" : "bold"}
+              $fWeight={idx === 0 ? "normal" : "bold"}
               onClick={() => handleSelection(opt.fn, opt.text)}>
               {opt.text}
             </StyledOption>

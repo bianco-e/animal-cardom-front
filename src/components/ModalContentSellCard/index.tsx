@@ -1,15 +1,15 @@
 import { useState } from "react"
 import Card from "../Card"
-import { IAnimal, User } from "../../interfaces"
+import { CampaignState, Animal, User } from "../../interfaces"
 import { ACButton } from "../styled-components"
 import { animalSell } from "../../queries/user"
 import Spinner from "../Spinner"
 import { useAppDispatch, useAppSelector } from "../../hooks/redux-hooks"
-import { AUTH_ACTIONS } from "../../redux/reducers/auth"
 import { Container, Text, Wrapper } from "./styled"
+import { CAMPAIGN_ACTIONS } from "../../redux/reducers/campaign"
 
 interface IProps {
-  animalToSell: IAnimal
+  animalToSell: Animal
   closeModal: () => void
 }
 
@@ -17,18 +17,19 @@ export default function ModalContentSellCard({ animalToSell, closeModal }: IProp
   const dispatch = useAppDispatch()
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const user: User = useAppSelector(({ auth }) => auth.user)
-  const { owned_cards: ownedCards, coins, auth_id: authId } = user
-  const ableToSell = ownedCards.length > 5
+  const { auth_id } = user
+  const { owned_animals, coins }: CampaignState = useAppSelector(({ campaign }) => campaign)
+  const ableToSell = owned_animals.length > 5
 
   const handleConfirm = async () => {
     setIsLoading(true)
-    const saleRes = await animalSell(authId, animalToSell.name)
+    const saleRes = await animalSell(auth_id, animalToSell.name)
     setIsLoading(false)
     if (!saleRes || saleRes.error) return
-    dispatch(AUTH_ACTIONS.SET_COINS(saleRes.current_coins))
+    dispatch(CAMPAIGN_ACTIONS.SET_COINS(saleRes.current_coins))
     dispatch(
-      AUTH_ACTIONS.SET_OWNED_CARDS(
-        ownedCards.filter((name: string) => name !== animalToSell.name)
+      CAMPAIGN_ACTIONS.SET_OWNED_CARDS(
+        owned_animals.filter((animal) => animal.name !== animalToSell.name)
       )
     )
     closeModal()
@@ -65,7 +66,7 @@ export default function ModalContentSellCard({ animalToSell, closeModal }: IProp
           </Text>
         </>
       )}
-      <ACButton disabled={!ableToSell} fWeight="bold" onClick={handleConfirm}>
+      <ACButton disabled={!ableToSell} $fWeight="bold" onClick={handleConfirm}>
         {isLoading ? "Buying..." : "Confirm"}
       </ACButton>
     </Wrapper>

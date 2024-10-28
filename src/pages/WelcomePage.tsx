@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import { useHistory, useLocation } from "react-router-dom"
+import { useNavigate, useLocation } from "react-router-dom"
 import styled from "styled-components"
 import NavBar from "../components/NavBar"
 import { BREAKPOINTS } from "../utils/constants"
@@ -13,7 +13,7 @@ export default function WelcomePage() {
   const userAgent = navigator.userAgent
   const { loginWithRedirect, user, isAuthenticated, isLoading } = useAuth0()
   const location = useLocation()
-  const history = useHistory()
+  const navigate = useNavigate()
   const [inputValue, setInputValue] = useState<string>("")
   const [showErrorMessage, setShowErrorMessage] = useState<boolean>(false)
 
@@ -48,7 +48,7 @@ export default function WelcomePage() {
       ...baseAction,
       action: "play-as-guest-button",
     })
-    history.push(`/play`)
+    navigate(`/play`)
   }
 
   const onKeyDownFn = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -67,7 +67,7 @@ export default function WelcomePage() {
         ...baseAction,
         action: "continue-campaign-button",
       })
-      history.push("/campaign")
+      navigate("/campaign")
     } else {
       createAction({
         ...baseAction,
@@ -83,7 +83,7 @@ export default function WelcomePage() {
       <Title>Welcome to Animal Cardom!</Title>
 
       <Container>
-        <ACButton fWeight="bold" margin="0 0 48px !important" onClick={playCampaign}>
+        <ACButton $fWeight="bold" $margin="0 0 48px !important" onClick={playCampaign}>
           {isAuthenticated && user?.given_name ? "Continue" : "Start"} campaign
         </ACButton>
         <ACInput
@@ -93,7 +93,7 @@ export default function WelcomePage() {
           type="text"
           value={inputValue}
         />
-        <ACButton fWeight="bold" onClick={goToPlay}>
+        <ACButton $fWeight="bold" onClick={goToPlay}>
           Play as a guest
         </ACButton>
         {showErrorMessage && (

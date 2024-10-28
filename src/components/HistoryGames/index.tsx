@@ -24,8 +24,8 @@ export default function History({ lastGames }: IProps) {
           const { won, used_animals, used_plants, habitat, created_at, earned_xp } = game
           const gameDate = new Date(created_at!)
           return (
-            <HistoryCard habitat={habitat.toLowerCase()} key={idx}>
-              <Result bgColor={won ? "#0B8A37" : "#dd5540"} className="spaced-title">
+            <HistoryCard $habitat={habitat.toLowerCase()} key={idx}>
+              <Result $bgColor={won ? "#0B8A37" : "#dd5540"} className="spaced-title">
                 {won ? "Won" : "Lost"}
               </Result>
               <PlayerStats>

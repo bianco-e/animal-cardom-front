@@ -1,4 +1,4 @@
-import { AuthUser, DBAnimal, IAnimal } from "../interfaces"
+import { AuthUser, DBAnimal, Animal } from "../interfaces"
 
 export const cardSpeciesToLowerCase = (species: string): string => {
   const splittedSpecies = species.split(" ")
@@ -39,7 +39,7 @@ export const getUtm = (search?: string) => {
 
 export const getRandomChance = (percent: number) => Math.random() < percent / 100
 
-export const getLiveCards = (hand: IAnimal[]): IAnimal[] =>
+export const getLiveCards = (hand: Animal[]): Animal[] =>
   hand.filter(card => card.life.current > 0)
 
 export const getRandomFromArr = (arr: any[]) => {
@@ -47,7 +47,7 @@ export const getRandomFromArr = (arr: any[]) => {
   return arr[randomIdx]
 }
 
-export const parseAnimalsFromDB = (dbAnimals: DBAnimal[]): IAnimal[] => {
+export const parseAnimalsFromDB = (dbAnimals: DBAnimal[]): Animal[] => {
   return dbAnimals.map(dbAnimal => ({
     id: dbAnimal.id,
     attack: {

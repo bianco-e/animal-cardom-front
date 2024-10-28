@@ -34,10 +34,10 @@ export default function Plant({ plant }: { plant: IPlant }) {
         onClick={onPlantClick}
         onMouseEnter={() => setShowTooltip(true)}
         onMouseLeave={() => setShowTooltip(false)}
-        opacity={usedPlants.includes(plant) ? "0.6" : "1"}
-        belongsToUser={plantBelongsToUser}
-        selectionAnimation={isPlantSelected && selectionAnimation}
-        transform={isPlantSelected ? "scale(1.1);" : ""}>
+        $opacity={usedPlants.includes(plant) ? "0.6" : "1"}
+        $belongsToUser={plantBelongsToUser}
+        $selectionAnimation={isPlantSelected && selectionAnimation}
+        $transform={isPlantSelected ? "scale(1.1);" : ""}>
         <span className="spaced-title">{name}</span>
         <img alt={name} src={`/images/plants/${name.toLowerCase()}.webp`} />
       </PlantCard>

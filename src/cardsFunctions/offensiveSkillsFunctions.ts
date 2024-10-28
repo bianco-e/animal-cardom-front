@@ -1,7 +1,7 @@
-import { HandKey, IAnimal, Poisoned, IGameState } from "../interfaces"
+import { HandKey, Animal, Poisoned, IGameState } from "../interfaces"
 import { getRandomFromArr } from "../utils"
 
-const poisonEnemy = (arr: IAnimal[], defender: IAnimal, poisoned: Poisoned) => {
+const poisonEnemy = (arr: Animal[], defender: Animal, poisoned: Poisoned) => {
   return arr.map(card => {
     if (card.name === defender.name && card.life.current > 0) {
       return {
@@ -12,7 +12,7 @@ const poisonEnemy = (arr: IAnimal[], defender: IAnimal, poisoned: Poisoned) => {
   })
 }
 
-const makeEnemyBleed = (arr: IAnimal[], defender: IAnimal) => {
+const makeEnemyBleed = (arr: Animal[], defender: Animal) => {
   return arr.map(card => {
     if (card.name === defender.name && card.life.current > 0) {
       return {
@@ -23,7 +23,7 @@ const makeEnemyBleed = (arr: IAnimal[], defender: IAnimal) => {
   })
 }
 
-const paralyzeEnemy = (arr: IAnimal[], defender: IAnimal, roundsNumber: number) => {
+const paralyzeEnemy = (arr: Animal[], defender: Animal, roundsNumber: number) => {
   return arr.map(card => {
     if (card.name === defender.name && card.life.current > 0) {
       return {
@@ -34,7 +34,7 @@ const paralyzeEnemy = (arr: IAnimal[], defender: IAnimal, roundsNumber: number) 
   })
 }
 
-const blindEnemy = (arr: IAnimal[], defender: IAnimal, percentage: number) => {
+const blindEnemy = (arr: Animal[], defender: Animal, percentage: number) => {
   return arr.map(card => {
     if (card.name === defender.name && card.life.current > 0) {
       return {
@@ -45,7 +45,7 @@ const blindEnemy = (arr: IAnimal[], defender: IAnimal, percentage: number) => {
   })
 }
 
-const healItself = (arr: IAnimal[], attacker: IAnimal, healthAmount: number) => {
+const healItself = (arr: Animal[], attacker: Animal, healthAmount: number) => {
   return arr.map(card => {
     if (card.name === attacker.name && card.life.current > 0) {
       return {
@@ -59,7 +59,7 @@ const healItself = (arr: IAnimal[], attacker: IAnimal, healthAmount: number) => 
   })
 }
 
-const killInstantly = (arr: IAnimal[], animal: IAnimal) => {
+const killInstantly = (arr: Animal[], animal: Animal) => {
   return arr.map(card => {
     if (card.name === animal.name) {
       return {
@@ -74,8 +74,8 @@ const killInstantly = (arr: IAnimal[], animal: IAnimal) => {
 }
 
 const modifyAnimalAttack = (
-  arr: IAnimal[],
-  animal: IAnimal,
+  arr: Animal[],
+  animal: Animal,
   attackAmount: number,
   operator: "+" | "-"
 ) => {
@@ -95,7 +95,7 @@ const modifyAnimalAttack = (
   })
 }
 
-const increaseAlliesAttack = (arr: IAnimal[], attackAmount: number) => {
+const increaseAlliesAttack = (arr: Animal[], attackAmount: number) => {
   return arr.map(card => {
     if (card.life.current > 0) {
       return {
@@ -109,7 +109,7 @@ const increaseAlliesAttack = (arr: IAnimal[], attackAmount: number) => {
   })
 }
 
-const decreaseEnemiesAttack = (arr: IAnimal[], attackAmount: number) => {
+const decreaseEnemiesAttack = (arr: Animal[], attackAmount: number) => {
   return arr.map(card => {
     if (card.life.current > 0 && card.attack.current > 1) {
       return {
@@ -123,7 +123,7 @@ const decreaseEnemiesAttack = (arr: IAnimal[], attackAmount: number) => {
   })
 }
 
-const copyDefenderSkill = (arr: IAnimal[], defender: IAnimal, attacker: IAnimal) => {
+const copyDefenderSkill = (arr: Animal[], defender: Animal, attacker: Animal) => {
   return arr.map(card => {
     if (card.name === attacker.name) {
       return {
@@ -134,7 +134,7 @@ const copyDefenderSkill = (arr: IAnimal[], defender: IAnimal, attacker: IAnimal)
   })
 }
 
-const setTargeteableAsTrue = (arr: IAnimal[], animal: IAnimal) => {
+const setTargeteableAsTrue = (arr: Animal[], animal: Animal) => {
   return arr.map(card => {
     if (card.name === animal.name) {
       return {
@@ -145,7 +145,7 @@ const setTargeteableAsTrue = (arr: IAnimal[], animal: IAnimal) => {
   })
 }
 
-const setHandInState = (state: IGameState, enemyHandKey: HandKey, newHand: IAnimal[]) => {
+const setHandInState = (state: IGameState, enemyHandKey: HandKey, newHand: Animal[]) => {
   return {
     ...state,
     hands: {
@@ -405,7 +405,7 @@ const wolfFn = (state: IGameState, enemyHandKey: HandKey): IGameState => {
   return setHandInState(state, allyHandKey, newHand)
 }
 
-export const getExtraDamage = (attacker: IAnimal, defender: IAnimal): number => {
+export const getExtraDamage = (attacker: Animal, defender: Animal): number => {
   if (attacker.paralyzed > 0) return 0
   switch (attacker.name) {
     case "Alligator":

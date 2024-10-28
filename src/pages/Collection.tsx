@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { FiltersData, IAnimal, User } from "../interfaces"
+import { CampaignState, FiltersData, Animal } from "../interfaces"
 import { parseAnimalsFromDB } from "../utils"
 import { getAllAnimals } from "../queries/animalsCards"
 import MenuLayout from "../components/MenuLayout"
@@ -17,15 +17,15 @@ import { getAllHabitats } from "../queries/habitats"
 import { getAllSkillTypes } from "../queries/skillTypes"
 
 export default function Collection() {
-  const { hand }: User = useAppSelector(({ auth }) => auth.user)
+  const { hand }: CampaignState = useAppSelector(({ campaign }) => campaign)
   const [modal, setModal] = useState<string>("")
-  const [cardsToShow, setCardsToShow] = useState<IAnimal[]>([])
-  const [allCards, setAllCards] = useState<IAnimal[]>([])
+  const [cardsToShow, setCardsToShow] = useState<Animal[]>([])
+  const [allCards, setAllCards] = useState<Animal[]>([])
   const [isLoading, setIsLoading] = useState<boolean>(false)
-  const [animalToAdd, setAnimalToAdd] = useState<IAnimal>()
-  const [animalToBuy, setAnimalToBuy] = useState<IAnimal>()
-  const [animalToSell, setAnimalToSell] = useState<IAnimal>()
-  const [currentHand, setCurrentHand] = useState<IAnimal[]>([])
+  const [animalToAdd, setAnimalToAdd] = useState<Animal>()
+  const [animalToBuy, setAnimalToBuy] = useState<Animal>()
+  const [animalToSell, setAnimalToSell] = useState<Animal>()
+  const [currentHand, setCurrentHand] = useState<Animal[]>([])
   const [filtersData, setFiltersData] = useState<FiltersData>({ loading: false, species: [], habitats: [], skillTypes: [] })
 
   const fetchAllAnimals = async () => {
@@ -35,7 +35,6 @@ export default function Collection() {
     if (animalsFromDB) {
       const animals = parseAnimalsFromDB(animalsFromDB)
       setAllCards(animals)
-      setCurrentHand(animals.filter((card: IAnimal) => hand?.includes(card.name)))
       setCardsToShow(animals)
     }
   }
@@ -60,6 +59,13 @@ export default function Collection() {
     fetchFiltersData()
   }, []) //eslint-disable-line
 
+  useEffect(() => {
+    if(hand?.length) {
+      setCurrentHand(hand)
+    }
+  }, [hand])
+  
+
   const handleEditHandModal = (name: string) => {
     setModal("editHand")
     const cardToAdd = allCards.find(card => card.name === name)
@@ -67,12 +73,12 @@ export default function Collection() {
     setAnimalToAdd(cardToAdd)
   }
 
-  const handlePurchaseModal = (card: IAnimal) => {
+  const handlePurchaseModal = (card: Animal) => {
     setModal("cardPurchase")
     setAnimalToBuy(card)
   }
 
-  const handleSellModal = (card: IAnimal) => {
+  const handleSellModal = (card: Animal) => {
     setModal("cardSell")
     setAnimalToSell(card)
   }

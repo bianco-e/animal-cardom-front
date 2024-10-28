@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react"
-import { FiltersData, IAnimal } from "../../../interfaces"
+import { FiltersData, Animal } from "../../../interfaces"
 import { getFilteredAnimals } from "../../../queries/animalsCards"
 import Dropdown from "../../Common/Dropdown"
 import { DropdownsContainer, Text, Wrapper } from "./styled"
 import { parseAnimalsFromDB } from "../../../utils"
 
 interface IProps {
-  setCardsToShow: (cards: IAnimal[]) => void
+  setCardsToShow: (cards: Animal[]) => void
   filtersData: FiltersData
 }
 

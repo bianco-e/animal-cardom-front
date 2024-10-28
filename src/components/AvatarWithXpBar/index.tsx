@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { useAppSelector } from "../../hooks/redux-hooks"
-import { User } from "../../interfaces"
+import { CampaignState } from "../../interfaces"
 import { Wrapper } from "./styled"
 const MAX_XP = 1000
 const STROKE_WIDTH = 11
@@ -10,7 +10,7 @@ const CIRCLE_CIRCUMFERENCE = CIRCLE_RADIUS * 2 * Math.PI
 export default function AvatarWithXpBar() {
   const [dashoffset, setDashoffset] = useState<number>(CIRCLE_CIRCUMFERENCE)
   const [level, setLevel] = useState<number>()
-  const { xp }: User = useAppSelector(({ auth }) => auth.user)
+  const { xp }: CampaignState = useAppSelector(({ campaign }) => campaign)
 
   useEffect(() => {
     const currentLvlXp = xp % MAX_XP
@@ -21,8 +21,8 @@ export default function AvatarWithXpBar() {
 
   return (
     <Wrapper
-      dasharray={`${CIRCLE_CIRCUMFERENCE} ${CIRCLE_CIRCUMFERENCE}`}
-      dashoffset={dashoffset}>
+      $dasharray={`${CIRCLE_CIRCUMFERENCE} ${CIRCLE_CIRCUMFERENCE}`}
+      $dashoffset={dashoffset}>
       <svg height="170" width="170">
         <defs>
           <linearGradient id="gradient" x1="0%" y1="0%" x2="0%" y2="100%">

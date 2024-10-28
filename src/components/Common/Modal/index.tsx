@@ -1,5 +1,5 @@
 import { useRef, useEffect } from "react";
-import ReactDOM from "react-dom";
+import { createPortal } from "react-dom";
 import { CloseButton, ModalContainer, ModalOverlay } from "./styled";
 const modalRoot = document.getElementById("modal-root");
 
@@ -50,9 +50,9 @@ export default function Modal({
   }, []); //eslint-disable-line
 
   return modalRoot
-    ? ReactDOM.createPortal(
+    ? createPortal(
         <ModalOverlay>
-          <ModalContainer forSpinner={forSpinner} ref={contentRef}>
+          <ModalContainer $forSpinner={forSpinner} ref={contentRef}>
             {children}
             {!forSpinner && withCloseButton ? (
               <CloseButton onClick={closeModal}>x</CloseButton>

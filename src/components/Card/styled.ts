@@ -3,43 +3,42 @@ import { injuryAnimation, missAnimation } from "../../animations/card-animations
 import { BREAKPOINTS } from "../../utils/constants"
 
 interface InjuryProps {
-  animation?: any
+  $animation?: any
 }
 interface AnimalCardProps {
-  attackAnimation?: any
-  selectionAnimation?: any
-  cursor?: string
-  isCardSelected?: boolean
-  isParalyzed?: boolean
-  opacity: string
-  habitat?: string
-  transform?: string
-  width?: string
+  $attackAnimation?: any
+  $selectionAnimation?: any
+  $cursor?: string
+  $isCardSelected?: boolean
+  $opacity: string
+  $habitat?: string
+  $transform?: string
+  $width?: string
 }
 interface TextProps {
-  color?: string
-  fWeight?: string
-  margin?: string
-  lineThrough?: boolean
+  $color?: string
+  $fWeight?: string
+  $margin?: string
+  $lineThrough?: boolean
 }
 interface FlexSectionProps {
-  mBottom?: string
-  fDirection?: string
+  $mBottom?: string
+  $fDirection?: string
 }
 interface PlantEffectProps {
-  animation?: any
-  fullWidth?: boolean
+  $animation?: any
+  $fullWidth?: boolean
 }
 
 export const PlantEffectImage = styled.img<PlantEffectProps>`
-  ${({ animation }) => animation};
+  ${({ $animation }) => css`${$animation}`}
   opacity: 0;
   left: 50%;
   position: absolute;
   top: 3%;
   z-index: 20;
-  ${({ fullWidth }) =>
-    fullWidth
+  ${({ $fullWidth }) =>
+    $fullWidth
       ? `
       margin-left: -50%;
       width: 100%;
@@ -66,28 +65,28 @@ export const Injury = styled.img<InjuryProps>`
 `
 export const AnimalCard = styled.button<AnimalCardProps>`
   align-items: center;
-  ${({ attackAnimation }) => attackAnimation};
+  ${({ $attackAnimation }) => $attackAnimation};
   background: ${({ theme }) => theme.secondary_brown};
-  background-image: ${({ habitat }) =>
-    `url("/images/backgrounds/${habitat ? `${habitat}-` : ""}card-bg.svg")`};
+  background-image: ${({ $habitat }) =>
+    `url("/images/backgrounds/${$habitat ? `${$habitat}-` : ""}card-bg.svg")`};
   border: 2px solid ${({ theme }) => theme.secondary_brown};
   box-shadow: inset 0px 0px 10px rgba(0, 0, 0, 0.6);
   border-radius: 8px;
-  cursor: ${({ cursor }) => cursor};
+  cursor: ${({ $cursor }) => $cursor};
   display: flex;
   flex-direction: column;
   height: 100%;
   justify-content: space-around;
-  opacity: ${({ opacity }) => opacity};
+  opacity: ${({ $opacity }) => $opacity};
   overflow: hidden;
   padding: 12px;
   position: relative;
   transition: transform 0.15s ease;
-  width: ${({ width = "calc(20% - 32px)" }) => width};
+  width: ${({ $width = "calc(20% - 32px)" }) => $width};
   &:hover {
     box-shadow: 4px 4px 4px ${({ theme }) => theme.secondary_brown},
       inset 0px 0px 8px black;
-    transform: ${({ transform }) => transform};
+    transform: ${({ $transform }) => $transform};
   }
   &:active {
     box-shadow: inset 0px 0px 16px black;
@@ -102,20 +101,20 @@ export const AnimalCard = styled.button<AnimalCardProps>`
     height: 210%;
     width: 35%;
     background: ${({
-      opacity,
+      $opacity,
       theme: { primary_violet, secondary_violet, light_brown, primary_brown },
     }) =>
-      opacity === "1"
+      $opacity === "1"
         ? `linear-gradient(90deg, ${primary_violet}, ${light_brown}, ${secondary_violet})`
         : primary_brown};
     z-index: -1;
-    ${({ selectionAnimation }) => selectionAnimation};
+    ${({ $selectionAnimation }) => $selectionAnimation};
   }
   &::after {
     -webkit-transform: translateX(-50%);
     background: ${({ theme }) => theme.secondary_brown};
-    background-image: ${({ habitat }) =>
-      `url("/images/backgrounds/${habitat ? `${habitat}-` : ""}card-bg.svg")`};
+    background-image: ${({ $habitat }) =>
+      `url("/images/backgrounds/${$habitat ? `${$habitat}-` : ""}card-bg.svg")`};
     border-radius: 4px;
     content: "";
     height: calc(100% - 8px);
@@ -126,10 +125,10 @@ export const AnimalCard = styled.button<AnimalCardProps>`
     width: calc(100% - 8px);
     z-index: -1;
   }
-  ${({ isCardSelected, transform }) =>
-    isCardSelected &&
+  ${({ $isCardSelected, $transform }) =>
+    $isCardSelected &&
     `
-      transform: ${transform};
+      transform: ${$transform};
     `}
   ${BREAKPOINTS.TABLET} {
     max-width: 170px;
@@ -199,7 +198,7 @@ export const StatsWrapper = styled.div`
 `
 
 interface IconContainerProps {
-  placement?: "LEFT" | "CENTER" | "RIGHT"
+  $placement?: "LEFT" | "CENTER" | "RIGHT"
 }
 
 const ICON_CSS = {
@@ -233,9 +232,9 @@ export const IconContainer = styled.div<IconContainerProps>`
     left: calc(50% - 6px);
     top: 28px;
   }
-  ${({ placement = "CENTER" }) => ICON_CSS[placement]};
-  ${({ placement = "CENTER" }) =>
-    placement !== "CENTER"
+  ${({ $placement = "CENTER" }) => ICON_CSS[$placement]};
+  ${({ $placement = "CENTER" }) =>
+    $placement !== "CENTER"
       ? `
     cursor: help;
     top: -22px;
@@ -340,19 +339,19 @@ export const Text = styled.span<TextProps>`
     position: absolute;
     z-index: 2;
   }
-  color: ${({ color }) => color};
-  font-weight: ${({ fWeight = "bold" }) => fWeight};
-  margin: ${({ margin }) => margin};
+  color: ${({ $color }) => $color};
+  font-weight: ${({ $fWeight = "bold" }) => $fWeight};
+  margin: ${({ $margin }) => $margin};
   text-align: center;
-  text-decoration: ${({ lineThrough, theme }) =>
-    lineThrough ? `line-through 2px ${theme.primary_red}` : ""};
+  text-decoration: ${({ $lineThrough, theme }) =>
+    $lineThrough ? `line-through 2px ${theme.primary_red}` : ""};
 `
 export const FlexSection = styled.div<FlexSectionProps>`
   align-items: center;
   display: flex;
   justify-content: center;
-  flex-direction: ${({ fDirection }) => fDirection};
-  margin-bottom: ${({ mBottom }) => mBottom};
+  flex-direction: ${({ $fDirection }) => $fDirection};
+  margin-bottom: ${({ $mBottom }) => $mBottom};
   position: relative;
   > span.paralyzed {
     color: ${({ theme }) => theme.primary_red};

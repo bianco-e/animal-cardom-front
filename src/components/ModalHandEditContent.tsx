@@ -1,19 +1,19 @@
 import { useState } from "react"
 import styled from "styled-components"
 import Card from "./Card"
-import { IAnimal, User } from "../interfaces"
+import { Animal, User } from "../interfaces"
 import { ACButton } from "./styled-components"
 import { updateHand } from "../queries/user"
 import Spinner from "./Spinner"
 import { BREAKPOINTS } from "../utils/constants"
 import { useAppDispatch, useAppSelector } from "../hooks/redux-hooks"
-import { AUTH_ACTIONS } from "../redux/reducers/auth"
+import { CAMPAIGN_ACTIONS } from "../redux/reducers/campaign"
 
 interface IProps {
-  animalToAdd: IAnimal
+  animalToAdd: Animal
   closeModal: () => void
-  currentHand: IAnimal[]
-  setCurrentHand: (animals: IAnimal[]) => void
+  currentHand: Animal[]
+  setCurrentHand: (animals: Animal[]) => void
 }
 export default function ModalHandEditContent({
   animalToAdd,
@@ -23,7 +23,7 @@ export default function ModalHandEditContent({
 }: IProps) {
   const dispatch = useAppDispatch()
   const [isLoading, setIsLoading] = useState<boolean>(false)
-  const [enteringAnimal, setEnteringAnimal] = useState<IAnimal>(animalToAdd)
+  const [enteringAnimal, setEnteringAnimal] = useState<Animal>(animalToAdd)
   const user: User = useAppSelector(({ auth }) => auth.user)
   const { auth_id: authId } = user
 
@@ -45,7 +45,7 @@ export default function ModalHandEditContent({
     updateHand(authId, handNames).then(res => {
       if (res && res.length) {
         setIsLoading(false)
-        dispatch(AUTH_ACTIONS.SET_HAND(res))
+        dispatch(CAMPAIGN_ACTIONS.SET_HAND(res))
         closeModal()
       }
     })
@@ -78,7 +78,7 @@ export default function ModalHandEditContent({
           </Container>
         </>
       )}
-      <ACButton fWeight="bold" onClick={handleConfirm}>
+      <ACButton $fWeight="bold" onClick={handleConfirm}>
         {isLoading ? "Saving..." : "Confirm"}
       </ACButton>
     </Wrapper>

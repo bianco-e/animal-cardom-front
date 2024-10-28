@@ -1,11 +1,11 @@
 import styled from "styled-components"
 
 interface WrapperProps {
-  height?: string
-  width?: string
+  $height?: string
+  $width?: string
 }
 
-export const Wrapper = styled.span`
+export const Wrapper = styled.span<WrapperProps>`
   background: ${({ theme }) => theme.primary_brown};
   background: linear-gradient(
     90deg,
@@ -19,8 +19,8 @@ export const Wrapper = styled.span`
   background-position: 100% 0%;
   background-size: 900%;
   border-radius: 5px;
-  height: ${(p: WrapperProps) => p.height || "25px"};
-  width: ${(p: WrapperProps) => p.width || "130px"};
+  height: ${(p) => p.$height || "25px"};
+  width: ${(p) => p.$width || "130px"};
   @keyframes animation {
     0% {
       background-position: 100% 0%;

@@ -2,7 +2,7 @@ import styled from "styled-components"
 import { Direction } from "."
 
 interface TooltipProps {
-  direction: Direction
+  $direction: Direction
 }
 
 const positions = {
@@ -44,7 +44,7 @@ export const TooltipWrapper = styled.div<TooltipProps>`
   position: absolute;
   width: 98px;
   z-index: 3;
-  ${({ direction }) => positions[direction]}
+  ${({ $direction }) => positions[$direction]}
   > hr {
     background: ${({ theme }) => theme.secondary_violet};
     border: 1px solid ${({ theme }) => theme.secondary_violet};
@@ -62,14 +62,14 @@ export const TooltipWrapper = styled.div<TooltipProps>`
   }
   .description-container {
     background: ${({ theme }) => theme.light_brown};
-    border-radius: ${({ direction }) => descriptionContainer.borderRadius[direction]};
+    border-radius: ${({ $direction }) => descriptionContainer.borderRadius[$direction]};
     font-size: 9px;
     font-weight: normal;
     width: 100%;
   }
   .title-container {
     background: ${({ theme }) => theme.primary_brown};
-    border-radius: ${({ direction }) => titleContainer.borderRadius[direction]};
+    border-radius: ${({ $direction }) => titleContainer.borderRadius[$direction]};
     font-size: 8px;
     font-weight: bold;
     position: relative;
@@ -77,7 +77,7 @@ export const TooltipWrapper = styled.div<TooltipProps>`
   }
   &::after {
     background: ${({ theme }) => theme.primary_brown};
-    ${({ direction }) => titleContainer.arrowPosition[direction]}
+    ${({ $direction }) => titleContainer.arrowPosition[$direction]}
     content: "";
     height: 8px;
     position: absolute;

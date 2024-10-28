@@ -4,13 +4,13 @@ import Card from "../components/Card"
 import MenuLayout from "../components/MenuLayout"
 import ReleaseNotes from "../components/ReleaseNotes"
 import Spinner from "../components/Spinner"
-import { IAnimal } from "../interfaces"
+import { Animal } from "../interfaces"
 import { getNewestAnimals } from "../queries/animalsCards"
 import { BREAKPOINTS } from "../utils/constants"
 import { parseAnimalsFromDB } from "../utils"
 
 export default function Menu() {
-  const [newestAnimals, setNewestAnimals] = useState<IAnimal[]>([])
+  const [newestAnimals, setNewestAnimals] = useState<Animal[]>([])
 
   const fetchNewestAnimals = async () => {
     const newestAnimals = await getNewestAnimals()

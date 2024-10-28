@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react"
 import styled from "styled-components"
 import Modal from "../components/Common/Modal"
-import { useHistory, useParams } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 import { BREAKPOINTS } from "../utils/constants"
 import { GAME_ACTIONS } from "../redux/reducers/game"
 import SidePanel from "../components/GamePanel"
-import { GameParams, IAnimal, User } from "../interfaces"
+import { Animal, User } from "../interfaces"
 import Spinner from "../components/Spinner"
 import ModalContentResult from "../components/ModalContentResult"
 import { getLiveCards } from "../utils"
@@ -25,13 +25,13 @@ export default function Game({ isCampaign }: IProps) {
   const dispatch = useAppDispatch()
   const [userName, setUserName] = useState<string>("")
   const [modal, setModal] = useState<string>("")
-  const { push } = useHistory()
-  const { requiredXp } = useParams<GameParams>()
+  const navigate = useNavigate()
+  const { requiredXp } = useParams<{ requiredXp: string }>()
   const { hands, plants, pcTurn, triggerPcAttack, habitat, gameError, isLoading } = game
   const { auth_id: authId }: User = useAppSelector(({ auth }) => auth.user)
 
   useEffect(() => {
-    if (gameError) return push(isCampaign ? "/campaign" : "/")
+    if (gameError) return navigate(isCampaign ? "/campaign" : "/")
   }, [gameError]) //eslint-disable-line
 
   useEffect(() => {
@@ -39,12 +39,12 @@ export default function Game({ isCampaign }: IProps) {
     if (!isCampaign) {
       // is game for guests
       const guest = localStorage.getItem("ac-guest-name")
-      guest ? setUserName(guest) : push("/")
+      guest ? setUserName(guest) : navigate("/")
       //@ts-ignore
       dispatch(startGuestGame())
     } else {
       // is campaign game
-      const parsedReqXp = parseInt(requiredXp)
+      const parsedReqXp = parseInt(requiredXp as string)
       //@ts-ignore
       dispatch(startCampaignGame(setUserName, parsedReqXp))
     }
@@ -79,7 +79,7 @@ export default function Game({ isCampaign }: IProps) {
 
   return (
     <>
-      <Wrapper bgImg={`/images/terrains/${habitat.name.toLowerCase()}.webp`}>
+      <Wrapper $bgImg={`/images/habitats/${habitat.name.toLowerCase()}.webp`}>
         <SidePanel
           isCampaign={isCampaign}
           plants={plants}
@@ -88,7 +88,7 @@ export default function Game({ isCampaign }: IProps) {
         />
         <Board>
           <HandContainer>
-            {hands.pc.map((animal: IAnimal) => (
+            {hands.pc.map((animal: Animal) => (
               <Card {...animal} belongsToUser={false} key={animal.name} />
             ))}
           </HandContainer>
@@ -96,7 +96,7 @@ export default function Game({ isCampaign }: IProps) {
           <PcPlaysCaster />
 
           <HandContainer>
-            {hands.user.map((animal: IAnimal) => (
+            {hands.user.map((animal: Animal) => (
               <Card {...animal} belongsToUser={true} key={animal.name} />
             ))}
           </HandContainer>
@@ -121,10 +121,10 @@ export default function Game({ isCampaign }: IProps) {
 }
 
 interface WrapperProps {
-  bgImg?: string
+  $bgImg?: string
 }
-const Wrapper = styled.div`
-  background: url(${(p: WrapperProps) => p.bgImg});
+const Wrapper = styled.div<WrapperProps>`
+  background: url(${(p) => p.$bgImg});
   background-repeat: no-repeat;
   background-size: cover;
   display: flex;

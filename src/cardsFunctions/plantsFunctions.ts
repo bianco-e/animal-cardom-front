@@ -1,10 +1,10 @@
-import { HandKey, IAnimal, Poisoned, IGameState } from "../interfaces"
+import { HandKey, Animal, Poisoned, IGameState } from "../interfaces"
 
 const updateCardBleeding = (
-  arr: IAnimal[],
-  animalToTreat: IAnimal,
+  arr: Animal[],
+  animalToTreat: Animal,
   isBleeding: boolean
-): IAnimal[] => {
+): Animal[] => {
   return arr.map(card => {
     if (card === animalToTreat) {
       return {
@@ -16,10 +16,10 @@ const updateCardBleeding = (
 }
 
 const reduceMissingChanceCard = (
-  arr: IAnimal[],
+  arr: Animal[],
   chanceToReduce: number,
-  animalToTreat: IAnimal
-): IAnimal[] => {
+  animalToTreat: Animal
+): Animal[] => {
   return arr.map(card => {
     if (card.name !== animalToTreat.name || !card.missing.chance) return card
     const newMissingChance =
@@ -35,10 +35,10 @@ const reduceMissingChanceCard = (
 }
 
 const poisonCardInAHand = (
-  arr: IAnimal[],
+  arr: Animal[],
   poisoned: Poisoned,
-  animalToTreat: IAnimal
-): IAnimal[] => {
+  animalToTreat: Animal
+): Animal[] => {
   return arr.map(card => {
     if (card === animalToTreat) {
       return {
@@ -50,10 +50,10 @@ const poisonCardInAHand = (
 }
 
 const healCardInAHand = (
-  arr: IAnimal[],
+  arr: Animal[],
   amountToHeal: number,
-  animalToTreat: IAnimal
-): IAnimal[] => {
+  animalToTreat: Animal
+): Animal[] => {
   return arr.map(card => {
     if (card === animalToTreat && card.life.current > 0) {
       return {
@@ -71,10 +71,10 @@ const healCardInAHand = (
 }
 
 const paralyzeCardInAHand = (
-  arr: IAnimal[],
+  arr: Animal[],
   roundsNumber: number,
-  animalToTreat: IAnimal
-): IAnimal[] => {
+  animalToTreat: Animal
+): Animal[] => {
   return arr.map(card => {
     if (card === animalToTreat) {
       return {
@@ -86,10 +86,10 @@ const paralyzeCardInAHand = (
 }
 
 const setCardAttackInAHand = (
-  arr: IAnimal[],
+  arr: Animal[],
   attackAmount: number,
-  animalToTreat: IAnimal
-): IAnimal[] => {
+  animalToTreat: Animal
+): Animal[] => {
   return arr.map(card => {
     if (card === animalToTreat) {
       return {
@@ -106,7 +106,7 @@ const setCardAttackInAHand = (
 const setHandInState = (
   state: IGameState,
   enemyHandKey: HandKey,
-  newHand: IAnimal[]
+  newHand: Animal[]
 ): IGameState => {
   const { hands, usedPlants, selectedPlant, animalToTreat } = state
   const newUsedPlants = selectedPlant ? [...usedPlants, selectedPlant] : usedPlants

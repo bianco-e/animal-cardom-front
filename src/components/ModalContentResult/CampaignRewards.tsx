@@ -1,20 +1,20 @@
 import { useEffect, useState } from "react"
-import { useHistory } from "react-router"
+import { useNavigate } from "react-router"
 import { GAME_ACTIONS } from "../../redux/reducers/game"
-import { IAnimal } from "../../interfaces"
+import { Animal } from "../../interfaces"
 import { getAnimalById } from "../../queries/animalsCards"
 import AvatarWithXpBar from "../AvatarWithXpBar"
 import Card from "../Card"
 import { ACButton, Text } from "../styled-components"
 import { useAppDispatch } from "../../hooks/redux-hooks"
 interface IProps {
-  earnedAnimal?: { id: IAnimal['id']; name: IAnimal['name']  }
+  earnedAnimal?: { id: Animal['id']; name: Animal['name']  }
   earnedCoins?: number
 }
 
 export default function CampaignRewards({ earnedAnimal, earnedCoins }: IProps) {
-  const { push } = useHistory()
-  const [earnedCard, setEarnedCard] = useState<IAnimal>()
+  const navigate = useNavigate()
+  const [earnedCard, setEarnedCard] = useState<Animal>()
   const dispatch = useAppDispatch()
 
   const getEarnedCard = async (earnedAnimalId: number) => {
@@ -25,7 +25,7 @@ export default function CampaignRewards({ earnedAnimal, earnedCoins }: IProps) {
 
   const handleRoute = (path: string) => {
     dispatch(GAME_ACTIONS.EMPTY_STATE())
-    push(path)
+    navigate(path)
   }
 
   useEffect(() => {
@@ -56,17 +56,17 @@ export default function CampaignRewards({ earnedAnimal, earnedCoins }: IProps) {
       ) : null}
       {earnedCard && (
         <>
-          <Text margin="0 0 4px 0">
+          <Text $margin="0 0 4px 0">
             ...and a <b className="spaced-title">{earnedCard.name}!</b>
           </Text>
           <Card {...earnedCard} opacityForPreview="1" width="200px" />
         </>
       )}
       <div>
-        <ACButton height="44px" fWeight="bold" margin="8px 0" onClick={tweetVictory}>
+        <ACButton $height="44px" $fWeight="bold" $margin="8px 0" onClick={tweetVictory}>
           Tweet victory
         </ACButton>
-        <ACButton height="44px" margin="8px 0" onClick={() => handleRoute("/campaign")}>
+        <ACButton $height="44px" $margin="8px 0" onClick={() => handleRoute("/campaign")}>
           Go to campaign menu
         </ACButton>
       </div>

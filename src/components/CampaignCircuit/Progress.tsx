@@ -1,13 +1,13 @@
 import styled from "styled-components"
 import { useAppSelector } from "../../hooks/redux-hooks"
-import { IHabitat, User } from "../../interfaces"
+import { CampaignState, IHabitat } from "../../interfaces"
 
 const TOTAL_LEVELS = 7
 interface IProps {
   habitats: IHabitat[]
 }
 export default function CampaignProgress({ habitats }: IProps) {
-  const { xp }: User = useAppSelector(({ auth }) => auth.user)
+  const { xp }: CampaignState = useAppSelector(({ campaign }) => campaign)
   const habitat = habitats.find(t => t.campaign_xp.includes(xp))
   const habitatNumber = habitat ? habitats.indexOf(habitat) : 0
   const progress = habitatNumber === 0 ? xp / 1350 : habitatNumber
@@ -17,7 +17,7 @@ export default function CampaignProgress({ habitats }: IProps) {
   return (
     <Wrapper>
       <Title>Campaign Progress</Title>
-      <ProgressBar barWidth={barWidth}>
+      <ProgressBar $barWidth={barWidth}>
         <div></div>
       </ProgressBar>
       <SmallText>
@@ -28,14 +28,14 @@ export default function CampaignProgress({ habitats }: IProps) {
 }
 
 interface ProgressBarProps {
-  barWidth?: number
+  $barWidth?: number
 }
 const Wrapper = styled.div`
   align-items: center;
   display: flex;
   flex-direction: column;
 `
-const ProgressBar = styled.div`
+const ProgressBar = styled.div<ProgressBarProps>`
   background: color: none;
   border: 1px solid ${({ theme }) => theme.primary_violet};
   border-radius: 5px;
@@ -49,7 +49,7 @@ const ProgressBar = styled.div`
     border-radius: 5px;
     height: 15px;
     transition: all 0.4s ease;
-    width: ${(p: ProgressBarProps) => p.barWidth}%;
+    width: ${(props) => props.$barWidth}%;
   }
 `
 const Title = styled.span`

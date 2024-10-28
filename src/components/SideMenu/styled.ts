@@ -2,11 +2,11 @@ import styled from "styled-components"
 import { BREAKPOINTS } from "../../utils/constants"
 
 interface WrapperProps {
-  width?: string
+  $width?: string
 }
 
 interface CloseButtonProps {
-  rotate?: string
+  $rotate?: string
 }
 
 export const UserInfoContainer = styled.div`
@@ -41,7 +41,7 @@ export const CloseButton = styled.div<CloseButtonProps>`
     width: 18px;
     > svg {
       transition: all 0.4s ease;
-      transform: rotate(${({ rotate }) => rotate});
+      transform: rotate(${({ $rotate }) => $rotate});
     }
   }
 `
@@ -68,9 +68,9 @@ export const Wrapper = styled.div<WrapperProps>`
   }
   ${BREAKPOINTS.MOBILE} {
     transition: all 0.4s ease;
-    width: ${({ width }) => width};
-    ${({ width }) =>
-      width === "1px"
+    width: ${({ $width }) => $width};
+    ${({ $width }) =>
+      $width === "1px"
         ? `
             padding: 0 3px;
             button, img {

@@ -15,25 +15,25 @@ export const loginUser = (userData: AuthUser) => {
       const userRes = await getUserMe(userData.email)
       if (userRes.error) return dispatch(AUTH_ACTIONS.SET_USER_ERROR())
       return dispatch(AUTH_ACTIONS.SET_USER_SUCCESS(userRes))
+    } else {
+      //login user
+      const { token, error, user } = await login(userData.email)
+      if (token && user) {
+        dispatch(AUTH_ACTIONS.SET_TOKEN(token))
+        return dispatch(AUTH_ACTIONS.SET_USER_SUCCESS(user))
+      }
+      if (error && error !== "no_user") return dispatch(AUTH_ACTIONS.SET_USER_ERROR())
+  
+      //register user
+      const userTemplate = getNewUserTemplate(userData)
+      const {
+        token: regToken,
+        error: regError,
+        user: regUser,
+      } = await createUser(userTemplate)
+      if (regError) return dispatch(AUTH_ACTIONS.SET_USER_ERROR())
+      dispatch(AUTH_ACTIONS.SET_TOKEN(regToken))
+      return dispatch(AUTH_ACTIONS.SET_USER_SUCCESS(regUser))
     }
-
-    //login user
-    const { token, error, user } = await login(userData.sub, userData.email)
-    if (token) {
-      dispatch(AUTH_ACTIONS.SET_TOKEN(token))
-      return dispatch(AUTH_ACTIONS.SET_USER_SUCCESS(user))
-    }
-    if (error && error !== "no_user") return dispatch(AUTH_ACTIONS.SET_USER_ERROR())
-
-    //register user
-    const userTemplate = getNewUserTemplate(userData)
-    const {
-      token: regToken,
-      error: regError,
-      user: regUser,
-    } = await createUser(userTemplate)
-    if (regError) return dispatch(AUTH_ACTIONS.SET_USER_ERROR())
-    dispatch(AUTH_ACTIONS.SET_TOKEN(regToken))
-    return dispatch(AUTH_ACTIONS.SET_USER_SUCCESS(regUser))
   }
 }

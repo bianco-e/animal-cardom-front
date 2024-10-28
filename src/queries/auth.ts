@@ -9,9 +9,9 @@ export const validateToken = () => {
     .catch(err => console.error(err))
 }
 
-export const login = (auth_id: string, email: string) => {
+export const login = (email: string) => {
   return fetch(`${API_BASE_URL}auth/login`, {
-    ...postMethod({ auth_id, email }),
+    ...postMethod({ email }),
   })
     .then(res => res.json())
     .catch(err => console.error(err))

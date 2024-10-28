@@ -1,6 +1,6 @@
 import { useEffect } from "react"
 import { CARD_ICONS } from "../../data/data"
-import { IAnimal, Stat } from "../../interfaces"
+import { Animal, Stat } from "../../interfaces"
 import {
   attackAnimation,
   attackAudio,
@@ -22,7 +22,7 @@ import {
 import { useAppDispatch, useAppSelector } from "../../hooks/redux-hooks"
 import { selectCard } from "../../redux/actions/game"
 
-interface IProps extends IAnimal {
+interface IProps extends Animal {
   belongsToUser?: boolean
   onPreviewClick?: (name: string) => void
   opacityForPreview?: string
@@ -62,27 +62,25 @@ export default function Card({
 
   const styledProps = isForPreview
     ? {
-        attackAnimation: undefined,
-        selectionAnimation: undefined,
+        $attackAnimation: undefined,
+        $selectionAnimation: undefined,
         className: "card",
-        cursor: onPreviewClick ? "pointer" : "default",
-        isCardSelected,
-        isParalyzed,
+        $cursor: onPreviewClick ? "pointer" : "default",
+        $isCardSelected: isCardSelected,
         onClick: () => onPreviewClick && onPreviewClick(name),
-        opacity: opacityForPreview ? opacityForPreview : "1",
-        transform: "",
+        $opacity: opacityForPreview ? opacityForPreview : "1",
+        $transform: "",
       }
     : {
-        attackAnimation: isCardUnderAttack ? attackAnimation : undefined,
-        selectionAnimation: isCardSelected ? selectionAnimation : undefined,
-        cursor:
+        $attackAnimation: isCardUnderAttack ? attackAnimation : undefined,
+        $selectionAnimation: isCardSelected ? selectionAnimation : undefined,
+        $cursor:
           belongsToUser || game.attacker || game.selectedPlant ? "pointer" : "default",
-        isCardSelected,
-        isParalyzed,
+        $isCardSelected: isCardSelected,
         //@ts-ignore
         onClick: () => (!game.pcTurn ? dispatch(selectCard(name)) : null),
-        opacity: `${life.current === 0 ? "0.5" : "1"}`,
-        transform: belongsToUser ? "translateY(-8px)" : "",
+        $opacity: `${life.current === 0 ? "0.5" : "1"}`,
+        $transform: belongsToUser ? "translateY(-8px)" : "",
       }
 
   const getStatColor = (stat: Stat): string =>
@@ -91,7 +89,7 @@ export default function Card({
   const getImageName = (name: string) => name.toLowerCase().split(" ").join("-")
 
   return (
-    <AnimalCard {...styledProps} width={width} habitat={habitat.toLowerCase()}>
+    <AnimalCard {...styledProps} $width={width} $habitat={habitat.toLowerCase()}>
       {isCardUnderAttack ? (
         <Injury alt="under-attack" src="/images/svg/blood-splatter.svg" />
       ) : null}
@@ -100,7 +98,7 @@ export default function Card({
       {animationProps ? <PlantEffectImage {...animationProps} /> : null}
 
       {missing.chance ? (
-        <IconContainer placement="LEFT">
+        <IconContainer $placement="LEFT">
           <Tooltip
             direction="BOTTOM-RIGHT"
             title="Missing chance"
@@ -115,7 +113,7 @@ export default function Card({
       </IconContainer>
 
       {!targeteable ? (
-        <IconContainer placement="RIGHT">
+        <IconContainer $placement="RIGHT">
           <Tooltip
             direction="BOTTOM-LEFT"
             title="Untargeteable"
@@ -134,7 +132,7 @@ export default function Card({
       />
 
       <DescriptionContainer>
-        <FlexSection mBottom="1px">
+        <FlexSection $mBottom="1px">
           <Image
             className="small-icon"
             src={
@@ -143,12 +141,12 @@ export default function Card({
                 : CARD_ICONS.FURY
             }
           />
-          <Text className="card-sm-name spaced-title" lineThrough={isParalyzed}>
+          <Text className="card-sm-name spaced-title" $lineThrough={isParalyzed}>
             {skill.name}
           </Text>
           {isParalyzed ? <span className="paralyzed">({paralyzed})</span> : null}
         </FlexSection>
-        <Text className="skill" fWeight="regular" lineThrough={isParalyzed}>
+        <Text className="skill" $fWeight="regular" $lineThrough={isParalyzed}>
           {skill.description}
         </Text>
       </DescriptionContainer>
@@ -161,7 +159,7 @@ export default function Card({
           </Text>
         </div>
 
-        <FlexSection fDirection="column">
+        <FlexSection $fDirection="column">
           {bleeding ? (
             <div className="statuses">
               <Tooltip
@@ -171,7 +169,7 @@ export default function Card({
               <Image className="blood-drop" src={CARD_ICONS.BLOOD} />
             </div>
           ) : null}
-          <FlexSection fDirection="column">
+          <FlexSection $fDirection="column">
             <Image alt="habitat" className="habitat-icon" src={CARD_ICONS.HABITAT} />
             <Text className="card-sm-name">{habitat}</Text>
           </FlexSection>

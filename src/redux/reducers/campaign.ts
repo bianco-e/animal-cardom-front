@@ -2,10 +2,11 @@ import { createSlice } from "@reduxjs/toolkit"
 import { CampaignState } from "../../interfaces"
 
 const initialState: CampaignState = {
+  id: "",
   isLoading: false,
   error: null,
   coins: 0,
-  xp: 0,
+  level: 0,
   hand: [],
   owned_animals: [],
 }
@@ -20,10 +21,10 @@ export const slice = createSlice({
         coins: action.payload,
       }
     },
-    SET_XP: (state, action) => {
+    SET_LEVEL: (state, action) => {
       return {
         ...state,
-        xp: action.payload,
+        level: action.payload,
       }
     },
     SET_HAND: (state, action) => {

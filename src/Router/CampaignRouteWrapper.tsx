@@ -21,7 +21,7 @@ export default function CampaignRouteWrapper() {
     if (!auth.isLoading && !auth.user.id) {
       return navigate("/")
     }
-    if (campaign.hand.length || campaign.isLoading || !auth.user.id) return
+    if (campaign.id || campaign.isLoading || !auth.user.id) return
     dispatch(CAMPAIGN_ACTIONS.SET_CAMPAIGN_REQUEST())
     getCampaignData(auth.user.id).then(campaigns => {
       if (campaigns?.length) {

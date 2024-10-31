@@ -1,9 +1,9 @@
 import { useState } from "react"
 import styled from "styled-components"
 import Card from "./Card"
-import { CampaignState, Animal, User } from "../interfaces"
+import { CampaignState, Animal } from "../interfaces"
 import { ACButton } from "./styled-components"
-import { animalPurchase } from "../queries/user"
+import { buyAnimal } from "../queries/campaign"
 import Spinner from "./Spinner"
 import { BREAKPOINTS } from "../utils/constants"
 import { useAppDispatch, useAppSelector } from "../hooks/redux-hooks"
@@ -16,18 +16,17 @@ interface IProps {
 export default function ModalCardPurchaseContent({ animalToBuy, closeModal }: IProps) {
   const dispatch = useAppDispatch()
   const [isLoading, setIsLoading] = useState<boolean>(false)
-  const { auth_id }: User = useAppSelector(({ auth }) => auth.user)
-  const { owned_animals, coins }: CampaignState = useAppSelector(({ campaign }) => campaign)
+  const { owned_animals, id }: CampaignState = useAppSelector(({ campaign }) => campaign)
 
   const handleConfirm = () => {
     setIsLoading(true)
-    animalPurchase(auth_id, animalToBuy.name, animalToBuy.price).then(res => {
-      if (res && res.new_card) {
-        setIsLoading(false)
-        dispatch(CAMPAIGN_ACTIONS.SET_COINS(coins - animalToBuy.price))
-        dispatch(CAMPAIGN_ACTIONS.SET_OWNED_CARDS(owned_animals.concat(res.new_card)))
+    buyAnimal(animalToBuy.id, id).then(res => {
+      if (res) {
+        dispatch(CAMPAIGN_ACTIONS.SET_COINS(res.coins))
+        dispatch(CAMPAIGN_ACTIONS.SET_OWNED_CARDS(owned_animals.concat(res.animal)))
         closeModal()
       }
+      setIsLoading(false)
     })
   }
 
@@ -44,9 +43,6 @@ export default function ModalCardPurchaseContent({ animalToBuy, closeModal }: IP
           <Container>
             <Card {...animalToBuy} opacityForPreview="1" />
           </Container>
-          <Text className="remaining-coins">
-            After this purchase you will remain <b>{coins - animalToBuy.price} coins</b>
-          </Text>
         </>
       )}
       <ACButton $fWeight="bold" onClick={handleConfirm}>
@@ -106,8 +102,5 @@ const Container = styled.div`
   }
 `
 const Text = styled.span`
-  &.remaining-coins {
-    margin-top: 20px;
-  }
   font-size: 18px;
 `

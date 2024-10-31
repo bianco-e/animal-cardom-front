@@ -19,14 +19,14 @@ interface IProps {
 export interface AnimationProps {
   $animation: ReturnType<typeof css>
   src: string
-  fullWidth?: boolean
+  $fullWidth?: boolean
 }
 
 interface PlantData {
   audio: HTMLAudioElement
   $animation: ReturnType<typeof css>
   img: string
-  fullWidth?: boolean
+  $fullWidth?: boolean
 }
 
 interface PlantsData {
@@ -48,19 +48,19 @@ const plantsAnimationsData: PlantsData = {
     audio: audioFiles.bite,
     $animation: buffAnimation,
     img: "/images/plants/violet-buff.png",
-    fullWidth: true,
+    $fullWidth: true,
   },
   Jewelweed: {
     audio: audioFiles.healing,
     $animation: cleaningAnimation,
     img: "/images/plants/yellow-stars.png",
-    fullWidth: true,
+    $fullWidth: true,
   },
   Coffee: {
     audio: audioFiles.bite,
     $animation: cleaningAnimation,
     img: "/images/plants/yellow-stars.png",
-    fullWidth: true,
+    $fullWidth: true,
   },
   Aloe: {
     audio: audioFiles.healing,
@@ -104,7 +104,7 @@ export default function usePlantAnimation({ name, soundState }: IProps) {
         plantData.audio.play()
       }
       setAnimationProps({
-        fullWidth: plantData.fullWidth,
+        $fullWidth: plantData.$fullWidth,
         $animation: plantData.$animation,
         src: plantData.img,
       })

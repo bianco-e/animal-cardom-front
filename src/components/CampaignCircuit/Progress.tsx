@@ -1,18 +1,14 @@
 import styled from "styled-components"
 import { useAppSelector } from "../../hooks/redux-hooks"
-import { CampaignState, IHabitat } from "../../interfaces"
-
-const TOTAL_LEVELS = 7
+import { CampaignLevel, CampaignState } from "../../interfaces"
 interface IProps {
-  habitats: IHabitat[]
+  campaignLevels: CampaignLevel[]
 }
-export default function CampaignProgress({ habitats }: IProps) {
-  const { xp }: CampaignState = useAppSelector(({ campaign }) => campaign)
-  const habitat = habitats.find(t => t.campaign_xp.includes(xp))
-  const habitatNumber = habitat ? habitats.indexOf(habitat) : 0
-  const progress = habitatNumber === 0 ? xp / 1350 : habitatNumber
+export default function CampaignProgress({ campaignLevels }: IProps) {
+  const { level }: CampaignState = useAppSelector(({ campaign }) => campaign)
+  const campaignLevel = campaignLevels.find(campaignLevel => campaignLevel.level_required <= level)?.id || 1
   const barWidth: number =
-    xp === 0 ? 0 : xp > 3600 ? 100 : (progress / TOTAL_LEVELS) * 100
+    level === 0 ? 0 : level > campaignLevels.length ? 100 : (campaignLevel / campaignLevels.length) * 100
 
   return (
     <Wrapper>

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import Modal from "../Common/Modal"
 import { ACButton, ModalTitle, Text } from "../styled-components"
-import { IPlants, IHabitat } from "../../interfaces/index"
+import { IPlants, Habitat } from "../../interfaces/index"
 import Tooltip from "../Tooltip"
 import { LeftPanel, OptionsPanel, HabitatName } from "./styled"
 import { GAME_ACTIONS } from "../../redux/reducers/game"
@@ -11,7 +11,7 @@ import PlayerPlants from "./PlayerPlants"
 
 interface IProps {
   plants: IPlants
-  habitat: IHabitat
+  habitat: Habitat
   userName: string
   isCampaign?: boolean
 }

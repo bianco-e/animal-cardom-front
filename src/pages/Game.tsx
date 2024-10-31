@@ -26,7 +26,7 @@ export default function Game({ isCampaign }: IProps) {
   const [userName, setUserName] = useState<string>("")
   const [modal, setModal] = useState<string>("")
   const navigate = useNavigate()
-  const { requiredXp } = useParams<{ requiredXp: string }>()
+  const { lv } = useParams<{ lv: string }>()
   const { hands, plants, pcTurn, triggerPcAttack, habitat, gameError, isLoading } = game
   const { auth_id: authId }: User = useAppSelector(({ auth }) => auth.user)
 
@@ -44,9 +44,9 @@ export default function Game({ isCampaign }: IProps) {
       dispatch(startGuestGame())
     } else {
       // is campaign game
-      const parsedReqXp = parseInt(requiredXp as string)
+      const parsedLevel = parseInt(lv as string)
       //@ts-ignore
-      dispatch(startCampaignGame(setUserName, parsedReqXp))
+      dispatch(startCampaignGame(setUserName, parsedLevel))
     }
   }, [isCampaign]) //eslint-disable-line
 

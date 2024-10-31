@@ -1,4 +1,4 @@
-import { AuthUser, DBAnimal, Animal } from "../interfaces"
+import { DBAnimal, Animal } from "../interfaces"
 
 export const cardSpeciesToLowerCase = (species: string): string => {
   const splittedSpecies = species.split(" ")
@@ -15,18 +15,6 @@ export const getCurrentSection = (path: string): string =>
   ["/profile", "/campaign", "/collection", "/menu"].includes(path)
     ? capitalize(path.substring(1))
     : ""
-
-export const getNewUserTemplate = (user: AuthUser) => {
-  const { sub, picture, email, given_name, family_name, locale } = user
-  return {
-    ...(sub ? { auth_id: sub } : {}),
-    ...(picture ? { picture } : {}),
-    ...(email ? { email } : {}),
-    ...(locale ? { locale } : {}),
-    ...(given_name ? { first_name: given_name } : {}),
-    ...(family_name ? { last_name: family_name } : {}),
-  }
-}
 
 export const getUtm = (search?: string) => {
   if (!search) return

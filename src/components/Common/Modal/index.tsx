@@ -1,13 +1,13 @@
-import { useRef, useEffect } from "react";
-import { createPortal } from "react-dom";
-import { CloseButton, ModalContainer, ModalOverlay } from "./styled";
-const modalRoot = document.getElementById("modal-root");
+import { useRef, useEffect } from "react"
+import { createPortal } from "react-dom"
+import { CloseButton, ModalContainer, ModalOverlay } from "./styled"
+const modalRoot = document.getElementById("modal-root")
 
 interface IProps {
-  closeModal: () => void;
-  children?: JSX.Element;
-  forSpinner?: boolean;
-  withCloseButton?: boolean;
+  closeModal: () => void
+  children?: JSX.Element
+  forSpinner?: boolean
+  withCloseButton?: boolean
 }
 
 export default function Modal({
@@ -16,50 +16,44 @@ export default function Modal({
   forSpinner,
   withCloseButton = true,
 }: IProps) {
-  const contentRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null)
   const handleKeyDown = (e: KeyboardEvent) => {
     if (e.key === "Escape") {
-      closeModal();
+      closeModal()
     }
-  };
+  }
 
   const handleClickOutside = (e: MouseEvent) => {
-    const { clientX, clientY } = e;
     if (contentRef.current) {
+      const { left, top, right, bottom } = contentRef.current.getBoundingClientRect()
+      const { clientX, clientY } = e
       const isClickingOut =
-        clientX >
-          contentRef.current.offsetLeft + contentRef.current.offsetWidth ||
-        clientX < contentRef.current.offsetLeft ||
-        clientY >
-          contentRef.current.offsetTop + contentRef.current.offsetHeight ||
-        clientY < contentRef.current.offsetTop;
+        clientX < left || clientX > right || clientY < top || clientY > bottom
       if (isClickingOut) {
-        closeModal();
+        closeModal()
       }
     }
-  };
+  }
 
   useEffect(() => {
-    document.addEventListener("keydown", handleKeyDown);
-    return () => document.removeEventListener("keydown", handleKeyDown);
-  }, []); //eslint-disable-line
+    document.addEventListener("keydown", handleKeyDown)
+    return () => document.removeEventListener("keydown", handleKeyDown)
+  }, []) //eslint-disable-line
 
   useEffect(() => {
-    document.addEventListener("click", handleClickOutside);
-    return () => document.removeEventListener("click", handleClickOutside);
-  }, []); //eslint-disable-line
+    document.addEventListener("mousedown", handleClickOutside)
+    return () => document.removeEventListener("mousedown", handleClickOutside)
+  }, []) //eslint-disable-line
 
-  return modalRoot
-    ? createPortal(
-        <ModalOverlay>
-          <ModalContainer $forSpinner={forSpinner} ref={contentRef}>
-            {children}
-            {!forSpinner && withCloseButton ? (
-              <CloseButton onClick={closeModal}>x</CloseButton>
-            ) : null}
-          </ModalContainer>
-        </ModalOverlay>,
-        modalRoot
-      )
-    : null;
+  return createPortal(
+    <ModalOverlay>
+      <ModalContainer $forSpinner={forSpinner} ref={contentRef}>
+        {children}
+        {!forSpinner && withCloseButton ? (
+          <CloseButton onClick={closeModal}>x</CloseButton>
+        ) : null}
+      </ModalContainer>
+    </ModalOverlay>,
+    modalRoot as HTMLElement
+  )
 }

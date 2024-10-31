@@ -18,13 +18,11 @@ export default function Dropdown({ closedText, options, width }: IProps) {
   const dropdownRef = useRef<HTMLDivElement>(null)
 
   const handleClickOutside = (e: MouseEvent) => {
-    const { clientX, clientY } = e
     if (dropdownRef.current) {
+      const { left, top, right, bottom } = dropdownRef.current.getBoundingClientRect()
+      const { clientX, clientY } = e
       const isClickingOut =
-        clientX > dropdownRef.current.offsetLeft + dropdownRef.current.offsetWidth ||
-        clientX < dropdownRef.current.offsetLeft ||
-        clientY > dropdownRef.current.offsetTop + dropdownRef.current.offsetHeight ||
-        clientY < dropdownRef.current.offsetTop
+        clientX < left || clientX > right || clientY < top || clientY > bottom
       if (isClickingOut) {
         setIsOpened(false)
       }
@@ -32,8 +30,8 @@ export default function Dropdown({ closedText, options, width }: IProps) {
   }
 
   useEffect(() => {
-    isOpened && document.addEventListener("click", handleClickOutside)
-    return () => document.removeEventListener("click", handleClickOutside)
+    isOpened && document.addEventListener("mousedown", handleClickOutside)
+    return () => document.removeEventListener("mousedown", handleClickOutside)
   }, [isOpened])
 
   const handleDropdown = () => setIsOpened(!isOpened)

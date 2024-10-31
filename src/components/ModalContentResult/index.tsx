@@ -24,10 +24,10 @@ export default function ModalContentResult({
 }: IProps) {
   const [earnedAnimal, setEarnedAnimal] = useState<{ id: Animal['id']; name: Animal['name']  }>()
   const [earnedCoins, setEarnedCoins] = useState<number>()
-  const { requiredXp } = useParams<{ requiredXp: string }>()
+  const { lv } = useParams<{ lv: string }>()
   const user: User = useAppSelector(({ auth }) => auth.user)
   const { auth_id: authId } = user
-  const { xp }: CampaignState = useAppSelector(({ campaign }) => campaign)
+  const { level }: CampaignState = useAppSelector(({ campaign }) => campaign)
   const navigate = useNavigate()
   const dispatch = useAppDispatch()
   const game = useAppSelector(({ game }) => game)
@@ -57,10 +57,10 @@ export default function ModalContentResult({
         user: mapPlantsToSave("user"),
       },
     }
-    const parsedReqXp = parseInt(requiredXp as string)
-    saveGameResult(authId, gameToSave, xp, parsedReqXp).then(res => {
+    const parsedLevel = parseInt(lv as string)
+    saveGameResult(authId, gameToSave, level, parsedLevel).then(res => {
       if (res && !res.error) {
-        dispatch(CAMPAIGN_ACTIONS.SET_XP(res.current_xp))
+        dispatch(CAMPAIGN_ACTIONS.SET_LEVEL(res.current_xp))
         dispatch(CAMPAIGN_ACTIONS.SET_COINS(res.current_coins))
         setEarnedCoins(res.earned_coins)
         setEarnedAnimal(res.earned_animal)

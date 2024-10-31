@@ -12,11 +12,11 @@ import {
   IPlant,
   IPlants,
   IRootState,
-  IHabitat,
+  Habitat,
 } from "../../interfaces"
 import { GAME_ACTIONS } from "../reducers/game"
 import { AppDispatch } from ".."
-import { newCampaignGame, newRandomGame, newHabitat } from "../../queries/games"
+import { newCampaignGame, newRandomGame } from "../../queries/games"
 
 export const startGuestGame = () => {
   return async (dispatch: AppDispatch) => {
@@ -34,23 +34,22 @@ export const startGuestGame = () => {
   }
 }
 
-export const startCampaignGame = (setUserName: (str: string) => void, reqXp: number) => {
+export const startCampaignGame = (setUserName: (str: string) => void, level: number) => {
   return async (dispatch: AppDispatch, getState: () => IRootState) => {
     const { auth, campaign } = getState()
     const { first_name } = auth.user
-    const { hand, xp } = campaign
+    const { hand } = campaign
     setUserName(first_name)
-    if (xp < reqXp) dispatch(GAME_ACTIONS.SET_GAME_ERROR(true))
-    const habitatRes = await newHabitat(reqXp)
-    const gameRes = await newCampaignGame(reqXp, hand.map(animal => animal.id))
-    if (habitatRes.error || gameRes.error)
+    //if (campaign.level < level) dispatch(GAME_ACTIONS.SET_GAME_ERROR(true))
+    const gameRes = await newCampaignGame(level, hand.map(animal => animal.id))
+    if (!gameRes || gameRes.error)
       return dispatch(GAME_ACTIONS.SET_GAME_ERROR(true))
     dispatch(
       //@ts-ignore
       setGame(
-        { pc: gameRes.pc.animals, user: gameRes.user.animals },
+        { pc: parseAnimalsFromDB(gameRes.pc.animals), user: parseAnimalsFromDB(gameRes.user.animals) },
         { pc: gameRes.pc.plants, user: gameRes.user.plants },
-        habitatRes
+        gameRes.habitat
       )
     )
   }
@@ -336,7 +335,7 @@ const applyPoisonDamage = (hands: IHands, enemyHandKey: HandKey): IHands => {
   return { ...hands, [enemyHandKey]: applyPoisonInAHand(hands[enemyHandKey]) }
 }
 
-const setHabitatAndBuffAnimals = (game: IGameState, habitat: IHabitat): IGameState => {
+const setHabitatAndBuffAnimals = (game: IGameState, habitat: Habitat): IGameState => {
   const buffCards = (arr: Animal[]) => {
     return arr.map(card => {
       if (card.habitat === habitat.name) {
@@ -359,7 +358,7 @@ const setHabitatAndBuffAnimals = (game: IGameState, habitat: IHabitat): IGameSta
   }
 }
 
-export const setGame = (hands: IHands, plants: IPlants, habitat: IHabitat) => {
+export const setGame = (hands: IHands, plants: IPlants, habitat: Habitat) => {
   return (dispatch: AppDispatch, getState: () => IRootState) => {
     const { game } = getState()
     const updatedGame = setHabitatAndBuffAnimals({ ...game, hands, plants }, habitat)

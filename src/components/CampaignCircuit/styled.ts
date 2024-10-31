@@ -6,7 +6,6 @@ interface HabitatContainerProps {
   $bgImage?: string
   $containerWidth: number
   $disabled?: boolean
-  $games?: string
   $level?: number
 }
 
@@ -21,7 +20,7 @@ export const Wrapper = styled.div`
     width: 270px;
   }
 `
-export const HabitatContainer = styled.div<HabitatContainerProps>`
+export const CampaignLevelContainer = styled.div<HabitatContainerProps>`
   align-items: center;
   background-image: ${({ $bgImage }) => `url('${$bgImage}')`};
   background-position: center;
@@ -40,25 +39,6 @@ export const HabitatContainer = styled.div<HabitatContainerProps>`
   transform: ${({ $angle, $containerWidth }) =>
     `rotate(${$angle}deg) translate(${$containerWidth / 2}px) rotate(-${$angle}deg)`};
   width: 130px;
-  ${({ $games, theme }) =>
-    $games
-      ? `
-    &:after {
-      align-items: center;
-      background: ${theme.primary_brown};
-      border-radius: 5px;
-      box-shadow: inset 0px 0px 10px rgba(0, 0, 0, 0.6);
-      content: "${$games}";
-      display: flex;
-      font-size: 9px;
-      font-weight: bold;
-      height: 8px;
-      justify-content: center;
-      padding: 4px;
-      width: 24px;
-    }
-    `
-      : ""};
   &:before {
     align-items: center;
     background: ${({ theme }) => theme.primary_brown};

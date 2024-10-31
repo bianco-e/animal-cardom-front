@@ -9,7 +9,7 @@ export interface IGameState {
   usedPlants: IPlant[]
   attacker?: Animal
   defender?: Animal
-  habitat: IHabitat
+  habitat: Habitat
   underAttack?: string
   dodgedAttack?: string
   pcTurn: boolean
@@ -84,12 +84,22 @@ export interface CampaignAnimal extends Animal {
   is_in_hand: boolean
 }
 
-export interface IHabitat {
+export interface Habitat {
   id: number
   name: string
   description: string
   color: string
   campaign_xp: number[]
+}
+
+export interface CampaignLevel {
+  id: number
+  habitat_name: Habitat['name']
+  habitat_id: Habitat['id'],
+  level_required: number,
+  animal_id_reward: Animal['id'],
+  coins_reward: number,
+  pc_animals: number[],
 }
 
 export interface Game {
@@ -106,18 +116,6 @@ export interface Game {
     user: { name: string; applied: boolean }[]
     pc: { name: string; applied: boolean }[]
   }
-}
-
-export interface UserTemplate {
-  sub?: string
-  auth_id?: string
-  profileImg?: string
-  email?: string
-  given_name?: string
-  first_name?: string
-  family_name?: string
-  last_name?: string
-  locale?: string
 }
 
 export interface AuthUser {
@@ -148,10 +146,11 @@ export interface Action {
 }
 
 export interface CampaignState {
+  id: string
   isLoading: boolean
   error: string | null
   coins: number
-  xp: number
+  level: number
   hand: Animal[]
   owned_animals: Animal[]
 }
@@ -201,6 +200,6 @@ export interface SkillType {
 export interface FiltersData {
   loading: boolean
   species: Species[]
-  habitats: IHabitat[]
+  habitats: Habitat[]
   skillTypes: SkillType[]
 }

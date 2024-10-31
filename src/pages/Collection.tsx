@@ -73,14 +73,14 @@ export default function Collection() {
     setAnimalToAdd(cardToAdd)
   }
 
-  const handlePurchaseModal = (card: Animal) => {
+  const handlePurchaseModal = (animal: Animal) => {
     setModal("cardPurchase")
-    setAnimalToBuy(card)
+    setAnimalToBuy(animal)
   }
 
-  const handleSellModal = (card: Animal) => {
+  const handleSellModal = (animal: Animal) => {
     setModal("cardSell")
-    setAnimalToSell(card)
+    setAnimalToSell(animal)
   }
 
   return (

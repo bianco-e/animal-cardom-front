@@ -24,12 +24,13 @@ import { selectCard } from "../../redux/actions/game"
 
 interface IProps extends Animal {
   belongsToUser?: boolean
-  onPreviewClick?: (name: string) => void
+  onPreviewClick?: (id: Animal['id']) => void
   opacityForPreview?: string
   width?: string
 }
 const DEFENSIVE_SKILL_TYPE = 4
 export default function Card({
+  id,
   attack,
   belongsToUser,
   bleeding,
@@ -67,7 +68,7 @@ export default function Card({
         className: "card",
         $cursor: onPreviewClick ? "pointer" : "default",
         $isCardSelected: isCardSelected,
-        onClick: () => onPreviewClick && onPreviewClick(name),
+        onClick: () => onPreviewClick && onPreviewClick(id),
         $opacity: opacityForPreview ? opacityForPreview : "1",
         $transform: "",
       }

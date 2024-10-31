@@ -1,13 +1,14 @@
 import { useState } from "react"
 import styled from "styled-components"
 import Card from "./Card"
-import { Animal, User } from "../interfaces"
+import { Animal, CampaignState } from "../interfaces"
 import { ACButton } from "./styled-components"
-import { updateHand } from "../queries/user"
+import { updateHand } from "../queries/campaign"
 import Spinner from "./Spinner"
 import { BREAKPOINTS } from "../utils/constants"
 import { useAppDispatch, useAppSelector } from "../hooks/redux-hooks"
 import { CAMPAIGN_ACTIONS } from "../redux/reducers/campaign"
+import { parseAnimalsFromDB } from "../utils"
 
 interface IProps {
   animalToAdd: Animal
@@ -24,28 +25,29 @@ export default function ModalHandEditContent({
   const dispatch = useAppDispatch()
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [enteringAnimal, setEnteringAnimal] = useState<Animal>(animalToAdd)
-  const user: User = useAppSelector(({ auth }) => auth.user)
-  const { auth_id: authId } = user
+  const [initialHand] = useState(currentHand)
+  const { id }: CampaignState = useAppSelector(({ campaign }) => campaign)
 
-  const handleSelection = (name: string) => {
-    if (!currentHand.find(card => card.name === enteringAnimal.name)) {
-      const newHand = currentHand.map(card => {
-        if (card.name !== name) return card
+  const handleSelection = (id: Animal['id']) => {
+    if (!currentHand.find(card => card.id === enteringAnimal.id)) {
+      const newHand = currentHand.map(animal => {
+        if (animal.id !== id) return animal
         return enteringAnimal
       })
-      setEnteringAnimal(currentHand.find(card => card.name === name)!)
+      setEnteringAnimal(currentHand.find(animal => animal.id === id) as Animal)
       setCurrentHand(newHand)
     }
   }
 
   const handleConfirm = () => {
-    const handNames = currentHand.map(card => card.name)
-    if (!authId) return
+    const oldHandIds = initialHand.map(animal => Number(animal.id))
+    const newHandIds = currentHand.map(animal => Number(animal.id))
+    if (!id) return
     setIsLoading(true)
-    updateHand(authId, handNames).then(res => {
-      if (res && res.length) {
-        setIsLoading(false)
-        dispatch(CAMPAIGN_ACTIONS.SET_HAND(res))
+    updateHand(id, oldHandIds, newHandIds).then(res => {
+      setIsLoading(false)
+      if (res) {
+        dispatch(CAMPAIGN_ACTIONS.SET_HAND(parseAnimalsFromDB(res.new_hand)))
         closeModal()
       }
     })

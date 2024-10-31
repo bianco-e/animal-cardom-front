@@ -20,11 +20,8 @@ export default createBrowserRouter(
       <Route path="/analytics" element={<Analytics />} />
       <Route path="/play" element={<Game />} />
       <Route element={<CampaignRouteWrapper />}>
-        <Route
-          path={"/game/:requiredXp(0|450|900|1350|1800|2250|2700|3150|3600)"}
-          element={<Game isCampaign />}
-        />
         <Route path="/menu" element={<Menu />} />
+        <Route path="/campaign/level/:lv" element={<Game isCampaign />} />
         <Route path="/campaign" element={<Campaign />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/collection" element={<Collection />} />

@@ -2,9 +2,9 @@ import { Game } from "../interfaces"
 import { postMethod } from "./methods"
 import { API_BASE_URL } from "../utils/constants"
 
-export const newCampaignGame = (level: number, user_animal_ids: number[]) => {
+export const newCampaignGame = (level: number, user_id: string) => {
   return fetch(`${API_BASE_URL}games/campaign`, {
-    ...postMethod({ level, user_animal_ids }),
+    ...postMethod({ level, user_id }),
   })
     .then(res => res.json())
     .catch(err => console.error(err))

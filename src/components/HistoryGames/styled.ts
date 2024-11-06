@@ -59,7 +59,7 @@ export const DetailsPanel = styled.div`
       margin-bottom: 0;
     }
   }
-  ${BREAKPOINTS.MOBILE} {
+  ${BREAKPOINTS.SM} {
     height: 30px;
   }
 `
@@ -71,7 +71,7 @@ export const PlayerStats = styled.div`
   > b {
     margin-bottom: 10px;
   }
-  ${BREAKPOINTS.MOBILE} {
+  ${BREAKPOINTS.SM} {
     margin: 0 auto;
     width: 47%;
     &:first-child {
@@ -88,7 +88,7 @@ export const CardsContainer = styled.div`
   margin-bottom: 8px;
   justify-content: space-around;
   width: 85%;
-  ${BREAKPOINTS.MOBILE} {
+  ${BREAKPOINTS.SM} {
     justify-content: space-between;
     &:last-child {
       padding-bottom: 20px;

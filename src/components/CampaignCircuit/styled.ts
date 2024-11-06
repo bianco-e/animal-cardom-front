@@ -14,7 +14,7 @@ export const Wrapper = styled.div`
   margin: 100px auto 0;
   position: relative;
   width: 420px;
-  ${BREAKPOINTS.MOBILE} {
+  ${BREAKPOINTS.SM} {
     margin: 90px auto 0;
     height: 270px;
     width: 270px;
@@ -53,7 +53,7 @@ export const CampaignLevelContainer = styled.div<HabitatContainerProps>`
     padding: 4px;
     width: 20px;
   }
-  ${BREAKPOINTS.MOBILE} {
+  ${BREAKPOINTS.SM} {
     height: 80px;
     left: calc(50% - 40px);
     width: 80px;

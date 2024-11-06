@@ -128,7 +128,7 @@ export const ACInput = styled.input<ACInputProps>`
   &::placeholder {
     color: #000;
   }
-  ${BREAKPOINTS.MOBILE} {
+  ${BREAKPOINTS.SM} {
     margin-bottom: 10px;
   }
 `
@@ -153,7 +153,7 @@ export const ACTextArea = styled.textarea`
     color: #404040;
     font-size: 11px;
   }
-  ${BREAKPOINTS.MOBILE} {
+  ${BREAKPOINTS.SM} {
     margin-bottom: 10px;
   }
 `
@@ -161,10 +161,6 @@ export const ACTextArea = styled.textarea`
 export const HandContainer = styled.div`
   align-items: center;
   display: flex;
-  height: 37%;
   justify-content: space-between;
   width: 100%;
-  ${BREAKPOINTS.MOBILE} {
-    height: 32%;
-  }
 `

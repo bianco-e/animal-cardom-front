@@ -20,7 +20,7 @@ export const UserInfoContainer = styled.div`
   }
   > span {
     font-size: 16px;
-    ${BREAKPOINTS.MOBILE} {
+    ${BREAKPOINTS.SM} {
       display: none;
     }
   }
@@ -28,7 +28,7 @@ export const UserInfoContainer = styled.div`
 
 export const CloseButton = styled.div<CloseButtonProps>`
   display: none;
-  ${BREAKPOINTS.MOBILE} {
+  ${BREAKPOINTS.SM} {
     background: #f4e4bc;
     border-radius: 0 5px 5px 0;
     display: flex;
@@ -66,7 +66,7 @@ export const Wrapper = styled.div<WrapperProps>`
     cursor: pointer;
     margin-top: 60px;
   }
-  ${BREAKPOINTS.MOBILE} {
+  ${BREAKPOINTS.SM} {
     transition: all 0.4s ease;
     width: ${({ $width }) => $width};
     ${({ $width }) =>

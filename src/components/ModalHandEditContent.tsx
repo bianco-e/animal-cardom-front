@@ -127,7 +127,7 @@ const Container = styled.div`
       transform: none;
     }
   }
-  ${BREAKPOINTS.MOBILE} {
+  ${BREAKPOINTS.SM} {
     > button {
       height: 200px;
       width: 20%;

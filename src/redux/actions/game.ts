@@ -36,12 +36,12 @@ export const startGuestGame = () => {
 
 export const startCampaignGame = (setUserName: (str: string) => void, level: number) => {
   return async (dispatch: AppDispatch, getState: () => IRootState) => {
-    const { auth, campaign } = getState()
-    const { first_name } = auth.user
-    const { hand } = campaign
+    const { auth } = getState()
+    const { first_name, id } = auth.user
     setUserName(first_name)
     //if (campaign.level < level) dispatch(GAME_ACTIONS.SET_GAME_ERROR(true))
-    const gameRes = await newCampaignGame(level, hand.map(animal => animal.id))
+    const gameRes = await newCampaignGame(level, id)
+    console.log('gameRes', gameRes)
     if (!gameRes || gameRes.error)
       return dispatch(GAME_ACTIONS.SET_GAME_ERROR(true))
     dispatch(

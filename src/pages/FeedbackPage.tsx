@@ -70,7 +70,7 @@ const Container = styled.div`
   width: 700px;
   padding-top: 120px;
   margin: 0 auto;
-  ${BREAKPOINTS.MOBILE} {
+  ${BREAKPOINTS.SM} {
     width: calc(100% - 40px);
   }
 `

@@ -43,7 +43,7 @@ export const Container = styled.div`
     }
   }
 
-  ${BREAKPOINTS.MOBILE} {
+  ${BREAKPOINTS.SM} {
     > button {
       height: 200px;
       width: 20%;

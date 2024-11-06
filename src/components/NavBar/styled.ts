@@ -31,7 +31,7 @@ export const Container = styled.div`
       transform: translateX(-50%);
     }
   }
-  ${BREAKPOINTS.MOBILE} {
+  ${BREAKPOINTS.SM} {
     > .logo-link {
       > img {
         display: none;

@@ -14,7 +14,7 @@ export const PlantContainer = styled.div`
   margin: 0 auto 8%;
   position: relative;
   width: 75%;
-  ${BREAKPOINTS.TABLET} {
+  ${BREAKPOINTS.MD} {
     height: 100%;
     width: 56px;
   }

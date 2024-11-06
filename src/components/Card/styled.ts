@@ -75,14 +75,14 @@ export const AnimalCard = styled.button<AnimalCardProps>`
   cursor: ${({ $cursor }) => $cursor};
   display: flex;
   flex-direction: column;
-  height: 100%;
-  justify-content: space-around;
+  justify-content: space-between;
+  height: 280px;
   opacity: ${({ $opacity }) => $opacity};
   overflow: hidden;
-  padding: 12px;
+  padding: 12px 12px 0 12px;
   position: relative;
   transition: transform 0.15s ease;
-  width: ${({ $width = "calc(20% - 32px)" }) => $width};
+  width: ${({ $width = "calc(20% - 24px)" }) => $width};
   &:hover {
     box-shadow: 4px 4px 4px ${({ theme }) => theme.secondary_brown},
       inset 0px 0px 8px black;
@@ -130,25 +130,32 @@ export const AnimalCard = styled.button<AnimalCardProps>`
     `
       transform: ${$transform};
     `}
-  ${BREAKPOINTS.TABLET} {
-    max-width: 170px;
-    padding: 9px;
+  ${BREAKPOINTS.LG} {
+    height: 240px;
+    max-width: 200px;
+    padding: 8px 8px 0 8px;
+    width: calc(20% - 12px);
   }
-  ${BREAKPOINTS.MOBILE} {
-    max-width: 125px;
-    padding: 6px;
+  ${BREAKPOINTS.MD} {
+    height: 220px;
     width: calc(20% - 4px);
+  }
+  ${BREAKPOINTS.SM} {
+    height: 160px;
+    max-width: 124px;
+    padding: 4px 4px 0 4px;
+    width: calc(20% - 2px);
+  }
+  ${BREAKPOINTS.XS} {
+    height: 144px;
   }
 `
 export const StatsWrapper = styled.div`
   align-items: flex-end;
   display: flex;
   justify-content: space-between;
-  position: absolute;
-  left: 10%;
   transition: all 0.4s ease;
-  width: 80%;
-  bottom: 0;
+  width: calc(100% - 32px);
   > div {
     > div.statuses {
       align-items: center;
@@ -174,7 +181,7 @@ export const StatsWrapper = styled.div`
     border-bottom: 0;
     box-shadow: inset 0px 0px 8px rgba(0, 0, 0, 0.4);
     display: flex;
-    height: 36px;
+    height: 24px;
     justify-content: center;
     position: relative;
     width: calc(50% - 24px);
@@ -187,12 +194,23 @@ export const StatsWrapper = styled.div`
       }
     }
   }
-  ${BREAKPOINTS.MOBILE} {
-    left: 5%;
-    width: 90%;
+  ${BREAKPOINTS.LG} {
+    width: calc(100% - 16px);
+    > div.stats-container {
+      width: calc(50% - 12px);
+    }
+  }
+  ${BREAKPOINTS.MD} {
     > div.stats-container {
       height: 20px;
-      width: calc(50% - 10px);
+      width: calc(50% - 12px);
+    }
+  }
+  ${BREAKPOINTS.SM} {
+    width: 100%;
+    > div.stats-container {
+      height: 16px;
+      width: calc(50% - 4px);
     }
   }
 `
@@ -260,15 +278,17 @@ export const IconContainer = styled.div<IconContainerProps>`
       }
     }`
       : ""};
-  ${BREAKPOINTS.MOBILE} {
-    font-size: 16px;
+  ${BREAKPOINTS.SM} {
+    height: 42px;
+    width: 42px;
+    font-size: 14px;
   }
 `
 export const Image = styled.img`
   &.blood-drop {
     height: 20px;
     width: 20px;
-    ${BREAKPOINTS.MOBILE} {
+    ${BREAKPOINTS.SM} {
       height: 17px;
       width: 17px;
     }
@@ -276,59 +296,83 @@ export const Image = styled.img`
   &.animal-picture {
     border-radius: 120px;
     box-shadow: 0px 0px 9px rgba(0, 0, 0, 0.6);
-    height: 45%;
-    margin: 4px 0;
+    height: 100px;
     object-fit: cover;
-    width: 80%;
+    width: calc(100% - 24px);
     position: relative;
-    ${BREAKPOINTS.MOBILE} {
-      height: 36%;
+    ${BREAKPOINTS.LG} {
+      height: 80px;
+    }
+    ${BREAKPOINTS.MD} {
+      height: 64px;
+    }
+    ${BREAKPOINTS.SM} {
+      height: 36px;
+      width: calc(100% - 4px);
     }
   }
   &.small-icon {
     height: 14px;
     margin-right: 4px;
     width: 14px;
-    ${BREAKPOINTS.MOBILE} {
+    ${BREAKPOINTS.SM} {
       height: 12px;
+      margin-right: 0;
       width: 12px;
     }
   }
   &.habitat-icon {
-    height: 10px;
-    width: 10px;
+    height: 12px;
+    width: 12px;
+    ${BREAKPOINTS.MD} {
+      height: 10px;
+      width: 10px;
+    }
+    ${BREAKPOINTS.SM} {
+      height: 8px;
+      width: 8px;
+    }
   }
 `
 export const Text = styled.span<TextProps>`
   &.life-heart {
     font-size: 15px;
-    ${BREAKPOINTS.TABLET} {
+    ${BREAKPOINTS.MD} {
       font-size: 12px;
     }
   }
   &.stats {
     margin: 0 4px;
     font-size: 14px;
-    ${BREAKPOINTS.TABLET} {
+    ${BREAKPOINTS.MD} {
       font-size: 13px;
     }
-    ${BREAKPOINTS.MOBILE} {
+    ${BREAKPOINTS.SM} {
       font-size: 12px;
     }
   }
   &.skill {
     font-size: 10px;
-    ${BREAKPOINTS.MOBILE} {
+    ${BREAKPOINTS.SM} {
       font-size: 8px;
     }
   }
   &.card-sm-name {
     font-size: 8px;
+    ${BREAKPOINTS.XS} {
+      font-size: 7px;
+    }
   }
   &.animal-name {
     font-size: 16px;
     white-space: nowrap;
-    ${BREAKPOINTS.MOBILE} {
+    ${BREAKPOINTS.LG} {
+      margin-top: 8px;
+    }
+    ${BREAKPOINTS.MD} {
+      margin-top: 4px;
+    }
+    ${BREAKPOINTS.SM} {
       font-size: 12px;
     }
   }
@@ -368,12 +412,12 @@ export const DescriptionContainer = styled.div`
   border-radius: 5px;
   display: flex;
   flex-direction: column;
-  height: 28%;
+  height: 52px;
   justify-content: flex-start;
-  margin: 4px 0 30px 0;
+  margin-top: 4px;
   overflow: auto;
-  padding: 5px;
-  width: 85%;
+  padding: 4px;
+  width: calc(100% - 24px);
 
   ::-webkit-scrollbar {
     width: 4px;
@@ -391,6 +435,15 @@ export const DescriptionContainer = styled.div`
 
   ::-webkit-scrollbar-thumb:hover {
     background: ${({ theme }) => theme.secondary_brown};
+  }
+  ${BREAKPOINTS.LG} {
+    height: 64px;
+  }
+  ${BREAKPOINTS.MD} {
+    height: 60px;
+  }
+  ${BREAKPOINTS.SM} {
+    width: calc(100% - 8px);
   }
 `
 export const CardThumbnail = styled(AnimalCard)`
@@ -410,7 +463,7 @@ export const CardThumbnail = styled(AnimalCard)`
   &:hover {
     box-shadow: inset 0px 0px 10px rgba(0, 0, 0, 0.6);
   }
-  ${BREAKPOINTS.MOBILE} {
+  ${BREAKPOINTS.SM} {
     > .animal-picture {
       border-radius: 10px;
     }

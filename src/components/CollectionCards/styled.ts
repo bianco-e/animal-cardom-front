@@ -14,7 +14,7 @@ export const SingleCardContainer = styled.div`
       transform: none;
     }
   }
-  ${BREAKPOINTS.MOBILE} {
+  ${BREAKPOINTS.SM} {
     width: 93%;
     > button.card {
       height: 180px;

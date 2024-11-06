@@ -15,10 +15,10 @@ export const PlayerNameTab = styled.div`
   padding: 1px 12px;
   position: absolute;
   transform: translate(-50%, -50%);
-  ${BREAKPOINTS.TABLET} {
+  ${BREAKPOINTS.MD} {
     display: flex;
   }
-  ${BREAKPOINTS.MOBILE} {
+  ${BREAKPOINTS.SM} {
     bottom: -42px;
     font-size: 14px;
   }
@@ -33,7 +33,7 @@ export const LeftPanel = styled.div<LeftPanelProps>`
   display: flex;
   flex-direction: column;
   width: 110px;
-  ${BREAKPOINTS.TABLET} {
+  ${BREAKPOINTS.MD} {
     align-items: center;
     background: url(${({ $bgImage }) => $bgImage});
     background-position: center;
@@ -55,7 +55,7 @@ export const HalfPanel = styled.div`
   > span {
     font-size: 13px;
   }
-  ${BREAKPOINTS.TABLET} {
+  ${BREAKPOINTS.MD} {
     flex-direction: row;
     justify-content: space-between;
     position: relative;
@@ -65,7 +65,7 @@ export const HalfPanel = styled.div`
       display: none;
     }
   }
-  ${BREAKPOINTS.MOBILE} {
+  ${BREAKPOINTS.SM} {
     width: 40%;
   }
 `
@@ -81,12 +81,12 @@ export const HabitatName = styled.h3`
     position: relative;
     text-shadow: rgba(10, 10, 10, 0.6) 0px 1px 5px;
   }
-  ${BREAKPOINTS.TABLET} {
+  ${BREAKPOINTS.MD} {
     width: 90px;
     min-height: auto;
     height: 100%;
   }
-  ${BREAKPOINTS.MOBILE} {
+  ${BREAKPOINTS.SM} {
     > div.name-container {
       font-size: 14px;
     }
@@ -120,7 +120,7 @@ export const OptionsPanel = styled.div`
       width: 100%;
     }
   }
-  ${BREAKPOINTS.TABLET} {
+  ${BREAKPOINTS.MD} {
     border: 2px solid ${({ theme }) => theme.secondary_brown};
     border-top: 0;
     border-radius: 0 0 50px 50px;

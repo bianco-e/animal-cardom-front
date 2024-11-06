@@ -24,7 +24,7 @@ import { selectCard } from "../../redux/actions/game"
 
 interface IProps extends Animal {
   belongsToUser?: boolean
-  onPreviewClick?: (id: Animal['id']) => void
+  onPreviewClick?: (id: Animal["id"]) => void
   opacityForPreview?: string
   width?: string
 }
@@ -183,10 +183,12 @@ export default function Card({
               description={`${poisoned.damage} poison damage per round - ${poisoned.rounds} round(s) left`}
             />
           )}
-          <Image
-            className="small-icon"
-            src={poisoned.rounds > 0 ? CARD_ICONS.POISON : CARD_ICONS.LIFE}
-          />
+          {life.current !== 0 ? (
+            <Image
+              className="small-icon"
+              src={poisoned.rounds > 0 ? CARD_ICONS.POISON : CARD_ICONS.LIFE}
+            />
+          ) : null}
           <Text className="stats spaced-title" color={getStatColor(life)}>
             {life.current === 0 ? "DEAD" : life.current}
           </Text>

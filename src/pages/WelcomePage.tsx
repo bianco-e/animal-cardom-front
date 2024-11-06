@@ -135,7 +135,7 @@ const Title = styled.h4`
   font-size: ${({ theme }) => theme.$4};
   text-align: center;
   padding-top: 64px;
-  ${BREAKPOINTS.MOBILE} {
+  ${BREAKPOINTS.SM} {
     margin-bottom: 5px;
     font-size: ${({ theme }) => theme.$5};
   }
@@ -151,7 +151,7 @@ const Container = styled.div`
   & > *:not(:last-child) {
     margin-bottom: ${({ theme }) => theme.$7};
   }
-  ${BREAKPOINTS.MOBILE} {
+  ${BREAKPOINTS.SM} {
     height: 65vh;
     width: 60%;
   }

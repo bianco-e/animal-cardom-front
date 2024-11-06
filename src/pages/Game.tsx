@@ -131,7 +131,7 @@ const Wrapper = styled.div<WrapperProps>`
   flex-start: left;
   height: 100vh;
   width: 100%;
-  ${BREAKPOINTS.TABLET} {
+  ${BREAKPOINTS.MD} {
     flex-direction: column;
   }
 `
@@ -143,10 +143,10 @@ const Board = styled.div`
   padding: 0px 10px;
   position: relative;
   width: 100%;
-  ${BREAKPOINTS.TABLET} {
+  ${BREAKPOINTS.MD} {
     padding: 21px 0 0 0;
   }
-  ${BREAKPOINTS.MOBILE} {
+  ${BREAKPOINTS.SM} {
     min-height: 285px;
   }
 `

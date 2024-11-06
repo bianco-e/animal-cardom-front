@@ -78,7 +78,7 @@ const Wrapper = styled.div`
       }
     }
   }
-  ${BREAKPOINTS.MOBILE} {
+  ${BREAKPOINTS.SM} {
     > div {
       width: 100%;
       > button {

@@ -31,7 +31,7 @@ export const ModalContainer = styled.div<ContentProps>`
   padding: 16px 24px;
   position: relative;
   z-index: 30;
-  ${BREAKPOINTS.MOBILE} {
+  ${BREAKPOINTS.SM} {
     width: 87%;
   }
 `

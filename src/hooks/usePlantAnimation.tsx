@@ -13,7 +13,7 @@ import { css } from 'styled-components'
 
 interface IProps {
   name: string
-  soundState: string | null
+  soundOn: boolean
 }
 
 export interface AnimationProps {
@@ -84,7 +84,7 @@ const plantsAnimationsData: PlantsData = {
   },
 }
 
-export default function usePlantAnimation({ name, soundState }: IProps) {
+export default function usePlantAnimation({ name, soundOn }: IProps) {
   const [animationProps, setAnimationProps] = useState<AnimationProps | undefined>()
   const game = useAppSelector(({ game }) => game)
 
@@ -100,7 +100,7 @@ export default function usePlantAnimation({ name, soundState }: IProps) {
     if (game.treatedAnimal?.name === name && game.usedPlants.length > 0) {
       const plantName = game.usedPlants[game.usedPlants.length - 1].name
       const plantData = plantsAnimationsData[plantName]
-      if (soundState === "on") {
+      if (soundOn) {
         plantData.audio.play()
       }
       setAnimationProps({

@@ -42,7 +42,7 @@ export const TooltipWrapper = styled.div<TooltipProps>`
   display: flex;
   justify-content: center;
   position: absolute;
-  width: 98px;
+  width: 96px;
   z-index: 3;
   ${({ $direction }) => positions[$direction]}
   > hr {

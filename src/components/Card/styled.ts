@@ -12,7 +12,6 @@ interface AnimalCardProps {
   $isCardSelected?: boolean
   $opacity: string
   $habitat?: string
-  $transform?: string
   $width?: string
 }
 interface TextProps {
@@ -81,12 +80,11 @@ export const AnimalCard = styled.button<AnimalCardProps>`
   overflow: hidden;
   padding: 12px 12px 0 12px;
   position: relative;
-  transition: transform 0.15s ease;
+  transition: transform 0.25s ease;
   width: ${({ $width = "calc(20% - 24px)" }) => $width};
   &:hover {
     box-shadow: 4px 4px 4px ${({ theme }) => theme.secondary_brown},
       inset 0px 0px 8px black;
-    transform: ${({ $transform }) => $transform};
   }
   &:active {
     box-shadow: inset 0px 0px 16px black;
@@ -125,11 +123,6 @@ export const AnimalCard = styled.button<AnimalCardProps>`
     width: calc(100% - 8px);
     z-index: -1;
   }
-  ${({ $isCardSelected, $transform }) =>
-    $isCardSelected &&
-    `
-      transform: ${$transform};
-    `}
   ${BREAKPOINTS.LG} {
     height: 240px;
     max-width: 200px;

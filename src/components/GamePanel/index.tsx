@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import Modal from "../Common/Modal"
 import { ACButton, ModalTitle, Text } from "../styled-components"
@@ -6,7 +6,7 @@ import { IPlants, Habitat } from "../../interfaces/index"
 import Tooltip from "../Tooltip"
 import { GamePanel, OptionsPanel, HabitatName } from "./styled"
 import { GAME_ACTIONS } from "../../redux/reducers/game"
-import { useAppDispatch } from "../../hooks/redux-hooks"
+import { useAppDispatch, useAppSelector } from "../../hooks/redux-hooks"
 import PlayerPlants from "./PlayerPlants"
 
 interface IProps {
@@ -18,33 +18,18 @@ interface IProps {
 
 export default function SidePanel({ plants, isCampaign, habitat, userName }: IProps) {
   const [showHabitatTooltip, setShowHabitatTooltip] = useState<boolean>(false)
-  const [soundState, setSoundState] = useState<"off" | "on">("on")
   const [showExitModal, setShowExitModal] = useState<boolean>(false)
+  const { soundOn } = useAppSelector(({ game }) => game)
   const navigate = useNavigate()
   const dispatch = useAppDispatch()
-
-  useEffect(() => {
-    const currentSoundState = localStorage.getItem("sound")
-    if (
-      currentSoundState &&
-      (currentSoundState === "off" || currentSoundState === "on")
-    ) {
-      setSoundState(currentSoundState)
-    }
-  }, [])
-
-  useEffect(() => {
-    localStorage.setItem("sound", soundState)
-  }, [soundState])
-
-  const handleSoundButton = () => {
-    const soundToSet = soundState === "off" ? "on" : "off"
-    setSoundState(soundToSet)
-  }
 
   const handleExit = () => {
     dispatch(GAME_ACTIONS.EMPTY_STATE())
     navigate(isCampaign ? "/menu" : "/")
+  }
+
+  const handleSound = () => {
+    dispatch(GAME_ACTIONS.SET_GAME_SOUND(!soundOn))
   }
 
   return (
@@ -53,8 +38,11 @@ export default function SidePanel({ plants, isCampaign, habitat, userName }: IPr
 
       <HabitatName color={habitat.color}>
         <OptionsPanel>
-          <button onClick={handleSoundButton}>
-            <img alt="sound-button" src={`/icons/sound-${soundState}-icon.png`} />
+          <button onClick={handleSound}>
+            <img
+              alt="sound-button"
+              src={`/icons/sound-${soundOn ? "on" : "off"}-icon.png`}
+            />
           </button>
           <button onClick={() => setShowExitModal(true)}>
             <img alt="exit-button" src={`/icons/exit-icon.png`} />

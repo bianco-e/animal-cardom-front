@@ -1,4 +1,4 @@
-import { useEffect } from "react"
+import { MouseEventHandler, useEffect, useRef } from "react"
 import { CARD_ICONS } from "../../data/data"
 import { Animal, Stat } from "../../interfaces"
 import {
@@ -22,13 +22,17 @@ import {
 import { useAppDispatch, useAppSelector } from "../../hooks/redux-hooks"
 import { selectCard } from "../../redux/actions/game"
 
+const DEFENSIVE_SKILL_TYPE = 4
+const USER_ANIMAL_ROTATION = 12
+const PC_ANIMAL_ROTATION = 4
+
 interface IProps extends Animal {
   belongsToUser?: boolean
   onPreviewClick?: (id: Animal["id"]) => void
   opacityForPreview?: string
   width?: string
 }
-const DEFENSIVE_SKILL_TYPE = 4
+
 export default function Card({
   id,
   attack,
@@ -47,19 +51,43 @@ export default function Card({
   targeteable,
   width,
 }: IProps) {
+  const animalRef = useRef<HTMLButtonElement>(null)
   const dispatch = useAppDispatch()
   const game = useAppSelector(({ game }) => game)
   const isForPreview = !!opacityForPreview
+  const isDead = life.current <= 0
   const isParalyzed = paralyzed > 0
   const isCardSelected = !isForPreview && game.attacker?.name === name
   const isCardUnderAttack = game.underAttack === name
   const hasDodgedAttack = game.dodgedAttack === name
-  const soundState = localStorage.getItem("sound")
-  const [animationProps] = usePlantAnimation({ name, soundState })
+  const [animationProps] = usePlantAnimation({ name, soundOn: game.soundOn })
+
+  const handleMouseOver: MouseEventHandler<HTMLButtonElement> = (e) => {
+    if(animalRef.current && !isDead) {
+      const rotation = belongsToUser ? USER_ANIMAL_ROTATION : PC_ANIMAL_ROTATION
+      const rect = animalRef.current.getBoundingClientRect()
+      const { width, height, top, left } = rect
+      const cardCenter = {
+        x: left + (width / 2),
+        y: top + (height / 2)
+      }
+      const rotateX = e.clientY > cardCenter.y ? -rotation : rotation 
+      const rotateY = e.clientX > cardCenter.x ? rotation : -rotation 
+      animalRef.current.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`
+    }
+  }
+
+  const handleMouseLeave = () => {
+    if(animalRef.current) {
+      animalRef.current.style.transform = `rotateX(0deg) rotateY(0deg)`
+    }
+  }
 
   useEffect(() => {
-    isCardUnderAttack && soundState === "on" && attackAudio.play()
-  }, [isCardUnderAttack, soundState])
+    if (isCardUnderAttack && game.soundOn) {
+      attackAudio.play()
+    }
+  }, [isCardUnderAttack, game.soundOn])
 
   const styledProps = isForPreview
     ? {
@@ -70,27 +98,22 @@ export default function Card({
         $isCardSelected: isCardSelected,
         onClick: () => onPreviewClick && onPreviewClick(id),
         $opacity: opacityForPreview ? opacityForPreview : "1",
-        $transform: "",
       }
     : {
         $attackAnimation: isCardUnderAttack ? attackAnimation : undefined,
         $selectionAnimation: isCardSelected ? selectionAnimation : undefined,
         $cursor:
           belongsToUser || game.attacker || game.selectedPlant ? "pointer" : "default",
-        $isCardSelected: isCardSelected,
-        //@ts-ignore
-        onClick: () => (!game.pcTurn ? dispatch(selectCard(name)) : null),
-        $opacity: `${life.current === 0 ? "0.5" : "1"}`,
-        $transform: belongsToUser ? "translateY(-8px)" : "",
+        $isCardSelected: isCardSelected, //@ts-ignore
+        onClick: () => (!game.pcTurn ? dispatch(selectCard(name)) : null), 
+        $opacity: `${isDead ? "0.5" : "1"}`,
       }
 
   const getStatColor = (stat: Stat): string =>
     stat.current > stat.initial ? "#a4508b" : stat.current < stat.initial ? "red" : ""
 
-  const getImageName = (name: string) => name.toLowerCase().split(" ").join("-")
-
   return (
-    <AnimalCard {...styledProps} $width={width} $habitat={habitat.toLowerCase()}>
+    <AnimalCard onMouseOver={handleMouseOver} onMouseLeave={handleMouseLeave} {...styledProps} $width={width} $habitat={habitat.toLowerCase()} ref={animalRef}>
       {isCardUnderAttack ? (
         <Injury alt="under-attack" src="/images/svg/blood-splatter.svg" />
       ) : null}
@@ -129,7 +152,7 @@ export default function Card({
       <Image
         className="animal-picture"
         draggable="false"
-        src={`/images/animals/adult-${getImageName(name)}.webp`}
+        src={`/images/animals/adult-${name.toLowerCase().split(" ").join("-")}.webp`}
       />
 
       <DescriptionContainer>
@@ -183,14 +206,14 @@ export default function Card({
               description={`${poisoned.damage} poison damage per round - ${poisoned.rounds} round(s) left`}
             />
           )}
-          {life.current !== 0 ? (
+          {!isDead ? (
             <Image
               className="small-icon"
               src={poisoned.rounds > 0 ? CARD_ICONS.POISON : CARD_ICONS.LIFE}
             />
           ) : null}
           <Text className="stats spaced-title" color={getStatColor(life)}>
-            {life.current === 0 ? "DEAD" : life.current}
+            {isDead ? "DEAD" : life.current}
           </Text>
         </div>
       </StatsWrapper>

@@ -1,5 +1,6 @@
 export interface IGameState {
   isLoading: boolean
+  soundOn: boolean
   gameError: boolean
   hands: IHands
   plants: IPlants

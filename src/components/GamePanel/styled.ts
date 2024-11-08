@@ -1,7 +1,7 @@
 import styled from "styled-components"
 import { BREAKPOINTS } from "../../utils/constants"
 
-interface LeftPanelProps {
+interface GamePanelProps {
   $bgImage?: string
 }
 export const PlayerNameTab = styled.div`
@@ -17,13 +17,14 @@ export const PlayerNameTab = styled.div`
   transform: translate(-50%, -50%);
   ${BREAKPOINTS.MD} {
     display: flex;
+    bottom: -32px;
   }
   ${BREAKPOINTS.SM} {
-    bottom: -42px;
+    bottom: -30px;
     font-size: 14px;
   }
 `
-export const LeftPanel = styled.div<LeftPanelProps>`
+export const GamePanel = styled.div<GamePanelProps>`
   background: url(${({ $bgImage }) => $bgImage});
   background-position: center;
   background-size: cover;
@@ -32,7 +33,7 @@ export const LeftPanel = styled.div<LeftPanelProps>`
   box-shadow: 35px 0 40px rgba(0, 0, 0, 0.5);
   display: flex;
   flex-direction: column;
-  width: 110px;
+  width: 108px;
   ${BREAKPOINTS.MD} {
     align-items: center;
     background: url(${({ $bgImage }) => $bgImage});
@@ -51,7 +52,8 @@ export const HalfPanel = styled.div`
   align-items: center;
   display: flex;
   flex-direction: column;
-  height: 33%;
+  justify-content: space-around;
+  height: 100%;
   > span {
     font-size: 13px;
   }

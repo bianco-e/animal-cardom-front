@@ -10,14 +10,7 @@ interface PlantCardProps {
 }
 
 export const PlantContainer = styled.div`
-  height: 25%;
-  margin: 0 auto 8%;
   position: relative;
-  width: 75%;
-  ${BREAKPOINTS.MD} {
-    height: 100%;
-    width: 56px;
-  }
 `
 
 export const PlantCard = styled.button<PlantCardProps>`
@@ -29,9 +22,8 @@ export const PlantCard = styled.button<PlantCardProps>`
   cursor: ${({ $belongsToUser }) => ($belongsToUser ? "pointer" : "default")};
   display: flex;
   flex-direction: column;
-  height: 100%;
+  height: 64px;
   margin: 0 auto;
-  max-width: 64px;
   min-height: 45px;
   opacity: ${({ $opacity }) => $opacity};
   overflow: hidden;
@@ -39,11 +31,11 @@ export const PlantCard = styled.button<PlantCardProps>`
   position: relative;
   transform: ${({ $transform }) => $transform};
   transition: transform 0.2s ease;
-  width: 100%;
+  width: 64px;
   > img {
     border-radius: 4px;
     height: 80%;
-    width: 85%;
+    width: calc(100% - 8px);
   }
   > span {
     font-size: 8px;
@@ -89,6 +81,14 @@ export const PlantCard = styled.button<PlantCardProps>`
     -webkit-transform: translateX(-50%);
     width: ${({ $opacity }) => ($opacity === "1" ? "calc(100% - 6px);" : "auto")};
     z-index: -1;
+  }
+  ${BREAKPOINTS.LG} {
+    height: 60px;
+    width: 60px;
+  }
+  ${BREAKPOINTS.MD} {
+    height: 48px;
+    width: 56px;
   }
 `
 export const PlantThumbnail = styled(PlantCard)`

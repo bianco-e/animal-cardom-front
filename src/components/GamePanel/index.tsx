@@ -4,7 +4,7 @@ import Modal from "../Common/Modal"
 import { ACButton, ModalTitle, Text } from "../styled-components"
 import { IPlants, Habitat } from "../../interfaces/index"
 import Tooltip from "../Tooltip"
-import { LeftPanel, OptionsPanel, HabitatName } from "./styled"
+import { GamePanel, OptionsPanel, HabitatName } from "./styled"
 import { GAME_ACTIONS } from "../../redux/reducers/game"
 import { useAppDispatch } from "../../hooks/redux-hooks"
 import PlayerPlants from "./PlayerPlants"
@@ -48,7 +48,7 @@ export default function SidePanel({ plants, isCampaign, habitat, userName }: IPr
   }
 
   return (
-    <LeftPanel $bgImage={`/images/habitats/${habitat.name.toLowerCase()}.webp`}>
+    <GamePanel $bgImage={`/images/habitats/${habitat.name.toLowerCase()}.webp`}>
       <PlayerPlants name="PC" plants={plants.pc} />
 
       <HabitatName color={habitat.color}>
@@ -98,6 +98,6 @@ export default function SidePanel({ plants, isCampaign, habitat, userName }: IPr
           </>
         </Modal>
       )}
-    </LeftPanel>
+    </GamePanel>
   )
 }

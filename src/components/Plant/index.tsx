@@ -5,6 +5,8 @@ import { selectionAnimation } from "../../animations/card-animations"
 import { PlantCard, PlantContainer } from "./styled"
 import { useAppDispatch, useAppSelector } from "../../hooks/redux-hooks"
 import { selectPlant } from "../../redux/actions/game"
+import useWindowDimensions from "../../hooks/useWindowDimensions"
+import { MD_BREAKPOINT } from "../../utils/constants"
 
 const OFFENSIVE_USE_TYPE = 3
 
@@ -21,13 +23,23 @@ export default function Plant({ plant }: { plant: IPlant }) {
     if (!pcTurn && !usedPlants.includes(plant)) return dispatch(selectPlant(plant))
   }
 
+  const dimensions = useWindowDimensions()
+  const isPlantsPanelOnLeft = dimensions && dimensions.width > MD_BREAKPOINT
+  const getTooltipDirection = () => {
+    if (isPlantsPanelOnLeft) {
+      return plantBelongsToUser ? "TOP" : "BOTTOM"
+    } else return "BOTTOM"
+  }
+
   return (
     <PlantContainer>
       {showTooltip && (
         <Tooltip
-          title={`Appliable on ${use_type_id === OFFENSIVE_USE_TYPE ? 'enemies' : 'allies'}`}
+          title={`Appliable on ${
+            use_type_id === OFFENSIVE_USE_TYPE ? "enemies" : "allies"
+          }`}
           description={description}
-          direction={plantBelongsToUser ? "TOP" : "BOTTOM"}
+          direction={getTooltipDirection()}
         />
       )}
       <PlantCard

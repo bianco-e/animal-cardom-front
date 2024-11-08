@@ -21,7 +21,6 @@ interface TextProps {
   $lineThrough?: boolean
 }
 interface FlexSectionProps {
-  $mBottom?: string
   $fDirection?: string
 }
 interface PlantEffectProps {
@@ -277,6 +276,17 @@ export const IconContainer = styled.div<IconContainerProps>`
     font-size: 14px;
   }
 `
+export const IconImage = styled.img`
+  height: 14px;
+  margin-right: 4px;
+  width: 14px;
+  ${BREAKPOINTS.SM} {
+    height: 12px;
+    margin-right: 0;
+    width: 12px;
+  }
+`
+
 export const Image = styled.img`
   &.blood-drop {
     height: 20px;
@@ -302,16 +312,6 @@ export const Image = styled.img`
     ${BREAKPOINTS.SM} {
       height: 36px;
       width: calc(100% - 4px);
-    }
-  }
-  &.small-icon {
-    height: 14px;
-    margin-right: 4px;
-    width: 14px;
-    ${BREAKPOINTS.SM} {
-      height: 12px;
-      margin-right: 0;
-      width: 12px;
     }
   }
   &.habitat-icon {
@@ -369,6 +369,15 @@ export const Text = styled.span<TextProps>`
       font-size: 12px;
     }
   }
+  &.animal-scientific-name {
+    font-size: 12px;
+    font-style: italic;
+    font-weight: 400;
+    white-space: nowrap;
+    ${BREAKPOINTS.SM} {
+      display: none;
+    }
+  }
   &.miss-msg {
     ${missAnimation}
     color: ${({ theme }) => theme.primary_red};
@@ -388,7 +397,6 @@ export const FlexSection = styled.div<FlexSectionProps>`
   display: flex;
   justify-content: center;
   flex-direction: ${({ $fDirection }) => $fDirection};
-  margin-bottom: ${({ $mBottom }) => $mBottom};
   position: relative;
   > span.paralyzed {
     color: ${({ theme }) => theme.primary_red};

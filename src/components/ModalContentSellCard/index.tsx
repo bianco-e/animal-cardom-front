@@ -44,7 +44,7 @@ export default function ModalContentSellCard({ animalToSell, closeModal }: IProp
             <b>{animalToSell.sell_price} coins</b>?
           </Text>
           <Container>
-            <Card {...animalToSell} opacityForPreview="1" />
+            <Card {...animalToSell} />
           </Container>
         </>
       ) : (

@@ -7,6 +7,7 @@ import { useAppDispatch, useAppSelector } from "../../hooks/redux-hooks"
 import { selectPlant } from "../../redux/actions/game"
 import useWindowDimensions from "../../hooks/useWindowDimensions"
 import { MD_BREAKPOINT } from "../../utils/constants"
+import { TooltipDirection } from "../Tooltip/styled"
 
 const OFFENSIVE_USE_TYPE = 3
 
@@ -25,10 +26,10 @@ export default function Plant({ plant }: { plant: IPlant }) {
 
   const dimensions = useWindowDimensions()
   const isPlantsPanelOnLeft = dimensions && dimensions.width > MD_BREAKPOINT
-  const getTooltipDirection = () => {
+  const getTooltipDirection = (): TooltipDirection => {
     if (isPlantsPanelOnLeft) {
-      return plantBelongsToUser ? "TOP" : "BOTTOM"
-    } else return "BOTTOM"
+      return plantBelongsToUser ? TooltipDirection.TOP : TooltipDirection.BOTTOM
+    } else return TooltipDirection.BOTTOM
   }
 
   return (

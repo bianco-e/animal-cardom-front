@@ -11,7 +11,7 @@ export default function CurrentHand({ currentHand }: IProps) {
     <CardsContainer>
       {currentHand.map(card => (
         <SingleCardContainer key={card.name}>
-          <Card {...card} opacityForPreview="1" />
+          <Card {...card} />
         </SingleCardContainer>
       ))}
     </CardsContainer>

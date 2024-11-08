@@ -28,7 +28,7 @@ export default function ModalHandEditContent({
   const [initialHand] = useState(currentHand)
   const { id }: CampaignState = useAppSelector(({ campaign }) => campaign)
 
-  const handleSelection = (id: Animal['id']) => {
+  const handleSelection = (id: Animal["id"]) => {
     if (!currentHand.find(card => card.id === enteringAnimal.id)) {
       const newHand = currentHand.map(animal => {
         if (animal.id !== id) return animal
@@ -60,22 +60,14 @@ export default function ModalHandEditContent({
       ) : (
         <>
           <Container>
-            <Card {...enteringAnimal} belongsToUser={false} opacityForPreview="1" />
+            <Card {...enteringAnimal} />
           </Container>
           <Text>
             Select an animal to switch for <b>{enteringAnimal.name}</b>
           </Text>
           <Container className="current-hand">
             {currentHand.map(card => {
-              return (
-                <Card
-                  {...card}
-                  belongsToUser={false}
-                  key={card.name}
-                  onPreviewClick={handleSelection}
-                  opacityForPreview="1"
-                />
-              )
+              return <Card {...card} key={card.name} onClick={handleSelection} />
             })}
           </Container>
         </>
@@ -113,10 +105,6 @@ const Container = styled.div`
     > div > div {
       > span.skill {
         font-size: 10px;
-      }
-      > img.small-icon {
-        height: 12px;
-        width: 12px;
       }
     }
     > div > span.skill {

@@ -1,14 +1,12 @@
-import { TooltipWrapper } from "./styled"
-
-export type Direction = "TOP" | "BOTTOM" | "BOTTOM-LEFT" | "BOTTOM-RIGHT"
+import { TooltipDirection, TooltipWrapper } from "./styled"
 
 interface IProps {
-  direction?: Direction
+  direction?: TooltipDirection
   description: string
   title: string
 }
 
-export default function Tooltip({ direction = "TOP", description, title }: IProps) {
+export default function Tooltip({ direction = TooltipDirection.TOP, description, title }: IProps) {
   return (
     <TooltipWrapper className="tooltip" $direction={direction}>
       <div className="description-container">

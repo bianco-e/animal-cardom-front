@@ -66,6 +66,7 @@ export interface IPlant {
 
 export interface Animal {
   id: number
+  scientific_name: string
   attack: Stat
   bleeding: boolean
   life: Stat

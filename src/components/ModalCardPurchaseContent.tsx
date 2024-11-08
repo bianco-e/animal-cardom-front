@@ -41,7 +41,7 @@ export default function ModalCardPurchaseContent({ animalToBuy, closeModal }: IP
             <b>{animalToBuy.name}</b>
           </Text>
           <Container>
-            <Card {...animalToBuy} opacityForPreview="1" />
+            <Card {...animalToBuy} />
           </Container>
         </>
       )}
@@ -80,10 +80,6 @@ const Container = styled.div`
       > span.skill {
         font-size: 10px;
       }
-      > img.small-icon {
-        height: 12px;
-        width: 12px;
-      }
     }
     > div > span.skill {
       font-size: 10px;
@@ -93,7 +89,6 @@ const Container = styled.div`
       transform: none;
     }
   }
-
   ${BREAKPOINTS.SM} {
     > button {
       height: 200px;

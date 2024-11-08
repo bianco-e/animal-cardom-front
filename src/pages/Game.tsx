@@ -89,7 +89,7 @@ export default function Game({ isCampaign }: IProps) {
         <Board>
           <HandContainer>
             {hands.pc.map((animal: Animal) => (
-              <Card {...animal} belongsToUser={false} key={animal.name} />
+              <Card {...animal} isForGame key={animal.name} />
             ))}
           </HandContainer>
 
@@ -97,7 +97,7 @@ export default function Game({ isCampaign }: IProps) {
 
           <HandContainer>
             {hands.user.map((animal: Animal) => (
-              <Card {...animal} belongsToUser={true} key={animal.name} />
+              <Card {...animal} belongsToUser isForGame key={animal.name} />
             ))}
           </HandContainer>
         </Board>

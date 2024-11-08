@@ -59,7 +59,7 @@ export default function CampaignRewards({ earnedAnimal, earnedCoins }: IProps) {
           <Text $margin="0 0 4px 0">
             ...and a <b className="spaced-title">{earnedCard.name}!</b>
           </Text>
-          <Card {...earnedCard} opacityForPreview="1" width="200px" />
+          <Card {...earnedCard} />
         </>
       )}
       <div>

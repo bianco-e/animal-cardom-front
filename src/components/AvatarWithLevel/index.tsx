@@ -1,5 +1,6 @@
 import { useAppSelector } from "../../hooks/redux-hooks"
 import { CampaignState } from "../../interfaces"
+import styles from "../../styles"
 import { Wrapper } from "./styled"
 const STROKE_WIDTH = 11
 const CIRCLE_RADIUS = 70
@@ -12,8 +13,8 @@ export default function AvatarWithXpBar() {
       <svg height="170" width="170">
         <defs>
           <linearGradient id="gradient" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stopColor="#5f0a87" />
-            <stop offset="100%" stopColor="#a4508b" />
+            <stop offset="0%" stopColor={styles.primary_violet} />
+            <stop offset="100%" stopColor={styles.secondary_violet} />
           </linearGradient>
         </defs>
         <circle

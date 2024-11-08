@@ -27,9 +27,11 @@ export default function CollectionCards({
   handleEditHandModal,
   handlePurchaseModal,
   handleSellModal,
-  filtersData
+  filtersData,
 }: IProps) {
-  const { owned_animals, hand, coins }: CampaignState = useAppSelector(({ campaign }) => campaign)
+  const { owned_animals, hand, coins }: CampaignState = useAppSelector(
+    ({ campaign }) => campaign
+  )
   const ownedCardsNames = owned_animals.map(animal => animal.name)
   const handCardsNames = hand.map(animal => animal.name)
   return (
@@ -42,8 +44,7 @@ export default function CollectionCards({
               <SingleCardContainer key={card.name}>
                 <Card
                   {...card}
-                  belongsToUser={false}
-                  opacityForPreview={getCardOpacityForPreview(ownedCardsNames, card.name)}
+                  cardOpacity={getCardOpacityForPreview(ownedCardsNames, card.name)}
                 />
                 {!ownedCardsNames.includes(card.name) ? (
                   <BuyButton

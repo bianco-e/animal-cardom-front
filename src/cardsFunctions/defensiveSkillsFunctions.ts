@@ -3,6 +3,7 @@ import { getRandomChance } from "../utils"
 
 const BUTTERFLY_ANIMAL: Animal = {
   id: 99,
+  scientific_name: "Lepidoptera",
   skill: {
     types: ["none"],
     name: "",

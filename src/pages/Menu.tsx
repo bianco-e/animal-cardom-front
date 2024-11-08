@@ -33,7 +33,7 @@ export default function Menu() {
           ) : (
             <div>
               {newestAnimals.map(card => (
-                <Card {...card} key={card.name} opacityForPreview="1" />
+                <Card {...card} key={card.name} />
               ))}
             </div>
           )}

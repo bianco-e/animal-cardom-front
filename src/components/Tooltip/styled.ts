@@ -1,38 +1,44 @@
 import styled from "styled-components"
-import { Direction } from "."
+
+export enum TooltipDirection {
+  TOP = "TOP",
+  BOTTOM = "BOTTOM",
+  BOTTOM_LEFT = "BOTTOM-LEFT",
+  BOTTOM_RIGHT = "BOTTOM-RIGHT"
+}
 
 interface TooltipProps {
-  $direction: Direction
+  $direction: TooltipDirection
 }
 
 const positions = {
-  TOP: `bottom: 120%; flex-direction: column; left: calc(50% - 49px);`,
-  BOTTOM: `top: 120%; flex-direction: column-reverse; left: calc(50% - 49px);`,
-  "BOTTOM-LEFT": `top: 100%; flex-direction: column-reverse; right: 90%;`,
-  "BOTTOM-RIGHT": `top: 100%; flex-direction: column-reverse; left: 90%;`,
+  [TooltipDirection.TOP]: `bottom: 120%; flex-direction: column; left: calc(50% - 49px);`,
+  [TooltipDirection.BOTTOM]: `top: 120%; flex-direction: column-reverse; left: calc(50% - 49px);`,
+  [TooltipDirection.BOTTOM_LEFT]: `top: 100%; flex-direction: column-reverse; right: 90%;`,
+  [TooltipDirection.BOTTOM_RIGHT]: `top: 100%; flex-direction: column-reverse; left: 90%;`,
 }
 
 const descriptionContainer = {
   borderRadius: {
-    TOP: `4px 4px 0 0;`,
-    BOTTOM: `0 0 4px 4px;`,
-    "BOTTOM-LEFT": `0 0 4px 4px;`,
-    "BOTTOM-RIGHT": `0 0 4px 4px;`,
+    [TooltipDirection.TOP]: `4px 4px 0 0;`,
+    [TooltipDirection.BOTTOM]: `0 0 4px 4px;`,
+    [TooltipDirection.BOTTOM_LEFT]: `0 0 4px 4px;`,
+    [TooltipDirection.BOTTOM_RIGHT]: `0 0 4px 4px;`,
   },
 }
 
 const titleContainer = {
   arrowPosition: {
-    TOP: `bottom: -4px; left: calc(50% - 4px); transform: rotate(45deg);`,
-    BOTTOM: `top: -4px; left: calc(50% - 4px); transform: rotate(45deg);`,
-    "BOTTOM-LEFT": `display: none;`,
-    "BOTTOM-RIGHT": `display: none;`,
+    [TooltipDirection.TOP]: `bottom: -4px; left: calc(50% - 4px); transform: rotate(45deg);`,
+    [TooltipDirection.BOTTOM]: `top: -4px; left: calc(50% - 4px); transform: rotate(45deg);`,
+    [TooltipDirection.BOTTOM_LEFT]: `display: none;`,
+    [TooltipDirection.BOTTOM_RIGHT]: `display: none;`,
   },
   borderRadius: {
-    TOP: `0 0 4px 4px;`,
-    BOTTOM: `4px 4px 0 0;`,
-    "BOTTOM-LEFT": `4px 0 0 0;`,
-    "BOTTOM-RIGHT": `0 4px 0 0;`,
+    [TooltipDirection.TOP]: `0 0 4px 4px;`,
+    [TooltipDirection.BOTTOM]: `4px 4px 0 0;`,
+    [TooltipDirection.BOTTOM_LEFT]: `4px 0 0 0;`,
+    [TooltipDirection.BOTTOM_RIGHT]: `0 4px 0 0;`,
   },
 }
 

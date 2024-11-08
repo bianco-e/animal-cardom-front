@@ -8,6 +8,7 @@ import { GamePanel, OptionsPanel, HabitatName } from "./styled"
 import { GAME_ACTIONS } from "../../redux/reducers/game"
 import { useAppDispatch, useAppSelector } from "../../hooks/redux-hooks"
 import PlayerPlants from "./PlayerPlants"
+import { TooltipDirection } from "../Tooltip/styled"
 
 interface IProps {
   plants: IPlants
@@ -56,7 +57,7 @@ export default function SidePanel({ plants, isCampaign, habitat, userName }: IPr
           {habitat.name}
           {showHabitatTooltip && (
             <Tooltip
-              direction="BOTTOM"
+            direction={TooltipDirection.BOTTOM}
               title="Bonus"
               description={
                 habitat.name !== "Neutral"

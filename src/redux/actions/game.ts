@@ -176,6 +176,7 @@ export const computerPlay = () => {
     const userLiveCards = getLiveCards(hands.user).filter(
       (card: Animal) => card.targeteable
     )
+    if (!pcLiveCards.length || !userLiveCards.length) return
     const pcAttacker = getRandomChance(90)
       ? getHighestAttackCard(pcLiveCards)
       : getRandomFromArr(pcLiveCards)

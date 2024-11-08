@@ -38,40 +38,41 @@ export const getRandomFromArr = (arr: any[]) => {
 export const parseAnimalsFromDB = (dbAnimals: DBAnimal[]): Animal[] => {
   return dbAnimals.map(dbAnimal => ({
     id: dbAnimal.id,
-    attack: {
-      initial: dbAnimal.attack,
-      current: dbAnimal.attack,
-    },
-    bleeding: dbAnimal.bleeding,
-    life: {
-      initial: dbAnimal.life,
-      current: dbAnimal.life,
-    },
-    missing: {
-      chance: dbAnimal.missing_chance,
-      exceptions: [],
-    },
     name: dbAnimal.name,
-    paralyzed: 0,
-    poisoned: {
-      damage: 0,
-      rounds: 0
-    },
-    price: dbAnimal.price,
-    sell_price: Math.floor(dbAnimal.price / 2),
-    skill: {
-      name: dbAnimal.skill_name,
-      description: dbAnimal.skill_description,
-      types: [dbAnimal.skill_type_id.toString()],
-      use_type_id: dbAnimal.skill_use_type_id
-    },
+    scientific_name: dbAnimal.scientific_name,
+    habitat: dbAnimal.habitat_name,
     species: {
       id: dbAnimal.species_id,
       icon: dbAnimal.species_icon,
       name: dbAnimal.species_name,
       description: dbAnimal.species_description,
     },
+    skill: {
+      name: dbAnimal.skill_name,
+      description: dbAnimal.skill_description,
+      types: [dbAnimal.skill_type_id.toString()],
+      use_type_id: dbAnimal.skill_use_type_id
+    },
+    attack: {
+      initial: dbAnimal.attack,
+      current: dbAnimal.attack,
+    },
+    life: {
+      initial: dbAnimal.life,
+      current: dbAnimal.life,
+    },
+    bleeding: dbAnimal.bleeding,
+    paralyzed: 0,
     targeteable: dbAnimal.targeteable,
-    habitat: dbAnimal.habitat_name
+    missing: {
+      chance: dbAnimal.missing_chance,
+      exceptions: [],
+    },
+    poisoned: {
+      damage: 0,
+      rounds: 0
+    },
+    price: dbAnimal.price,
+    sell_price: Math.floor(dbAnimal.price / 2)
   }))
 }

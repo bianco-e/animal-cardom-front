@@ -1,18 +1,21 @@
 import styled, { css } from "styled-components"
-import { injuryAnimation, missAnimation } from "../../animations/card-animations"
+import {
+  attackAnimation,
+  injuryAnimation,
+  missAnimation,
+  selectionAnimation,
+} from "../../animations/card-animations"
 import { BREAKPOINTS } from "../../utils/constants"
 
 interface InjuryProps {
   $animation?: any
 }
 interface AnimalCardProps {
-  $attackAnimation?: any
-  $selectionAnimation?: any
-  $cursor?: string
+  $isCardUnderAttack?: any
   $isCardSelected?: boolean
+  $cursor?: string
   $opacity: string
   $habitat?: string
-  $width?: string
 }
 interface TextProps {
   $color?: string
@@ -29,7 +32,10 @@ interface PlantEffectProps {
 }
 
 export const PlantEffectImage = styled.img<PlantEffectProps>`
-  ${({ $animation }) => css`${$animation}`}
+  ${({ $animation }) =>
+    css`
+      ${$animation}
+    `}
   opacity: 0;
   left: 50%;
   position: absolute;
@@ -63,7 +69,7 @@ export const Injury = styled.img<InjuryProps>`
 `
 export const AnimalCard = styled.button<AnimalCardProps>`
   align-items: center;
-  ${({ $attackAnimation }) => $attackAnimation};
+  ${({ $isCardUnderAttack }) => ($isCardUnderAttack ? attackAnimation : "")};
   background: ${({ theme }) => theme.secondary_brown};
   background-image: ${({ $habitat }) =>
     `url("/images/backgrounds/${$habitat ? `${$habitat}-` : ""}card-bg.svg")`};
@@ -80,7 +86,7 @@ export const AnimalCard = styled.button<AnimalCardProps>`
   padding: 12px 12px 0 12px;
   position: relative;
   transition: transform 0.25s ease;
-  width: ${({ $width = "calc(20% - 24px)" }) => $width};
+  width: calc(20% - 24px);
   &:hover {
     box-shadow: 4px 4px 4px ${({ theme }) => theme.secondary_brown},
       inset 0px 0px 8px black;
@@ -88,25 +94,29 @@ export const AnimalCard = styled.button<AnimalCardProps>`
   &:active {
     box-shadow: inset 0px 0px 16px black;
   }
-  &::before {
-    content: "";
-    position: absolute;
-    top: -50%;
-    left: 50%;
-    -webkit-transform: translateX(-50%);
-    transform: translateX(-50%);
-    height: 210%;
-    width: 35%;
-    background: ${({
-      $opacity,
-      theme: { primary_violet, secondary_violet, light_brown, primary_brown },
-    }) =>
-      $opacity === "1"
-        ? `linear-gradient(90deg, ${primary_violet}, ${light_brown}, ${secondary_violet})`
-        : primary_brown};
-    z-index: -1;
-    ${({ $selectionAnimation }) => $selectionAnimation};
-  }
+  ${({ $isCardSelected, theme: { primary_violet, secondary_violet, light_brown } }) =>
+    $isCardSelected
+      ? css`
+          &::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: 50%;
+            -webkit-transform: translateX(-50%);
+            transform: translateX(-50%);
+            height: 210%;
+            width: 35%;
+            background: linear-gradient(
+              90deg,
+              ${primary_violet},
+              ${light_brown},
+              ${secondary_violet}
+            );
+            z-index: -1;
+            ${selectionAnimation};
+          }
+        `
+      : ""};
   &::after {
     -webkit-transform: translateX(-50%);
     background: ${({ theme }) => theme.secondary_brown};

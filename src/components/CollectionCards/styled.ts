@@ -6,7 +6,7 @@ export const SingleCardContainer = styled.div`
   height: 270px;
   margin-bottom: 16px;
   width: calc(20% - 8px);
-  > button.card {
+  > button:first-of-type {
     height: 100%;
     width: 100%;
     &:hover {
@@ -16,7 +16,7 @@ export const SingleCardContainer = styled.div`
   }
   ${BREAKPOINTS.SM} {
     width: 93%;
-    > button.card {
+    > button:first-of-type {
       height: 180px;
       margin-bottom: 8px;
       width: 19%;

@@ -1,11 +1,7 @@
 import { MouseEventHandler, useEffect, useRef } from "react"
 import { CARD_ICONS } from "../../data/data"
 import { Animal, Stat } from "../../interfaces"
-import {
-  attackAnimation,
-  attackAudio,
-  selectionAnimation,
-} from "../../animations/card-animations"
+import { attackAudio } from "../../animations/card-animations"
 import usePlantAnimation from "../../hooks/usePlantAnimation"
 import Tooltip from "../Tooltip"
 import {
@@ -111,19 +107,17 @@ export default function Card({
 
   return (
     <AnimalCard
-      className="card"
       onClick={handleClick}
       onMouseOver={handleMouseOver}
       onMouseLeave={handleMouseLeave}
       $opacity={isDead ? "0.5" : cardOpacity || "1"}
-      $attackAnimation={isCardUnderAttack ? attackAnimation : undefined}
-      $selectionAnimation={isCardSelected ? selectionAnimation : undefined}
+      $isCardUnderAttack={isCardUnderAttack}
+      $isCardSelected={isCardSelected}
       $cursor={
         belongsToUser || game.attacker || game.selectedPlant || onClick
           ? "pointer"
           : "default"
       }
-      $isCardSelected={isCardSelected}
       $habitat={habitat.toLowerCase()}
       ref={animalRef}>
       {isCardUnderAttack ? (

@@ -11,3 +11,12 @@ export const BREAKPOINTS = {
   SM: `@media (max-width: ${SM_BREAKPOINT}px)`,
   XS: `@media (max-width: ${XS_BREAKPOINT}px)`,
 };
+
+export const SPECIES = {
+  1: "Mammal",
+  2: "Bird",
+  3: "Reptile",
+  4: "Amphibian",
+  5: "Fish",
+  6: "Insect"
+}

@@ -114,7 +114,7 @@ export default function Card({
       $isCardUnderAttack={isCardUnderAttack}
       $isCardSelected={isCardSelected}
       $cursor={
-        belongsToUser || game.attacker || game.selectedPlant || onClick
+        (belongsToUser || game.attacker || game.selectedPlant || onClick) && !isDead
           ? "pointer"
           : "default"
       }

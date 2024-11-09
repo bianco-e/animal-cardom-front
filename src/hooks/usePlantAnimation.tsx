@@ -82,6 +82,11 @@ const plantsAnimationsData: PlantsData = {
     $animation: cleaningAnimation,
     img: "/images/plants/yellow-stars.png",
   },
+  Venus: {
+    audio: audioFiles.bite,
+    $animation: injuryAnimation,
+    img: "/images/svg/blood-splatter.svg",
+  },
 }
 
 export default function usePlantAnimation({ name, soundOn }: IProps) {

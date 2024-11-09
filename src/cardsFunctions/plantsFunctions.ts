@@ -1,4 +1,5 @@
 import { HandKey, Animal, Poisoned, IGameState } from "../interfaces"
+import { SPECIES } from "../utils/constants"
 
 const updateCardBleeding = (
   arr: Animal[],
@@ -64,6 +65,23 @@ const healCardInAHand = (
             card.life.current + amountToHeal > card.life.initial
               ? card.life.initial
               : card.life.current + amountToHeal,
+        },
+      }
+    } else return card
+  })
+}
+
+const killCardInAHand = (
+  arr: Animal[],
+  animalToTreat: Animal
+): Animal[] => {
+  return arr.map(card => {
+    if (card.id === animalToTreat.id) {
+      return {
+        ...card,
+        life: {
+          ...card.life,
+          current: 0
         },
       }
     } else return card
@@ -197,6 +215,15 @@ const peyoteFn = (state: IGameState, enemyHandKey: HandKey): IGameState => {
   } else return state
 }
 
+const venusFn = (state: IGameState, enemyHandKey: HandKey): IGameState => {
+  const { animalToTreat, hands } = state
+  console.log(animalToTreat, hands)
+  if (hands[enemyHandKey].includes(animalToTreat!) && animalToTreat?.species.name === SPECIES[6] && animalToTreat?.life.current < animalToTreat?.life.initial) {
+    const newHand = killCardInAHand(hands[enemyHandKey], animalToTreat!)
+    return setHandInState(state, enemyHandKey, newHand)
+  } else return state
+}
+
 const withaniaFn = (state: IGameState, enemyHandKey: HandKey): IGameState => {
   const { animalToTreat, hands } = state
   const allyHandKey = enemyHandKey === "pc" ? "user" : "pc"
@@ -223,6 +250,8 @@ export default function getPlantFn(name: string) {
       return peyoteFn
     case "Ricinum":
       return ricinumFn
+    case "Venus":
+      return venusFn
     case "Withania":
       return withaniaFn
     default:

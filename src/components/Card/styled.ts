@@ -11,7 +11,7 @@ interface InjuryProps {
   $animation?: any
 }
 interface AnimalCardProps {
-  $isCardUnderAttack?: any
+  $isCardUnderAttack?: boolean
   $isCardSelected?: boolean
   $cursor?: string
   $opacity: string
@@ -124,12 +124,12 @@ export const AnimalCard = styled.button<AnimalCardProps>`
       `url("/images/backgrounds/${$habitat ? `${$habitat}-` : ""}card-bg.svg")`};
     border-radius: 4px;
     content: "";
-    height: calc(100% - 8px);
+    height: calc(100% - 4px);
     left: 50%;
     position: absolute;
-    top: 4px;
+    top: 2px;
     transform: translateX(-50%);
-    width: calc(100% - 8px);
+    width: calc(100% - 4px);
     z-index: -1;
   }
   ${BREAKPOINTS.LG} {

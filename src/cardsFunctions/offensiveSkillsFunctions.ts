@@ -1,5 +1,6 @@
 import { HandKey, Animal, Poisoned, IGameState } from "../interfaces"
 import { getRandomFromArr } from "../utils"
+import { SPECIES } from "../utils/constants"
 
 const poisonEnemy = (arr: Animal[], defender: Animal, poisoned: Poisoned) => {
   return arr.map(card => {
@@ -216,6 +217,18 @@ const cheetahFn = (state: IGameState, enemyHandKey: HandKey): IGameState => {
   return setHandInState(state, allyHandKey, newHand)
 }
 
+const condorFn = (state: IGameState, enemyHandKey: HandKey): IGameState => {
+  const { hands, attacker } = state
+  const attackAmount = 3
+  const allyHandKey = enemyHandKey === "pc" ? "user" : "pc"
+  if (
+    hands[enemyHandKey].concat(hands[allyHandKey]).some(card => card.life.current === 0 && card.species.name === SPECIES[1])
+  ) {
+    const newHand = modifyAnimalAttack(hands[allyHandKey], attacker!, attackAmount, "+")
+    return setHandInState(state, allyHandKey, newHand)
+  } else return state
+}
+
 const eagleFn = (state: IGameState, enemyHandKey: HandKey): IGameState => {
   const { hands, defender, attacker } = state
   if (attacker!.species.icon === "🦂") {
@@ -387,7 +400,7 @@ const tortoiseFn = (state: IGameState, enemyHandKey: HandKey): IGameState => {
 
 const vultureFn = (state: IGameState, enemyHandKey: HandKey): IGameState => {
   const { hands, attacker } = state
-  const attackAmount = 4
+  const attackAmount = 2
   const allyHandKey = enemyHandKey === "pc" ? "user" : "pc"
   if (
     hands[enemyHandKey].concat(hands[allyHandKey]).some(card => card.life.current === 0)
@@ -450,6 +463,8 @@ export default function getOffensiveSkillFn(
       return chameleonFn
     case "Cheetah":
       return cheetahFn
+    case "Condor":
+      return condorFn
     case "Eagle":
       return eagleFn
     case "Electric Eel":

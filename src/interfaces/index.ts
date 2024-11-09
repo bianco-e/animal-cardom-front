@@ -42,6 +42,7 @@ export interface Skill {
   use_type_id: number
   offensiveFn: ((state: IGameState, enemyHandKey: HandKey) => IGameState) | null
   defensiveFn: ((state: IGameState, enemyHandKey: HandKey, statsDiff: number) => IGameState) | null
+  passiveFn: ((state: IGameState, enemyHandKey: HandKey) => IGameState) | null
 }
 
 export interface Species {
@@ -71,6 +72,7 @@ export interface Animal {
   scientific_name: string
   attack: Stat
   bleeding: boolean
+  is_sleeping: boolean
   life: Stat
   missing: Missing
   name: string

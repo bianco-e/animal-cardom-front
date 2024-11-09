@@ -55,11 +55,12 @@ export default function HowToPlay({ action }: IProps) {
             <HowToPlaySubtitle>Animals</HowToPlaySubtitle>
             <HowToPlayText>
               Each animal has an <b>ability</b> which can be offensive (activated when
-              attacking) or defensive (activated when the animal is under attack),{" "}
-              <b>attack points</b> and <b>life points</b>, also each animal belongs to a{" "}
-              <b>species</b> which can give you benefits or not depending on the habitat
-              or other cards' abilities. Select an owned animal and click an opponent to
-              attack.
+              attacking), defensive (activated when the animal is under attack) or
+              passive (activated when the round starts), <b>attack points</b> and{" "}
+              <b>life points</b>, also each animal belongs to a <b>species</b> which can
+              give you benefits or not depending on or other cards' abilities, and each
+              animal might feel stronger or not depending on the habitat . Select an owned
+              animal and click an opponent to attack.
             </HowToPlayText>
 
             <HowToPlaySubtitle>Plants</HowToPlaySubtitle>
@@ -72,7 +73,7 @@ export default function HowToPlay({ action }: IProps) {
             <HowToPlaySubtitle>Habitats</HowToPlaySubtitle>
             <HowToPlayText>
               There are 7 different habitats. One of them is set when the game begins and
-              it may benefit a species increasing animals attack by 1.
+              it may benefit certain animals increasing their attack by 1.
             </HowToPlayText>
             <HowToPlayText>
               <b>- Neutral</b> doesn't buff any animal

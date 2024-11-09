@@ -4,6 +4,7 @@ import { getRandomChance } from "../utils"
 const BUTTERFLY_ANIMAL: Animal = {
   id: 99,
   scientific_name: "Lepidoptera",
+  is_sleeping: false,
   skill: {
     types: [],
     name: "",
@@ -11,6 +12,7 @@ const BUTTERFLY_ANIMAL: Animal = {
     use_type_id: 1,
     offensiveFn: null,
     defensiveFn: null,
+    passiveFn: null,
   },
   attack: {
     initial: 1,

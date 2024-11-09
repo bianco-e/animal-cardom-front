@@ -15,6 +15,7 @@ import {
   StatsWrapper,
   Text,
   IconImage,
+  SleepingImage,
 } from "./styled"
 import { useAppDispatch, useAppSelector } from "../../hooks/redux-hooks"
 import { selectCard } from "../../redux/actions/game"
@@ -37,6 +38,7 @@ export default function Card({
   scientific_name,
   attack,
   bleeding,
+  is_sleeping,
   life,
   missing,
   habitat,
@@ -87,7 +89,7 @@ export default function Card({
 
   const handleClick = () => {
     if (onClick) return onClick(id) //@ts-ignore
-    if (isForGame && !game.pcTurn) return dispatch(selectCard(name))
+    if (isForGame && !game.pcTurn && !is_sleeping) return dispatch(selectCard(name))
   }
 
   const getStatColor = (stat: Stat): string => {
@@ -97,15 +99,15 @@ export default function Card({
   }
 
   const getSkillIcon = (skill_use_type_id: number): string => {
-    if (skill_use_type_id === NONE_SKILL_TYPE) return CARD_ICONS.IDLE
+    if (skill_use_type_id === NONE_SKILL_TYPE) return CARD_ICONS.PASSIVE
     if (skill_use_type_id === OFFENSIVE_SKILL_TYPE) return CARD_ICONS.FURY
     if (skill_use_type_id === DEFENSIVE_SKILL_TYPE) return CARD_ICONS.DEFENSE
     return ""
   }
 
   const getCursor = () => {
-    if (!isForGame) return "pointer"
-    return (belongsToUser || game.attacker || game.selectedPlant) && !isDead
+    if (!isForGame) return Boolean(onClick) ? "pointer" : "default"
+    return (belongsToUser || game.attacker || game.selectedPlant) && !isDead && !is_sleeping
       ? "pointer"
       : "default"
   }
@@ -127,6 +129,8 @@ export default function Card({
       {hasDodgedAttack ? <Text className="miss-msg">Miss!</Text> : null}
 
       {animationProps ? <PlantEffectImage {...animationProps} /> : null}
+
+      {is_sleeping ? <SleepingImage src="/images/animations/sleeping.png" /> : null}
 
       {missing.chance ? (
         <IconContainer $placement="LEFT">

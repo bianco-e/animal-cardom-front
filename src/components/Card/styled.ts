@@ -4,6 +4,7 @@ import {
   injuryAnimation,
   missAnimation,
   selectionAnimation,
+  sleepingAnimation,
 } from "../../animations/card-animations"
 import { BREAKPOINTS } from "../../utils/constants"
 
@@ -30,6 +31,17 @@ interface PlantEffectProps {
   $animation?: any
   $fullWidth?: boolean
 }
+
+export const SleepingImage = styled.img`
+  ${sleepingAnimation};
+  display: flex;
+  position: absolute;
+  left: 50%;
+  opacity: 0;
+  top: 12px;
+  z-index: 20;
+  width: 20%;
+`
 
 export const PlantEffectImage = styled.img<PlantEffectProps>`
   ${({ $animation }) =>

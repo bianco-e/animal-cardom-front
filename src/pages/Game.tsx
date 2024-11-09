@@ -8,7 +8,7 @@ import GamePanel from "../components/GamePanel"
 import { Animal, User } from "../interfaces"
 import Spinner from "../components/Spinner"
 import ModalContentResult from "../components/ModalContentResult"
-import { getLiveCards } from "../utils"
+import { getLiveCardsInAHand } from "../utils"
 import { createAction } from "../queries/tracking"
 import { HandContainer } from "../components/styled-components"
 import Card from "../components/Card"
@@ -57,11 +57,11 @@ export default function Game({ isCampaign }: IProps) {
       ...(authId ? { auth_id: authId } : {}),
       ...(guestName ? { guest_name: guestName } : {}),
     }
-    if (!getLiveCards(hands.user).length) {
+    if (!getLiveCardsInAHand(hands.user).length) {
       setModal("lose")
       createAction({ ...baseAction, action: "user-lost" })
     }
-    if (!getLiveCards(hands.pc).length) {
+    if (!getLiveCardsInAHand(hands.pc).length) {
       setModal("win")
       createAction({ ...baseAction, action: "user-won" })
     }

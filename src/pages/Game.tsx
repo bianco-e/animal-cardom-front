@@ -4,7 +4,7 @@ import Modal from "../components/Common/Modal"
 import { useNavigate, useParams } from "react-router-dom"
 import { BREAKPOINTS } from "../utils/constants"
 import { GAME_ACTIONS } from "../redux/reducers/game"
-import SidePanel from "../components/GamePanel"
+import GamePanel from "../components/GamePanel"
 import { Animal, User } from "../interfaces"
 import Spinner from "../components/Spinner"
 import ModalContentResult from "../components/ModalContentResult"
@@ -80,7 +80,7 @@ export default function Game({ isCampaign }: IProps) {
   return (
     <>
       <Wrapper $bgImg={`/images/habitats/${habitat.name.toLowerCase()}.webp`}>
-        <SidePanel
+        <GamePanel
           isCampaign={isCampaign}
           plants={plants}
           habitat={habitat}

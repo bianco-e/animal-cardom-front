@@ -20,3 +20,7 @@ export const SPECIES = {
   5: "Fish",
   6: "Insect"
 }
+
+export const NONE_SKILL_TYPE = 1
+export const OFFENSIVE_SKILL_TYPE = 3
+export const DEFENSIVE_SKILL_TYPE = 4

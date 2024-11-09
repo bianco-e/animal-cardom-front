@@ -1,4 +1,5 @@
 import styled from "styled-components"
+import { BREAKPOINTS } from "../../utils/constants"
 
 export enum TooltipDirection {
   TOP = "TOP",
@@ -9,13 +10,19 @@ export enum TooltipDirection {
 
 interface TooltipProps {
   $direction: TooltipDirection
+  $size: "SM" | "MD"
+}
+
+const widths = {
+  SM: 96,
+  MD: 124,
 }
 
 const positions = {
-  [TooltipDirection.TOP]: `bottom: 120%; flex-direction: column; left: calc(50% - 49px);`,
-  [TooltipDirection.BOTTOM]: `top: 120%; flex-direction: column-reverse; left: calc(50% - 49px);`,
-  [TooltipDirection.BOTTOM_LEFT]: `top: 100%; flex-direction: column-reverse; right: 90%;`,
-  [TooltipDirection.BOTTOM_RIGHT]: `top: 100%; flex-direction: column-reverse; left: 90%;`,
+  [TooltipDirection.TOP]: (width: number) => `bottom: 120%; flex-direction: column; left: calc(50% - ${width / 2}px);`,
+  [TooltipDirection.BOTTOM]: (width: number) => `top: 120%; flex-direction: column-reverse; left: calc(50% - ${width / 2}px);`,
+  [TooltipDirection.BOTTOM_LEFT]: (width: number) => `top: 100%; flex-direction: column-reverse; right: 90%;`,
+  [TooltipDirection.BOTTOM_RIGHT]: (width: number) => `top: 100%; flex-direction: column-reverse; left: 90%;`,
 }
 
 const descriptionContainer = {
@@ -48,9 +55,9 @@ export const TooltipWrapper = styled.div<TooltipProps>`
   display: flex;
   justify-content: center;
   position: absolute;
-  width: 96px;
+  width: ${({ $size }) => widths[$size]}px;
   z-index: 3;
-  ${({ $direction }) => positions[$direction]}
+  ${({ $direction, $size }) => positions[$direction](widths[$size])}
   > hr {
     background: ${({ theme }) => theme.secondary_violet};
     border: 1px solid ${({ theme }) => theme.secondary_violet};
@@ -88,5 +95,9 @@ export const TooltipWrapper = styled.div<TooltipProps>`
     height: 8px;
     position: absolute;
     width: 8px;
+  }
+  ${BREAKPOINTS.SM} {
+    width: ${widths.SM}px;
+    ${({ $direction }) => positions[$direction](widths.SM)}
   }
 `

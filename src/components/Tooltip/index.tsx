@@ -4,11 +4,20 @@ interface IProps {
   direction?: TooltipDirection
   description: string
   title: string
+  size?: "SM" | "MD"
 }
 
-export default function Tooltip({ direction = TooltipDirection.TOP, description, title }: IProps) {
+export default function Tooltip({
+  direction = TooltipDirection.TOP,
+  description,
+  title,
+  size = "SM",
+}: IProps) {
   return (
-    <TooltipWrapper className="tooltip" $direction={direction}>
+    <TooltipWrapper
+      $size={size}
+      className="tooltip"
+      $direction={direction}>
       <div className="description-container">
         <span>{description}</span>
       </div>

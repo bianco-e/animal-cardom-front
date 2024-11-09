@@ -20,11 +20,9 @@ import { useAppDispatch, useAppSelector } from "../../hooks/redux-hooks"
 import { selectCard } from "../../redux/actions/game"
 import styles from "../../styles"
 import { TooltipDirection } from "../Tooltip/styled"
+import { DEFENSIVE_SKILL_TYPE, NONE_SKILL_TYPE, OFFENSIVE_SKILL_TYPE } from "../../utils/constants"
 
-const NONE_SKILL_TYPE = 1
-const OFFENSIVE_SKILL_TYPE = 3
-const DEFENSIVE_SKILL_TYPE = 4
-const USER_ANIMAL_ROTATION = 12
+const USER_ANIMAL_ROTATION = 8
 const PC_ANIMAL_ROTATION = 4
 
 interface IProps extends Animal {
@@ -89,7 +87,7 @@ export default function Card({
 
   const handleClick = () => {
     if (onClick) return onClick(id) //@ts-ignore
-    if (!game.pcTurn) return dispatch(selectCard(name))
+    if (isForGame && !game.pcTurn) return dispatch(selectCard(name))
   }
 
   const getStatColor = (stat: Stat): string => {
@@ -105,6 +103,13 @@ export default function Card({
     return ""
   }
 
+  const getCursor = () => {
+    if (!isForGame) return "pointer"
+    return (belongsToUser || game.attacker || game.selectedPlant) && !isDead
+      ? "pointer"
+      : "default"
+  }
+
   return (
     <AnimalCard
       onClick={handleClick}
@@ -113,11 +118,7 @@ export default function Card({
       $opacity={isDead ? "0.5" : cardOpacity || "1"}
       $isCardUnderAttack={isCardUnderAttack}
       $isCardSelected={isCardSelected}
-      $cursor={
-        (belongsToUser || game.attacker || game.selectedPlant || onClick) && !isDead
-          ? "pointer"
-          : "default"
-      }
+      $cursor={getCursor()}
       $habitat={habitat.toLowerCase()}
       ref={animalRef}>
       {isCardUnderAttack ? (
@@ -139,6 +140,12 @@ export default function Card({
       ) : null}
 
       <IconContainer>
+        <Tooltip
+          direction={TooltipDirection.BOTTOM}
+          title={species.name}
+          size="MD"
+          description={species.description}
+        />
         <span>{species.icon}</span>
       </IconContainer>
 

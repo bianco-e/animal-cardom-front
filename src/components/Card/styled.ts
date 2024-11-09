@@ -252,11 +252,19 @@ export const IconContainer = styled.div<IconContainerProps>`
     left: calc(50% - 6px);
     top: 28px;
   }
+  cursor: help;
+  > div.tooltip {
+    display: none;
+  }
+  &:hover {
+    > div.tooltip {
+      display: flex;
+    }
+  }
   ${({ $placement = "CENTER" }) => ICON_CSS[$placement]};
   ${({ $placement = "CENTER" }) =>
     $placement !== "CENTER"
       ? `
-    cursor: help;
     top: -22px;
     > img,
     span {
@@ -270,14 +278,6 @@ export const IconContainer = styled.div<IconContainerProps>`
       font-size: 12px;
       left: auto;
       right: 26px;
-    }
-    > div.tooltip {
-      display: none;
-    }
-    &:hover {
-      > div.tooltip {
-        display: flex;
-      }
     }`
       : ""};
   ${BREAKPOINTS.SM} {

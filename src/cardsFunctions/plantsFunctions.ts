@@ -217,7 +217,6 @@ const peyoteFn = (state: IGameState, enemyHandKey: HandKey): IGameState => {
 
 const venusFn = (state: IGameState, enemyHandKey: HandKey): IGameState => {
   const { animalToTreat, hands } = state
-  console.log(animalToTreat, hands)
   if (hands[enemyHandKey].includes(animalToTreat!) && animalToTreat?.species.name === SPECIES[6] && animalToTreat?.life.current < animalToTreat?.life.initial) {
     const newHand = killCardInAHand(hands[enemyHandKey], animalToTreat!)
     return setHandInState(state, enemyHandKey, newHand)

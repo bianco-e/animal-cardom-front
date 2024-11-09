@@ -1,9 +1,11 @@
 import getPlantFn from "../../cardsFunctions/plantsFunctions"
-import getOffensiveSkillFn, {
-  getExtraDamage,
-} from "../../cardsFunctions/offensiveSkillsFunctions"
-import getDefensiveSkillFn from "../../cardsFunctions/defensiveSkillsFunctions"
-import { getLiveCards, getRandomChance, getRandomFromArr, parseAnimalsFromDB } from "../../utils"
+import { getExtraDamage } from "../../cardsFunctions/offensiveSkillsFunctions"
+import {
+  getLiveCards,
+  getRandomChance,
+  getRandomFromArr,
+  parseAnimalsFromDB,
+} from "../../utils"
 import {
   HandKey,
   Animal,
@@ -21,12 +23,14 @@ import { newCampaignGame, newRandomGame } from "../../queries/games"
 export const startGuestGame = () => {
   return async (dispatch: AppDispatch) => {
     const gameRes = await newRandomGame()
-    if (gameRes.error)
-      return dispatch(GAME_ACTIONS.SET_GAME_ERROR(true))
+    if (gameRes.error) return dispatch(GAME_ACTIONS.SET_GAME_ERROR(true))
     dispatch(
       //@ts-ignore
       setGame(
-        { pc: parseAnimalsFromDB(gameRes.pc.animals), user: parseAnimalsFromDB(gameRes.user.animals) },
+        {
+          pc: parseAnimalsFromDB(gameRes.pc.animals),
+          user: parseAnimalsFromDB(gameRes.user.animals),
+        },
         { pc: gameRes.pc.plants, user: gameRes.user.plants },
         gameRes.habitat
       )
@@ -41,13 +45,15 @@ export const startCampaignGame = (setUserName: (str: string) => void, level: num
     setUserName(first_name)
     //if (campaign.level < level) dispatch(GAME_ACTIONS.SET_GAME_ERROR(true))
     const gameRes = await newCampaignGame(level, id)
-    console.log('gameRes', gameRes)
-    if (!gameRes || gameRes.error)
-      return dispatch(GAME_ACTIONS.SET_GAME_ERROR(true))
+
+    if (!gameRes || gameRes.error) return dispatch(GAME_ACTIONS.SET_GAME_ERROR(true))
     dispatch(
       //@ts-ignore
       setGame(
-        { pc: parseAnimalsFromDB(gameRes.pc.animals), user: parseAnimalsFromDB(gameRes.user.animals) },
+        {
+          pc: parseAnimalsFromDB(gameRes.pc.animals),
+          user: parseAnimalsFromDB(gameRes.user.animals),
+        },
         { pc: gameRes.pc.plants, user: gameRes.user.plants },
         gameRes.habitat
       )
@@ -72,9 +78,9 @@ const attackAndApplySkill = (game: IGameState, enemyHandKey: HandKey): IGameStat
     ),
   }
 
-  return attacker.paralyzed > 0
+  return attacker.paralyzed > 0 || !attacker.skill.offensiveFn
     ? updatedGame
-    : getOffensiveSkillFn(attacker.name)(updatedGame, enemyHandKey)
+    : attacker.skill.offensiveFn(updatedGame, enemyHandKey)
 }
 
 const applyPlantToCard = (
@@ -313,8 +319,9 @@ const applyAttackDamage = (game: IGameState, enemyHandKey: HandKey): IGameState 
 
   const statsDiff =
     defender.life.current - (attacker.attack.current + getExtraDamage(attacker, defender))
-  const updatedGame = getDefensiveSkillFn(defender.name)(game, enemyHandKey, statsDiff)
-  return updatedGame
+  return defender.skill.defensiveFn
+    ? defender.skill.defensiveFn(game, enemyHandKey, statsDiff)
+    : game
 }
 
 const applyPoisonDamage = (hands: IHands, enemyHandKey: HandKey): IHands => {

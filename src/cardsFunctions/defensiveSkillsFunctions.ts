@@ -5,10 +5,12 @@ const BUTTERFLY_ANIMAL: Animal = {
   id: 99,
   scientific_name: "Lepidoptera",
   skill: {
-    types: ["none"],
+    types: [],
     name: "",
     description: "",
-    use_type_id: 1
+    use_type_id: 1,
+    offensiveFn: null,
+    defensiveFn: null,
   },
   attack: {
     initial: 1,
@@ -304,7 +306,7 @@ const peacockFn = (
   }
 }
 
-export default function getSkillFn(name: string) {
+export default function getDefensiveSkillFn(name: string) {
   switch (name) {
     case "Axolotl":
       return axolotlFn

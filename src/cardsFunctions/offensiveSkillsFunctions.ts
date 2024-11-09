@@ -123,20 +123,20 @@ const decreaseEnemiesAttack = (arr: Animal[], attackAmount: number) => {
   })
 }
 
-const copyDefenderSkill = (arr: Animal[], defender: Animal, attacker: Animal) => {
-  return arr.map(card => {
-    if (card.name === attacker.name) {
+const copyDefenderSkill = (allyHand: Animal[], defender: Animal, attacker: Animal) => {
+  return allyHand.map(animal => {
+    if (animal.id === attacker.id) {
       return {
-        ...card,
+        ...animal,
         skill: defender.skill,
       }
-    } else return card
+    } else return animal
   })
 }
 
 const setTargeteableAsTrue = (arr: Animal[], animal: Animal) => {
   return arr.map(card => {
-    if (card.name === animal.name) {
+    if (card.id === animal.id) {
       return {
         ...card,
         targeteable: true,
@@ -314,11 +314,11 @@ const orcFn = (state: IGameState, enemyHandKey: HandKey): IGameState => {
 const parrotFn = (state: IGameState, enemyHandKey: HandKey): IGameState => {
   const { hands, defender, attacker } = state
   const allyHandKey = enemyHandKey === "pc" ? "user" : "pc"
-  const updatedDefender = hands[enemyHandKey].find(card => card.name === defender!.name)
+  const defenderInHand = hands[enemyHandKey].find(animal => animal.id === defender!.id)
   if (
-    updatedDefender &&
-    updatedDefender.life.current === 0 &&
-    !updatedDefender.skill.types.includes("none")
+    defenderInHand &&
+    defenderInHand.life.current === 0 &&
+    defenderInHand.skill.types.length
   ) {
     const newHand = copyDefenderSkill(hands[allyHandKey], defender!, attacker!)
     return setHandInState(state, allyHandKey, newHand)
@@ -432,9 +432,9 @@ export const getExtraDamage = (attacker: Animal, defender: Animal): number => {
 }
 
 // animals that ONLY make extra damage don't have a skillFn
-export default function getSkillFn(
+export default function getOffensiveSkillFn(
   name: string
-): (state: IGameState, enemyHandKey: HandKey) => IGameState {
+): ((state: IGameState, enemyHandKey: HandKey) => IGameState) | null {
   switch (name) {
     case "Bat":
       return batFn
@@ -499,6 +499,6 @@ export default function getSkillFn(
     case "Wolf":
       return wolfFn
     default:
-      return (state: IGameState) => state
+      return null
   }
 }

@@ -1,4 +1,6 @@
 import { DBAnimal, Animal } from "../interfaces"
+import getOffensiveSkillFn from "../cardsFunctions/offensiveSkillsFunctions"
+import getDefensiveSkillFn from "../cardsFunctions/defensiveSkillsFunctions"
 
 export const cardSpeciesToLowerCase = (species: string): string => {
   const splittedSpecies = species.split(" ")
@@ -51,7 +53,9 @@ export const parseAnimalsFromDB = (dbAnimals: DBAnimal[]): Animal[] => {
       name: dbAnimal.skill_name,
       description: dbAnimal.skill_description,
       types: [dbAnimal.skill_type_id.toString()],
-      use_type_id: dbAnimal.skill_use_type_id
+      use_type_id: dbAnimal.skill_use_type_id,
+      offensiveFn: getOffensiveSkillFn(dbAnimal.name),
+      defensiveFn: getDefensiveSkillFn(dbAnimal.name),
     },
     attack: {
       initial: dbAnimal.attack,
@@ -70,9 +74,9 @@ export const parseAnimalsFromDB = (dbAnimals: DBAnimal[]): Animal[] => {
     },
     poisoned: {
       damage: 0,
-      rounds: 0
+      rounds: 0,
     },
     price: dbAnimal.price,
-    sell_price: Math.floor(dbAnimal.price / 2)
+    sell_price: Math.floor(dbAnimal.price / 2),
   }))
 }

@@ -40,6 +40,8 @@ export interface Skill {
   description: string
   types: string[]
   use_type_id: number
+  offensiveFn: ((state: IGameState, enemyHandKey: HandKey) => IGameState) | null
+  defensiveFn: ((state: IGameState, enemyHandKey: HandKey, statsDiff: number) => IGameState) | null
 }
 
 export interface Species {

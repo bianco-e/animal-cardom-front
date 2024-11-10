@@ -22,6 +22,7 @@ import { newCampaignGame, newRandomGame } from "../../queries/games"
 
 export const startGuestGame = () => {
   return async (dispatch: AppDispatch) => {
+    dispatch(GAME_ACTIONS.SET_LOADING_GAME(true))
     const gameRes = await newRandomGame()
     if (gameRes.error) return dispatch(GAME_ACTIONS.SET_GAME_ERROR(true))
     dispatch(
@@ -40,12 +41,12 @@ export const startGuestGame = () => {
 
 export const startCampaignGame = (setUserName: (str: string) => void, level: number) => {
   return async (dispatch: AppDispatch, getState: () => IRootState) => {
-    const { auth } = getState()
+    dispatch(GAME_ACTIONS.SET_LOADING_GAME(true))
+    const { auth, campaign } = getState()
     const { first_name, id } = auth.user
     setUserName(first_name)
-    //if (campaign.level < level) dispatch(GAME_ACTIONS.SET_GAME_ERROR(true))
+    if (campaign.level < level) return dispatch(GAME_ACTIONS.SET_GAME_ERROR(true))
     const gameRes = await newCampaignGame(level, id)
-
     if (!gameRes || gameRes.error) return dispatch(GAME_ACTIONS.SET_GAME_ERROR(true))
     dispatch(
       //@ts-ignore

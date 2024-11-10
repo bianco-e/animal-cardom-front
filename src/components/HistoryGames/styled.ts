@@ -42,25 +42,19 @@ export const DetailsPanel = styled.div`
   content: "";
   display: flex;
   flex-direction: column;
-  height: 40px;
+  height: 36px;
   justify-content: center;
   position: absolute;
   left: 50%;
   -webkit-transform: translateX(-50%);
   transform: translateX(-50%);
-  width: 180px;
+  width: 148px;
   bottom: 0;
   > span {
-    font-size: 10px;
-    font-weight: bold;
-    margin-bottom: 2px;
-    &:last-child {
-      font-size: 9px;
-      margin-bottom: 0;
-    }
+    font-size: 12px;
   }
   ${BREAKPOINTS.SM} {
-    height: 30px;
+    height: 32px;
   }
 `
 export const PlayerStats = styled.div`
@@ -86,8 +80,8 @@ export const CardsContainer = styled.div`
   align-items: center;
   display: flex;
   margin-bottom: 8px;
-  justify-content: space-around;
-  width: 85%;
+  justify-content: space-between;
+  width: 100%;
   ${BREAKPOINTS.SM} {
     justify-content: space-between;
     &:last-child {

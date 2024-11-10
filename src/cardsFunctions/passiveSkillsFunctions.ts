@@ -1,17 +1,19 @@
 import { HandKey, IGameState } from "../interfaces"
-import { getRandomChance } from "../utils"
+import { getLiveCardsInAHand, getRandomChance } from "../utils"
 
 const slothFn = (state: IGameState, enemyHandKey: HandKey) => {
   const { hands } = state
+  const aliveAnimals = getLiveCardsInAHand(hands[enemyHandKey])
   return {
     ...state,
     hands: {
       ...hands,
       [enemyHandKey]: hands[enemyHandKey].map(animal => {
+        const isSloth = animal.name === "Sloth"
         return {
           ...animal,
           is_sleeping:
-            animal.name === "Sloth" && animal.life.current > 0
+          isSloth && animal.life.current > 0 && aliveAnimals.length > 1
               ? getRandomChance(60)
               : false,
         }

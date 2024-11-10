@@ -472,15 +472,20 @@ export const DescriptionContainer = styled.div`
 export const CardThumbnail = styled(AnimalCard)`
   cursor: default;
   height: 80px;
+  padding: 4px;
+  max-width: 76px;
   width: calc(20% - 8px);
   > .animal-name {
-    font-size: 8px;
+    font-size: 12px;
     font-weight: bold;
-    margin-bottom: 2px;
+    overflow: hidden;
+    text-wrap: nowrap;
+    text-overflow: ellipsis;
+    width: 100%;
   }
   > .animal-picture {
     border-radius: 16px;
-    height: 32px;
+    height: 40px;
     width: 95%;
   }
   &:hover {

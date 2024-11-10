@@ -11,7 +11,7 @@ import { AUTH_ACTIONS } from "../../redux/reducers/auth"
 
 export default function SideMenu() {
   const [currentSection, setCurrentSection] = useState<string>()
-  const [menuWidth, setMenuWidth] = useState<string>("210px")
+  const [menuWidth, setMenuWidth] = useState<string>("140px")
   const dispatch = useAppDispatch()
   const user = useAppSelector(({ auth }) => auth.user)
   const { logout } = useAuth0()
@@ -43,7 +43,7 @@ export default function SideMenu() {
     logout({ returnTo: window.location.origin })
   }
   const hideSideMenu = () => {
-    setMenuWidth(menuWidth === "1px" ? "200px" : "1px")
+    setMenuWidth(menuWidth === "1px" ? "140px" : "1px")
   }
 
   return (
@@ -69,7 +69,7 @@ export default function SideMenu() {
       />
       {user.first_name ? (
         <UserInfoContainer>
-          <img className="avatar" alt={user.first_name} src={user.profileImg} />
+          <img className="avatar" alt={user.first_name} referrerPolicy="no-referrer" src={user.profile_img} />
           <span>
             <b>{user.first_name}</b>
           </span>

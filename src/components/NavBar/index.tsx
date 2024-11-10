@@ -14,7 +14,7 @@ interface IProps {
 export default function NavBar({ isHome }: IProps) {
   const { loginWithRedirect, user, isAuthenticated } = useAuth0()
   const username = user?.given_name
-  const profileImg = user?.picture
+  const profile_img = user?.picture
   const auth_id = user?.sub
   const { soundOn } = useAppSelector(({ game }) => game)
   const navigate = useNavigate()
@@ -68,9 +68,9 @@ export default function NavBar({ isHome }: IProps) {
           <img alt="ac-logo" src="/images/animal-cardom-logo.png" width={60} />
         </Link>
         <LogButton onClick={handleLogin} $overflow="visible">
-          {isAuthenticated && username && profileImg ? (
+          {isAuthenticated && username && profile_img ? (
             <>
-              <UserImage src={profileImg} alt={username} />
+              <UserImage src={profile_img} alt={username} />
               <span>
                 You're allowed, <b>{username}!</b>
               </span>

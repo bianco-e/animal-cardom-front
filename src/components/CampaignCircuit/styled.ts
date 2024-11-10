@@ -10,10 +10,10 @@ interface HabitatContainerProps {
 }
 
 export const Wrapper = styled.div`
-  height: 420px;
+  height: 400px;
   margin: 100px auto 0;
   position: relative;
-  width: 420px;
+  width: 400px;
   ${BREAKPOINTS.SM} {
     margin: 90px auto 0;
     height: 270px;
@@ -31,14 +31,14 @@ export const CampaignLevelContainer = styled.div<HabitatContainerProps>`
   cursor: pointer;
   display: flex;
   flex-direction: column;
-  height: 130px;
+  height: 104px;
   justify-content: space-between;
   left: calc(50% - 65px);
   position: absolute;
   top: calc(50% - 65px);
   transform: ${({ $angle, $containerWidth }) =>
     `rotate(${$angle}deg) translate(${$containerWidth / 2}px) rotate(-${$angle}deg)`};
-  width: 130px;
+  width: 104px;
   &:before {
     align-items: center;
     background: ${({ theme }) => theme.primary_brown};

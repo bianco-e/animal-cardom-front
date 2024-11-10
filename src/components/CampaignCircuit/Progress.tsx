@@ -4,20 +4,29 @@ import { CampaignLevel, CampaignState } from "../../interfaces"
 interface IProps {
   campaignLevels: CampaignLevel[]
 }
+
+const INITIAL_LEVEL = 1
+
 export default function CampaignProgress({ campaignLevels }: IProps) {
   const { level }: CampaignState = useAppSelector(({ campaign }) => campaign)
-  const campaignLevel = campaignLevels.find(campaignLevel => campaignLevel.level_required <= level)?.id || 1
-  const barWidth: number =
-    level === 0 ? 0 : level > campaignLevels.length ? 100 : (campaignLevel / campaignLevels.length) * 100
+  const levelsPassed = campaignLevels.filter(
+    campaignLevel => campaignLevel.level_required <= level
+  )
+
+  const getBarWidth = (): number => {
+    if (level === INITIAL_LEVEL) return 0
+    if (level >= campaignLevels.length) return 100
+    return (levelsPassed.length / campaignLevels.length) * 100
+  }
 
   return (
     <Wrapper>
       <Title>Campaign Progress</Title>
-      <ProgressBar $barWidth={barWidth}>
+      <ProgressBar $barWidth={getBarWidth()}>
         <div></div>
       </ProgressBar>
       <SmallText>
-        <b>{barWidth.toFixed(0)} %</b>
+        <b>{getBarWidth().toFixed(0)} %</b>
       </SmallText>
     </Wrapper>
   )
@@ -45,7 +54,7 @@ const ProgressBar = styled.div<ProgressBarProps>`
     border-radius: 5px;
     height: 15px;
     transition: all 0.4s ease;
-    width: ${(props) => props.$barWidth}%;
+    width: ${props => props.$barWidth}%;
   }
 `
 const Title = styled.span`

@@ -20,9 +20,7 @@ export const getAllCampaignLevels = () =>
     .catch(err => console.error(err))
 
 export const getLastGames = (user_id: string) => {
-  return fetch(`${API_BASE_URL}games/last-games?quantity=10`, {
-    ...postMethod({ user_id }),
-  })
+  return fetch(`${API_BASE_URL}games/${user_id}`)
     .then(res => res.json())
     .catch(err => console.error(err))
 }

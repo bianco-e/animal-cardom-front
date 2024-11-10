@@ -11,6 +11,7 @@ import {
   Result,
   Wrapper,
 } from "./styled"
+import styles from "../../styles"
 
 interface IProps {
   lastGames: Game[]
@@ -19,40 +20,53 @@ interface IProps {
 export default function History({ lastGames }: IProps) {
   return (
     <Wrapper>
-      {lastGames.length > 0 ? (
+      {lastGames.length ? (
         lastGames.map((game, idx) => {
-          const { won, used_animals, used_plants, habitat, created_at, earned_xp } = game
-          const gameDate = new Date(created_at!)
+          const {
+            user_won,
+            user_used_animals,
+            pc_used_animals,
+            pc_used_plants,
+            user_used_plants,
+            habitat_name,
+            created_at,
+          } = game
+          const gameDate = new Date(created_at)
           return (
-            <HistoryCard $habitat={habitat.toLowerCase()} key={idx}>
-              <Result $bgColor={won ? "#0B8A37" : "#dd5540"} className="spaced-title">
-                {won ? "Won" : "Lost"}
+            <HistoryCard $habitat={habitat_name.toLowerCase()} key={idx}>
+              <Result
+                $bgColor={user_won ? styles.primary_green : styles.primary_red}
+                className="spaced-title">
+                {user_won ? "Won" : "Lost"}
               </Result>
               <PlayerStats>
                 <b>You</b>
                 <CardsContainer>
-                  {used_animals.user.map(({ name, survived }) => {
-                    const isLittle: boolean = name.startsWith("Little")
-                    const cardImage = `/images/animals/${
-                      isLittle ? "" : "adult-"
-                    }${cardSpeciesToLowerCase(name)}.webp`
+                  {user_used_animals.map(({ name, finished_game }) => {
+                    if (!name) return null
+                    const cardImage = `/images/animals/adult-${cardSpeciesToLowerCase(
+                      name
+                    )}.webp`
                     return (
                       <CardThumbnail
                         key={name}
-                        disabled={!survived}
+                        disabled={!finished_game}
                         image={cardImage}
-                        name={name}></CardThumbnail>
+                        name={name}
+                      />
                     )
                   })}
                 </CardsContainer>
                 <CardsContainer>
-                  {used_plants.user.map(({ name, applied }) => {
+                  {user_used_plants.map(({ name, finished_game }) => {
+                    if (!name) return null
                     return (
                       <PlantThumbnail
                         key={name}
-                        disabled={applied}
+                        disabled={finished_game}
                         image={`/images/plants/${name.toLowerCase()}.webp`}
-                        name={name}></PlantThumbnail>
+                        name={name}
+                      />
                     )
                   })}
                 </CardsContainer>
@@ -60,32 +74,35 @@ export default function History({ lastGames }: IProps) {
               <PlayerStats>
                 <b>PC</b>
                 <CardsContainer>
-                  {used_animals.pc.map(({ name, survived }) => {
+                  {pc_used_animals.map(({ name, finished_game }) => {
+                    if (!name) return null
                     return (
                       <CardThumbnail
                         key={name}
-                        disabled={!survived}
+                        disabled={!finished_game}
                         image={`/images/animals/adult-${cardSpeciesToLowerCase(
                           name
                         )}.webp`}
-                        name={name}></CardThumbnail>
+                        name={name}
+                      />
                     )
                   })}
                 </CardsContainer>
                 <CardsContainer>
-                  {used_plants.pc.map(({ name, applied }) => {
+                  {pc_used_plants.map(({ name, finished_game }) => {
+                    if (!name) return null
                     return (
                       <PlantThumbnail
                         key={name}
-                        disabled={applied}
+                        disabled={finished_game}
                         image={`/images/plants/${name.toLowerCase()}.webp`}
-                        name={name}></PlantThumbnail>
+                        name={name}
+                      />
                     )
                   })}
                 </CardsContainer>
               </PlayerStats>
               <DetailsPanel>
-                <span>XP: {earned_xp}</span>
                 <span>
                   {gameDate.toLocaleDateString()} - {gameDate.getHours()}:
                   {gameDate.getMinutes() < 10

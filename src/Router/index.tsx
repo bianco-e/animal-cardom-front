@@ -21,7 +21,7 @@ export default createBrowserRouter(
       <Route path="/play" element={<Game />} />
       <Route element={<CampaignRouteWrapper />}>
         <Route path="/menu" element={<Menu />} />
-        <Route path="/campaign/level/:lv" element={<Game isCampaign />} />
+        <Route path="/campaign/level/:levelId" element={<Game isCampaign />} />
         <Route path="/campaign" element={<Campaign />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/collection" element={<Collection />} />

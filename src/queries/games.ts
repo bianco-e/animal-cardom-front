@@ -1,4 +1,4 @@
-import { Game } from "../interfaces"
+import { GameToSave } from "../interfaces"
 import { postMethod } from "./methods"
 import { API_BASE_URL } from "../utils/constants"
 
@@ -17,13 +17,12 @@ export const newRandomGame = () => {
 }
 
 export const saveGameResult = (
-  auth_id: string,
-  game: Game,
-  current_xp: number,
-  required_xp: number
+  user_id: string,
+  game: GameToSave,
+  level: number,
 ) => {
   return fetch(`${API_BASE_URL}games/save`, {
-    ...postMethod({ auth_id, game, current_xp, required_xp }),
+    ...postMethod({ user_id, game, level }),
   })
     .then(res => res.json())
     .catch(err => console.error(err))

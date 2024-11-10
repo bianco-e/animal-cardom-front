@@ -31,8 +31,6 @@ export default function CampaignCircuit() {
     }
   }, [containerRef.current]) //eslint-disable-line
 
-  const handleCampaignGame = (level: number) => navigate(`/campaign/level/${level}`)
-
   return (
     <>
       <CampaignProgress campaignLevels={campaignLevels} />
@@ -48,7 +46,7 @@ export default function CampaignCircuit() {
               $disabled={isDisabled}
               key={id}
               $level={id}
-              onClick={() => !isDisabled && handleCampaignGame(id)}
+              onClick={() => !isDisabled && navigate(`/campaign/level/${id}`)}
               title={isDisabled ? "Locked" : `${habitat_name} habitat`}
             />
           )

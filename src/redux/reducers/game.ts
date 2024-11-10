@@ -24,7 +24,6 @@ const initialState: IGameState = {
     name: "",
     description: "",
     color: "#fff",
-    campaign_xp: [0],
   },
   pcTurn: false,
   triggerPcAttack: false,

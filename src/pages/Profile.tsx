@@ -18,11 +18,11 @@ export default function Profile() {
     setIsLoadingLastGames(true)
     getLastGames(id).then(res => {
       setIsLoadingLastGames(false)
-      if (res) {
-        setLastGames(res)
+      if (res && !res.error) {
+        setLastGames(res.last_games)
       }
     })
-  }, []) //eslint-disable-line react-hooks/exhaustive-deps
+  }, [id]) //eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <MenuLayout>

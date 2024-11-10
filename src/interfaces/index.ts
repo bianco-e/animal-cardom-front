@@ -62,6 +62,7 @@ export interface IPlants {
 }
 
 export interface IPlant {
+  id: number
   name: string
   description: string
   use_type_id: number
@@ -95,7 +96,6 @@ export interface Habitat {
   name: string
   description: string
   color: string
-  campaign_xp: number[]
 }
 
 export interface CampaignLevel {
@@ -108,20 +108,24 @@ export interface CampaignLevel {
   pc_animals: number[],
 }
 
-export interface Game {
-  created_at?: Date
-  earned_animal?: string
-  earned_xp?: number
-  habitat: string
-  won: boolean
-  used_animals: {
-    user: { name: string; survived: boolean }[]
-    pc: { name: string; survived: boolean }[]
-  }
-  used_plants: {
-    user: { name: string; applied: boolean }[]
-    pc: { name: string; applied: boolean }[]
-  }
+interface UsedCard {
+  id: number
+  name: string
+  finished_game: boolean
+}
+
+export interface GameToSave {
+  habitat_id: Habitat['id']
+  habitat_name: Habitat['name']
+  user_won: boolean
+  pc_used_animals: UsedCard[]
+  user_used_animals: UsedCard[]
+  pc_used_plants: UsedCard[]
+  user_used_plants: UsedCard[]
+}
+
+export interface Game extends GameToSave {
+  created_at: Date
 }
 
 export interface AuthUser {
@@ -136,7 +140,7 @@ export interface AuthUser {
 export interface User {
   id: string
   auth_id: string
-  profileImg: string
+  profile_img: string
   email: string
   first_name: string
   last_name: string

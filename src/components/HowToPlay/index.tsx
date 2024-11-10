@@ -55,8 +55,8 @@ export default function HowToPlay({ action }: IProps) {
             <HowToPlaySubtitle>Animals</HowToPlaySubtitle>
             <HowToPlayText>
               Each animal has an <b>ability</b> which can be offensive (activated when
-              attacking), defensive (activated when the animal is under attack) or
-              passive (activated when the round starts), <b>attack points</b> and{" "}
+              attacking), defensive (activated when the animal is under attack) or passive
+              (activated when the round starts), <b>attack points</b> and{" "}
               <b>life points</b>, also each animal belongs to a <b>species</b> which can
               give you benefits or not depending on or other cards' abilities, and each
               animal might feel stronger or not depending on the habitat . Select an owned

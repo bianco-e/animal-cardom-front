@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react"
-import { FlattenSimpleInterpolation } from "styled-components"
 import {
   buffAnimation,
   cleaningAnimation,
@@ -10,23 +9,24 @@ import {
 } from "../animations/plant-animations"
 import { injuryAnimation } from "../animations/card-animations"
 import { useAppSelector } from "./redux-hooks"
+import { css } from 'styled-components'
 
 interface IProps {
   name: string
-  soundState: string | null
+  soundOn: boolean
 }
 
 export interface AnimationProps {
-  animation: FlattenSimpleInterpolation
+  $animation: ReturnType<typeof css>
   src: string
-  fullWidth?: boolean
+  $fullWidth?: boolean
 }
 
 interface PlantData {
   audio: HTMLAudioElement
-  animation: FlattenSimpleInterpolation
+  $animation: ReturnType<typeof css>
   img: string
-  fullWidth?: boolean
+  $fullWidth?: boolean
 }
 
 interface PlantsData {
@@ -36,55 +36,60 @@ interface PlantsData {
 const plantsAnimationsData: PlantsData = {
   Peyote: {
     audio: audioFiles.paralyze,
-    animation: paralyzeAnimation,
+    $animation: paralyzeAnimation,
     img: "/images/plants/spiral.png",
   },
   Ricinum: {
     audio: audioFiles.poison,
-    animation: poisonAnimation,
+    $animation: poisonAnimation,
     img: "/images/plants/green-smoke.png",
   },
   Withania: {
     audio: audioFiles.bite,
-    animation: buffAnimation,
+    $animation: buffAnimation,
     img: "/images/plants/violet-buff.png",
-    fullWidth: true,
+    $fullWidth: true,
   },
   Jewelweed: {
     audio: audioFiles.healing,
-    animation: cleaningAnimation,
+    $animation: cleaningAnimation,
     img: "/images/plants/yellow-stars.png",
-    fullWidth: true,
+    $fullWidth: true,
   },
   Coffee: {
     audio: audioFiles.bite,
-    animation: cleaningAnimation,
+    $animation: cleaningAnimation,
     img: "/images/plants/yellow-stars.png",
-    fullWidth: true,
+    $fullWidth: true,
   },
   Aloe: {
     audio: audioFiles.healing,
-    animation: healingAnimation,
+    $animation: healingAnimation,
     img: "/images/plants/yellow-flash.png",
   },
   Cactus: {
     audio: audioFiles.puncture,
-    animation: injuryAnimation,
+    $animation: injuryAnimation,
     img: "/images/svg/blood-splatter.svg",
   },
   Horsetail: {
     audio: audioFiles.healing,
-    animation: cleaningAnimation,
+    $animation: cleaningAnimation,
     img: "/images/plants/yellow-stars.png",
   },
   Marigold: {
     audio: audioFiles.healing,
-    animation: cleaningAnimation,
+    $animation: cleaningAnimation,
     img: "/images/plants/yellow-stars.png",
+  },
+  Venus: {
+    audio: audioFiles.bite,
+    $animation: injuryAnimation,
+    img: "/images/svg/blood-splatter.svg",
   },
 }
 
-export default function usePlantAnimation({ name, soundState }: IProps) {
+export default function usePlantAnimation({ name, soundOn }: IProps) {
   const [animationProps, setAnimationProps] = useState<AnimationProps | undefined>()
   const game = useAppSelector(({ game }) => game)
 
@@ -100,12 +105,12 @@ export default function usePlantAnimation({ name, soundState }: IProps) {
     if (game.treatedAnimal?.name === name && game.usedPlants.length > 0) {
       const plantName = game.usedPlants[game.usedPlants.length - 1].name
       const plantData = plantsAnimationsData[plantName]
-      if (soundState === "on") {
+      if (soundOn) {
         plantData.audio.play()
       }
       setAnimationProps({
-        fullWidth: plantData.fullWidth,
-        animation: plantData.animation,
+        $fullWidth: plantData.$fullWidth,
+        $animation: plantData.$animation,
         src: plantData.img,
       })
     }

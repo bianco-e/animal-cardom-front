@@ -1,19 +1,20 @@
 import { useState } from "react"
 import styled from "styled-components"
 import Card from "./Card"
-import { IAnimal, User } from "../interfaces"
+import { Animal, CampaignState } from "../interfaces"
 import { ACButton } from "./styled-components"
-import { updateHand } from "../queries/user"
+import { updateHand } from "../queries/campaign"
 import Spinner from "./Spinner"
 import { BREAKPOINTS } from "../utils/constants"
 import { useAppDispatch, useAppSelector } from "../hooks/redux-hooks"
-import { AUTH_ACTIONS } from "../redux/reducers/auth"
+import { CAMPAIGN_ACTIONS } from "../redux/reducers/campaign"
+import { parseAnimalsFromDB } from "../utils"
 
 interface IProps {
-  animalToAdd: IAnimal
+  animalToAdd: Animal
   closeModal: () => void
-  currentHand: IAnimal[]
-  setCurrentHand: (animals: IAnimal[]) => void
+  currentHand: Animal[]
+  setCurrentHand: (animals: Animal[]) => void
 }
 export default function ModalHandEditContent({
   animalToAdd,
@@ -23,29 +24,30 @@ export default function ModalHandEditContent({
 }: IProps) {
   const dispatch = useAppDispatch()
   const [isLoading, setIsLoading] = useState<boolean>(false)
-  const [enteringAnimal, setEnteringAnimal] = useState<IAnimal>(animalToAdd)
-  const user: User = useAppSelector(({ auth }) => auth.user)
-  const { auth_id: authId } = user
+  const [enteringAnimal, setEnteringAnimal] = useState<Animal>(animalToAdd)
+  const [initialHand] = useState(currentHand)
+  const { id }: CampaignState = useAppSelector(({ campaign }) => campaign)
 
-  const handleSelection = (name: string) => {
-    if (!currentHand.find(card => card.name === enteringAnimal.name)) {
-      const newHand = currentHand.map(card => {
-        if (card.name !== name) return card
+  const handleSelection = (id: Animal["id"]) => {
+    if (!currentHand.find(card => card.id === enteringAnimal.id)) {
+      const newHand = currentHand.map(animal => {
+        if (animal.id !== id) return animal
         return enteringAnimal
       })
-      setEnteringAnimal(currentHand.find(card => card.name === name)!)
+      setEnteringAnimal(currentHand.find(animal => animal.id === id) as Animal)
       setCurrentHand(newHand)
     }
   }
 
   const handleConfirm = () => {
-    const handNames = currentHand.map(card => card.name)
-    if (!authId) return
+    const oldHandIds = initialHand.map(animal => Number(animal.id))
+    const newHandIds = currentHand.map(animal => Number(animal.id))
+    if (!id) return
     setIsLoading(true)
-    updateHand(authId, handNames).then(res => {
-      if (res && res.length) {
-        setIsLoading(false)
-        dispatch(AUTH_ACTIONS.SET_HAND(res))
+    updateHand(id, oldHandIds, newHandIds).then(res => {
+      setIsLoading(false)
+      if (res) {
+        dispatch(CAMPAIGN_ACTIONS.SET_HAND(parseAnimalsFromDB(res.new_hand)))
         closeModal()
       }
     })
@@ -58,27 +60,19 @@ export default function ModalHandEditContent({
       ) : (
         <>
           <Container>
-            <Card {...enteringAnimal} belongsToUser={false} opacityForPreview="1" />
+            <Card {...enteringAnimal} />
           </Container>
           <Text>
             Select an animal to switch for <b>{enteringAnimal.name}</b>
           </Text>
           <Container className="current-hand">
             {currentHand.map(card => {
-              return (
-                <Card
-                  {...card}
-                  belongsToUser={false}
-                  key={card.name}
-                  onPreviewClick={handleSelection}
-                  opacityForPreview="1"
-                />
-              )
+              return <Card {...card} key={card.name} onClick={handleSelection} />
             })}
           </Container>
         </>
       )}
-      <ACButton fWeight="bold" onClick={handleConfirm}>
+      <ACButton $fWeight="bold" onClick={handleConfirm}>
         {isLoading ? "Saving..." : "Confirm"}
       </ACButton>
     </Wrapper>
@@ -112,10 +106,6 @@ const Container = styled.div`
       > span.skill {
         font-size: 10px;
       }
-      > img.small-icon {
-        height: 12px;
-        width: 12px;
-      }
     }
     > div > span.skill {
       font-size: 10px;
@@ -125,7 +115,7 @@ const Container = styled.div`
       transform: none;
     }
   }
-  ${BREAKPOINTS.MOBILE} {
+  ${BREAKPOINTS.SM} {
     > button {
       height: 200px;
       width: 20%;

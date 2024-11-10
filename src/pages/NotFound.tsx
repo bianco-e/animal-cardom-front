@@ -1,16 +1,16 @@
 import styled from "styled-components"
-import { useHistory } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 import { ACButton } from "../components/styled-components"
 
-export default function ErrorPage() {
-  const { push } = useHistory()
+export default function NotFound() {
+  const navigate = useNavigate()
   return (
     <Wrapper>
       <Title>Page not found</Title>
       <Title>Looks like you're trying to get too deep into the Cardom...</Title>
       <Title>Take care! It may be dangerous</Title>
 
-      <ACButton fWeight="bold" onClick={() => push("/")} width="55%">
+      <ACButton $fWeight="bold" onClick={() => navigate("/")} $width="55%">
         Go back to the safe area
       </ACButton>
     </Wrapper>

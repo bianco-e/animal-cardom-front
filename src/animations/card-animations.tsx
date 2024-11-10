@@ -39,6 +39,17 @@ const injury = keyframes`
   }
 `
 
+const sleep = keyframes`
+  0% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-36px);
+    opacity: 0;
+  }
+`
+
 const miss = keyframes`
   0% {
     transform: translateY(0);
@@ -62,4 +73,8 @@ export const missAnimation = css`
 export const attackAnimation = css`
   animation: 0.3s ${attack} linear;
 `
+export const sleepingAnimation = css`
+  animation: 1.8s ${sleep} forwards infinite;
+`
+
 export const attackAudio = new Audio("/audio/claw-sound-effect.mp3")

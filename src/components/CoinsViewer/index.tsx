@@ -1,8 +1,9 @@
 import { useAppSelector } from "../../hooks/redux-hooks"
+import { CampaignState } from "../../interfaces"
 import { Wrapper } from "./styled"
 
 export default function CoinsViewer() {
-  const coins: number = useAppSelector(({ auth }) => auth.user.coins)
+  const { coins }: CampaignState = useAppSelector(({ campaign }) => campaign)
 
   return (
     <Wrapper>

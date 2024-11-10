@@ -1,45 +1,60 @@
 import styled, { css } from "styled-components"
-import { injuryAnimation, missAnimation } from "../../animations/card-animations"
+import {
+  attackAnimation,
+  injuryAnimation,
+  missAnimation,
+  selectionAnimation,
+  sleepingAnimation,
+} from "../../animations/card-animations"
 import { BREAKPOINTS } from "../../utils/constants"
 
 interface InjuryProps {
-  animation?: any
+  $animation?: any
 }
 interface AnimalCardProps {
-  attackAnimation?: any
-  selectionAnimation?: any
-  cursor?: string
-  isCardSelected?: boolean
-  isParalyzed?: boolean
-  opacity: string
-  habitat?: string
-  transform?: string
-  width?: string
+  $isCardUnderAttack?: boolean
+  $isCardSelected?: boolean
+  $cursor?: string
+  $opacity: string
+  $habitat?: string
 }
 interface TextProps {
-  color?: string
-  fWeight?: string
-  margin?: string
-  lineThrough?: boolean
+  $color?: string
+  $fWeight?: string
+  $margin?: string
+  $lineThrough?: boolean
 }
 interface FlexSectionProps {
-  mBottom?: string
-  fDirection?: string
+  $fDirection?: string
 }
 interface PlantEffectProps {
-  animation?: any
-  fullWidth?: boolean
+  $animation?: any
+  $fullWidth?: boolean
 }
 
+export const SleepingImage = styled.img`
+  ${sleepingAnimation};
+  display: flex;
+  position: absolute;
+  left: 50%;
+  opacity: 0;
+  top: 12px;
+  z-index: 20;
+  width: 20%;
+`
+
 export const PlantEffectImage = styled.img<PlantEffectProps>`
-  ${({ animation }) => animation};
+  ${({ $animation }) =>
+    css`
+      ${$animation}
+    `}
   opacity: 0;
   left: 50%;
   position: absolute;
   top: 3%;
   z-index: 20;
-  ${({ fullWidth }) =>
-    fullWidth
+  ${({ $fullWidth }) =>
+    $fullWidth
       ? `
       margin-left: -50%;
       width: 100%;
@@ -66,90 +81,95 @@ export const Injury = styled.img<InjuryProps>`
 `
 export const AnimalCard = styled.button<AnimalCardProps>`
   align-items: center;
-  ${({ attackAnimation }) => attackAnimation};
+  ${({ $isCardUnderAttack }) => ($isCardUnderAttack ? attackAnimation : "")};
   background: ${({ theme }) => theme.secondary_brown};
-  background-image: ${({ habitat }) =>
-    `url("/images/backgrounds/${habitat ? `${habitat}-` : ""}card-bg.svg")`};
+  background-image: ${({ $habitat }) =>
+    `url("/images/backgrounds/${$habitat ? `${$habitat}-` : ""}card-bg.svg")`};
   border: 2px solid ${({ theme }) => theme.secondary_brown};
   box-shadow: inset 0px 0px 10px rgba(0, 0, 0, 0.6);
   border-radius: 8px;
-  cursor: ${({ cursor }) => cursor};
+  cursor: ${({ $cursor }) => $cursor};
   display: flex;
   flex-direction: column;
-  height: 100%;
-  justify-content: space-around;
-  opacity: ${({ opacity }) => opacity};
+  justify-content: space-between;
+  height: 280px;
+  opacity: ${({ $opacity }) => $opacity};
   overflow: hidden;
-  padding: 12px;
+  padding: 12px 12px 0 12px;
   position: relative;
-  transition: transform 0.15s ease;
-  width: ${({ width = "calc(20% - 32px)" }) => width};
+  transition: transform 0.25s ease;
+  width: calc(20% - 24px);
   &:hover {
     box-shadow: 4px 4px 4px ${({ theme }) => theme.secondary_brown},
       inset 0px 0px 8px black;
-    transform: ${({ transform }) => transform};
   }
   &:active {
     box-shadow: inset 0px 0px 16px black;
   }
-  &::before {
-    content: "";
-    position: absolute;
-    top: -50%;
-    left: 50%;
-    -webkit-transform: translateX(-50%);
-    transform: translateX(-50%);
-    height: 210%;
-    width: 35%;
-    background: ${({
-      opacity,
-      theme: { primary_violet, secondary_violet, light_brown, primary_brown },
-    }) =>
-      opacity === "1"
-        ? `linear-gradient(90deg, ${primary_violet}, ${light_brown}, ${secondary_violet})`
-        : primary_brown};
-    z-index: -1;
-    ${({ selectionAnimation }) => selectionAnimation};
-  }
+  ${({ $isCardSelected, theme: { primary_violet, secondary_violet, light_brown } }) =>
+    $isCardSelected
+      ? css`
+          &::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: 50%;
+            -webkit-transform: translateX(-50%);
+            transform: translateX(-50%);
+            height: 210%;
+            width: 35%;
+            background: linear-gradient(
+              90deg,
+              ${primary_violet},
+              ${light_brown},
+              ${secondary_violet}
+            );
+            z-index: -1;
+            ${selectionAnimation};
+          }
+        `
+      : ""};
   &::after {
     -webkit-transform: translateX(-50%);
     background: ${({ theme }) => theme.secondary_brown};
-    background-image: ${({ habitat }) =>
-      `url("/images/backgrounds/${habitat ? `${habitat}-` : ""}card-bg.svg")`};
+    background-image: ${({ $habitat }) =>
+      `url("/images/backgrounds/${$habitat ? `${$habitat}-` : ""}card-bg.svg")`};
     border-radius: 4px;
     content: "";
-    height: calc(100% - 8px);
+    height: calc(100% - 4px);
     left: 50%;
     position: absolute;
-    top: 4px;
+    top: 2px;
     transform: translateX(-50%);
-    width: calc(100% - 8px);
+    width: calc(100% - 4px);
     z-index: -1;
   }
-  ${({ isCardSelected, transform }) =>
-    isCardSelected &&
-    `
-      transform: ${transform};
-    `}
-  ${BREAKPOINTS.TABLET} {
-    max-width: 170px;
-    padding: 9px;
+  ${BREAKPOINTS.LG} {
+    height: 240px;
+    max-width: 200px;
+    padding: 8px 8px 0 8px;
+    width: calc(20% - 12px);
   }
-  ${BREAKPOINTS.MOBILE} {
-    max-width: 125px;
-    padding: 6px;
+  ${BREAKPOINTS.MD} {
+    height: 220px;
     width: calc(20% - 4px);
+  }
+  ${BREAKPOINTS.SM} {
+    height: 160px;
+    max-width: 124px;
+    padding: 4px 4px 0 4px;
+    width: calc(20% - 2px);
+  }
+  ${BREAKPOINTS.XS} {
+    height: 144px;
   }
 `
 export const StatsWrapper = styled.div`
   align-items: flex-end;
   display: flex;
   justify-content: space-between;
-  position: absolute;
-  left: 10%;
   transition: all 0.4s ease;
-  width: 80%;
-  bottom: 0;
+  width: calc(100% - 32px);
   > div {
     > div.statuses {
       align-items: center;
@@ -175,7 +195,7 @@ export const StatsWrapper = styled.div`
     border-bottom: 0;
     box-shadow: inset 0px 0px 8px rgba(0, 0, 0, 0.4);
     display: flex;
-    height: 36px;
+    height: 24px;
     justify-content: center;
     position: relative;
     width: calc(50% - 24px);
@@ -188,18 +208,29 @@ export const StatsWrapper = styled.div`
       }
     }
   }
-  ${BREAKPOINTS.MOBILE} {
-    left: 5%;
-    width: 90%;
+  ${BREAKPOINTS.LG} {
+    width: calc(100% - 16px);
+    > div.stats-container {
+      width: calc(50% - 12px);
+    }
+  }
+  ${BREAKPOINTS.MD} {
     > div.stats-container {
       height: 20px;
-      width: calc(50% - 10px);
+      width: calc(50% - 12px);
+    }
+  }
+  ${BREAKPOINTS.SM} {
+    width: 100%;
+    > div.stats-container {
+      height: 16px;
+      width: calc(50% - 4px);
     }
   }
 `
 
 interface IconContainerProps {
-  placement?: "LEFT" | "CENTER" | "RIGHT"
+  $placement?: "LEFT" | "CENTER" | "RIGHT"
 }
 
 const ICON_CSS = {
@@ -233,11 +264,19 @@ export const IconContainer = styled.div<IconContainerProps>`
     left: calc(50% - 6px);
     top: 28px;
   }
-  ${({ placement = "CENTER" }) => ICON_CSS[placement]};
-  ${({ placement = "CENTER" }) =>
-    placement !== "CENTER"
+  cursor: help;
+  > div.tooltip {
+    display: none;
+  }
+  &:hover {
+    > div.tooltip {
+      display: flex;
+    }
+  }
+  ${({ $placement = "CENTER" }) => ICON_CSS[$placement]};
+  ${({ $placement = "CENTER" }) =>
+    $placement !== "CENTER"
       ? `
-    cursor: help;
     top: -22px;
     > img,
     span {
@@ -251,25 +290,30 @@ export const IconContainer = styled.div<IconContainerProps>`
       font-size: 12px;
       left: auto;
       right: 26px;
-    }
-    > div.tooltip {
-      display: none;
-    }
-    &:hover {
-      > div.tooltip {
-        display: flex;
-      }
     }`
       : ""};
-  ${BREAKPOINTS.MOBILE} {
-    font-size: 16px;
+  ${BREAKPOINTS.SM} {
+    height: 42px;
+    width: 42px;
+    font-size: 14px;
   }
 `
+export const IconImage = styled.img`
+  height: 14px;
+  margin-right: 4px;
+  width: 14px;
+  ${BREAKPOINTS.SM} {
+    height: 12px;
+    margin-right: 0;
+    width: 12px;
+  }
+`
+
 export const Image = styled.img`
   &.blood-drop {
     height: 20px;
     width: 20px;
-    ${BREAKPOINTS.MOBILE} {
+    ${BREAKPOINTS.SM} {
       height: 17px;
       width: 17px;
     }
@@ -277,60 +321,83 @@ export const Image = styled.img`
   &.animal-picture {
     border-radius: 120px;
     box-shadow: 0px 0px 9px rgba(0, 0, 0, 0.6);
-    height: 45%;
-    margin: 4px 0;
+    height: 100px;
     object-fit: cover;
-    width: 80%;
+    width: calc(100% - 24px);
     position: relative;
-    ${BREAKPOINTS.MOBILE} {
-      height: 36%;
+    ${BREAKPOINTS.LG} {
+      height: 80px;
     }
-  }
-  &.small-icon {
-    height: 14px;
-    margin-right: 4px;
-    width: 14px;
-    ${BREAKPOINTS.MOBILE} {
-      height: 12px;
-      width: 12px;
+    ${BREAKPOINTS.MD} {
+      height: 64px;
+    }
+    ${BREAKPOINTS.SM} {
+      height: 36px;
+      width: calc(100% - 4px);
     }
   }
   &.habitat-icon {
-    height: 10px;
-    width: 10px;
+    height: 12px;
+    width: 12px;
+    ${BREAKPOINTS.MD} {
+      height: 10px;
+      width: 10px;
+    }
+    ${BREAKPOINTS.SM} {
+      height: 8px;
+      width: 8px;
+    }
   }
 `
 export const Text = styled.span<TextProps>`
   &.life-heart {
     font-size: 15px;
-    ${BREAKPOINTS.TABLET} {
+    ${BREAKPOINTS.MD} {
       font-size: 12px;
     }
   }
   &.stats {
     margin: 0 4px;
     font-size: 14px;
-    ${BREAKPOINTS.TABLET} {
+    ${BREAKPOINTS.MD} {
       font-size: 13px;
     }
-    ${BREAKPOINTS.MOBILE} {
+    ${BREAKPOINTS.SM} {
       font-size: 12px;
     }
   }
   &.skill {
     font-size: 10px;
-    ${BREAKPOINTS.MOBILE} {
+    ${BREAKPOINTS.SM} {
       font-size: 8px;
     }
   }
   &.card-sm-name {
     font-size: 8px;
+    ${BREAKPOINTS.XS} {
+      font-size: 7px;
+    }
   }
   &.animal-name {
     font-size: 16px;
     white-space: nowrap;
-    ${BREAKPOINTS.MOBILE} {
+    ${BREAKPOINTS.LG} {
+      margin-top: 8px;
+    }
+    ${BREAKPOINTS.MD} {
+      margin-top: 4px;
+    }
+    ${BREAKPOINTS.SM} {
       font-size: 12px;
+    }
+  }
+  &.animal-scientific-name {
+    font-size: 12px;
+    font-style: italic;
+    font-weight: 400;
+    white-space: nowrap;
+    ${BREAKPOINTS.SM} {
+      display: none;
     }
   }
   &.miss-msg {
@@ -340,19 +407,18 @@ export const Text = styled.span<TextProps>`
     position: absolute;
     z-index: 2;
   }
-  color: ${({ color }) => color};
-  font-weight: ${({ fWeight = "bold" }) => fWeight};
-  margin: ${({ margin }) => margin};
+  color: ${({ $color }) => $color};
+  font-weight: ${({ $fWeight = "bold" }) => $fWeight};
+  margin: ${({ $margin }) => $margin};
   text-align: center;
-  text-decoration: ${({ lineThrough, theme }) =>
-    lineThrough ? `line-through 2px ${theme.primary_red}` : ""};
+  text-decoration: ${({ $lineThrough, theme }) =>
+    $lineThrough ? `line-through 2px ${theme.primary_red}` : ""};
 `
 export const FlexSection = styled.div<FlexSectionProps>`
   align-items: center;
   display: flex;
   justify-content: center;
-  flex-direction: ${({ fDirection }) => fDirection};
-  margin-bottom: ${({ mBottom }) => mBottom};
+  flex-direction: ${({ $fDirection }) => $fDirection};
   position: relative;
   > span.paralyzed {
     color: ${({ theme }) => theme.primary_red};
@@ -369,12 +435,12 @@ export const DescriptionContainer = styled.div`
   border-radius: 5px;
   display: flex;
   flex-direction: column;
-  height: 28%;
+  height: 52px;
   justify-content: flex-start;
-  margin: 4px 0 30px 0;
+  margin-top: 4px;
   overflow: auto;
-  padding: 5px;
-  width: 85%;
+  padding: 4px;
+  width: calc(100% - 24px);
 
   ::-webkit-scrollbar {
     width: 4px;
@@ -393,25 +459,39 @@ export const DescriptionContainer = styled.div`
   ::-webkit-scrollbar-thumb:hover {
     background: ${({ theme }) => theme.secondary_brown};
   }
+  ${BREAKPOINTS.LG} {
+    height: 64px;
+  }
+  ${BREAKPOINTS.MD} {
+    height: 60px;
+  }
+  ${BREAKPOINTS.SM} {
+    width: calc(100% - 8px);
+  }
 `
 export const CardThumbnail = styled(AnimalCard)`
   cursor: default;
   height: 80px;
+  padding: 4px;
+  max-width: 76px;
   width: calc(20% - 8px);
   > .animal-name {
-    font-size: 8px;
+    font-size: 12px;
     font-weight: bold;
-    margin-bottom: 2px;
+    overflow: hidden;
+    text-wrap: nowrap;
+    text-overflow: ellipsis;
+    width: 100%;
   }
   > .animal-picture {
     border-radius: 16px;
-    height: 32px;
+    height: 40px;
     width: 95%;
   }
   &:hover {
     box-shadow: inset 0px 0px 10px rgba(0, 0, 0, 0.6);
   }
-  ${BREAKPOINTS.MOBILE} {
+  ${BREAKPOINTS.SM} {
     > .animal-picture {
       border-radius: 10px;
     }

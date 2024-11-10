@@ -13,10 +13,10 @@ export const HowToPlayWrapper = styled.div`
   & > *:not(:last-child) {
     margin-bottom: ${({ theme }) => theme.$7};
   }
-  ${BREAKPOINTS.TABLET} {
+  ${BREAKPOINTS.MD} {
     width: 75vw;
   }
-  ${BREAKPOINTS.MOBILE} {
+  ${BREAKPOINTS.SM} {
     width: 95vw;
   }
 `

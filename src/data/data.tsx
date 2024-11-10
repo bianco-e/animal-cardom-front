@@ -1,6 +1,7 @@
 export const CARD_ICONS = {
   ATTACK: "/icons/attack-icon.png",
   DEFENSE: "/icons/defense-icon.png",
+  PASSIVE: "/icons/passive-icon.png",
   FURY: "/icons/fury-icon.png",
   BLOOD: "/icons/blood-icon.png",
   LIFE: "/images/svg/life-icon.svg",

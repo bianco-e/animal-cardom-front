@@ -15,23 +15,23 @@ export const ModalOverlay = styled.div`
 `
 
 interface ContentProps {
-  forSpinner?: boolean
+  $forSpinner?: boolean
 }
 
 export const ModalContainer = styled.div<ContentProps>`
   align-items: center;
-  background: ${({ forSpinner, theme }) => (!forSpinner ? theme.primary_brown : "")};
-  border: ${({ forSpinner, theme }) =>
-    !forSpinner && `2px solid ${theme.secondary_brown}`};
+  background: ${({ $forSpinner, theme }) => (!$forSpinner ? theme.primary_brown : "")};
+  border: ${({ $forSpinner, theme }) =>
+    !$forSpinner && `2px solid ${theme.secondary_brown}`};
   border-radius: 5px;
-  box-shadow: ${({ forSpinner }) =>
-    !forSpinner && "inset 0px 0px 10px rgba(0, 0, 0, 0.4)"};
+  box-shadow: ${({ $forSpinner }) =>
+    !$forSpinner && "inset 0px 0px 10px rgba(0, 0, 0, 0.4)"};
   display: flex;
   flex-direction: column;
   padding: 16px 24px;
   position: relative;
   z-index: 30;
-  ${BREAKPOINTS.MOBILE} {
+  ${BREAKPOINTS.SM} {
     width: 87%;
   }
 `

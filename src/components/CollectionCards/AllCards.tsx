@@ -1,4 +1,4 @@
-import { IAnimal, User } from "../../interfaces"
+import { CampaignState, FiltersData, Animal } from "../../interfaces"
 import Card from "../Card"
 import BuyButton from "./Buttons/BuyButton"
 import CollectionFilter from "./CollectionFilter"
@@ -10,11 +10,12 @@ import InHandButton from "./Buttons/InHandButton"
 import SellButton from "./Buttons/SellButton"
 
 interface IProps {
-  cardsToShow: IAnimal[]
-  setCardsToShow: (cards: IAnimal[]) => void
+  cardsToShow: Animal[]
+  setCardsToShow: (cards: Animal[]) => void
   handleEditHandModal: (name: string) => void
-  handlePurchaseModal: (card: IAnimal) => void
-  handleSellModal: (card: IAnimal) => void
+  handlePurchaseModal: (card: Animal) => void
+  handleSellModal: (card: Animal) => void
+  filtersData: FiltersData
 }
 
 const getCardOpacityForPreview = (cards: string[], name: string): string =>
@@ -26,16 +27,16 @@ export default function CollectionCards({
   handleEditHandModal,
   handlePurchaseModal,
   handleSellModal,
+  filtersData,
 }: IProps) {
-  const {
-    owned_cards: ownedCards,
-    hand,
-    coins,
-  }: User = useAppSelector(({ auth }) => auth.user)
-
+  const { owned_animals, hand, coins }: CampaignState = useAppSelector(
+    ({ campaign }) => campaign
+  )
+  const ownedCardsNames = owned_animals.map(animal => animal.name)
+  const handCardsNames = hand.map(animal => animal.name)
   return (
     <>
-      <CollectionFilter setCardsToShow={setCardsToShow} />
+      <CollectionFilter filtersData={filtersData} setCardsToShow={setCardsToShow} />
       {cardsToShow.length > 0 ? (
         <CardsContainer>
           {cardsToShow.map(card => {
@@ -43,16 +44,15 @@ export default function CollectionCards({
               <SingleCardContainer key={card.name}>
                 <Card
                   {...card}
-                  belongsToUser={false}
-                  opacityForPreview={getCardOpacityForPreview(ownedCards, card.name)}
+                  cardOpacity={getCardOpacityForPreview(ownedCardsNames, card.name)}
                 />
-                {!ownedCards.includes(card.name) ? (
+                {!ownedCardsNames.includes(card.name) ? (
                   <BuyButton
                     price={card.price}
                     disabled={coins < card.price}
                     onClick={() => handlePurchaseModal(card)}
                   />
-                ) : !hand.includes(card.name) ? (
+                ) : !handCardsNames.includes(card.name) ? (
                   <>
                     <AddButton onClick={() => handleEditHandModal(card.name)} />
                     <SellButton onClick={() => handleSellModal(card)} />
@@ -65,7 +65,7 @@ export default function CollectionCards({
           })}
         </CardsContainer>
       ) : (
-        <Message margin="75px 0 0 0">No animals found.</Message>
+        <Message $margin="75px 0 0 0">No animals found.</Message>
       )}
     </>
   )

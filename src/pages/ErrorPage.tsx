@@ -1,9 +1,9 @@
 import styled from "styled-components"
-import { useHistory } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 import { ACButton } from "../components/styled-components"
 
 export default function ErrorPage() {
-  const { push } = useHistory()
+  const navigate = useNavigate()
   return (
     <Wrapper>
       <CardLetter>
@@ -11,7 +11,7 @@ export default function ErrorPage() {
         <Title>Looks like animals are having lunch right now</Title>
         <Title>Come back later when we feed them</Title>
         <img alt="cardom" src="/images/welcome-background.png" width={500} />
-        <ACButton onClick={() => push("/")}>Go to menu</ACButton>
+        <ACButton onClick={() => navigate("/")}>Go to menu</ACButton>
       </CardLetter>
     </Wrapper>
   )

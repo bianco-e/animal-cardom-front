@@ -1,20 +1,21 @@
 import { useEffect, useState } from "react"
 import styled from "styled-components"
 import Modal from "../components/Common/Modal"
-import { useHistory, useParams } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 import { BREAKPOINTS } from "../utils/constants"
 import { GAME_ACTIONS } from "../redux/reducers/game"
-import SidePanel from "../components/GamePanel"
-import { GameParams, IAnimal, User } from "../interfaces"
+import GamePanel from "../components/GamePanel"
+import { Animal, CampaignState, HandKey, IGameState, User } from "../interfaces"
 import Spinner from "../components/Spinner"
 import ModalContentResult from "../components/ModalContentResult"
-import { getLiveCards } from "../utils"
-import { createAction } from "../queries/tracking"
+import { getLiveCardsInAHand } from "../utils"
 import { HandContainer } from "../components/styled-components"
 import Card from "../components/Card"
 import { useAppDispatch, useAppSelector } from "../hooks/redux-hooks"
 import { computerPlay, startCampaignGame, startGuestGame } from "../redux/actions/game"
 import PcPlaysCaster from "../components/PcPlaysCaster"
+import { saveGameResult } from "../queries/games"
+import { CAMPAIGN_ACTIONS } from "../redux/reducers/campaign"
 
 interface IProps {
   isCampaign?: boolean
@@ -24,46 +25,75 @@ export default function Game({ isCampaign }: IProps) {
   const game = useAppSelector(({ game }) => game)
   const dispatch = useAppDispatch()
   const [userName, setUserName] = useState<string>("")
-  const [modal, setModal] = useState<string>("")
-  const { push } = useHistory()
-  const { requiredXp } = useParams<GameParams>()
-  const { hands, plants, pcTurn, triggerPcAttack, terrain, gameError, isLoading } = game
-  const { auth_id: authId }: User = useAppSelector(({ auth }) => auth.user)
+  const [modalVariant, setModalVariant] = useState<string>("")
+  const [earnedAnimal, setEarnedAnimal] = useState<Animal | null>(null)
+  const [earnedCoins, setEarnedCoins] = useState<number | null>(null)
+  const navigate = useNavigate()
+  const { levelId } = useParams<{ levelId: string }>()
+  const { hands, plants, pcTurn, triggerPcAttack, habitat, gameError, isLoading } = game
+  const { id }: User = useAppSelector(({ auth }) => auth.user)
+  const campaign: CampaignState = useAppSelector(({ campaign }) => campaign)
 
   useEffect(() => {
-    if (gameError) return push(isCampaign ? "/campaign" : "/")
+    if (gameError) return navigate(isCampaign ? "/campaign" : "/")
   }, [gameError]) //eslint-disable-line
 
   useEffect(() => {
-    dispatch(GAME_ACTIONS.SET_LOADING_GAME(true))
     if (!isCampaign) {
-      // is game for guests
-      const guest = localStorage.getItem("ac-guest-name")
-      guest ? setUserName(guest) : push("/")
-      //@ts-ignore
+      //Guest game
+      const guestName = localStorage.getItem("ac-guest-name")
+      if (!guestName) return navigate("/")
+      setUserName(guestName) //@ts-ignore
       dispatch(startGuestGame())
     } else {
-      // is campaign game
-      const parsedReqXp = parseInt(requiredXp)
-      //@ts-ignore
-      dispatch(startCampaignGame(setUserName, parsedReqXp))
+      //Campaign game
+      if (!levelId || !id || !campaign.level) return //@ts-ignore
+      dispatch(startCampaignGame(setUserName, parseInt(levelId)))
     }
-  }, [isCampaign]) //eslint-disable-line
+  }, [isCampaign, id, campaign.level]) //eslint-disable-line
+
+  const getStatsAndSaveGame = (user_id: string, user_won: boolean, game: IGameState): void => {
+    const mapCardsToSave = (handKey: HandKey) =>
+      game.hands[handKey].map(animal => ({
+        id: animal.id,
+        name: animal.name,
+        finished_game: animal.life.current > 0,
+      }))
+    const mapPlantsToSave = (handKey: HandKey) =>
+      game.plants[handKey].map(plant => ({
+        id: plant.id,
+        name: plant.name,
+        finished_game: !!game.usedPlants.find(pl => pl.name === plant.name),
+      }))
+
+    const gameToSave = {
+      habitat_id: game.habitat.id,
+      habitat_name: game.habitat.name,
+      user_won,
+      pc_used_animals: mapCardsToSave("pc"),
+      user_used_animals: mapCardsToSave("user"),
+      pc_used_plants: mapPlantsToSave("pc"),
+      user_used_plants: mapPlantsToSave("user"),
+    }
+    saveGameResult(user_id, gameToSave, campaign.level).then(res => {
+      if (res && !res.error) {
+        dispatch(CAMPAIGN_ACTIONS.SET_LEVEL(res.new_level))
+        dispatch(CAMPAIGN_ACTIONS.SET_COINS(res.current_coins))
+        setEarnedCoins(res.earned_coins)
+        setEarnedAnimal(res.earned_animal)
+      }
+    })
+  }
 
   useEffect(() => {
     if (!hands.pc.length || !hands.user.length) return
-    const guestName = localStorage.getItem("ac-guest-name")
-    const baseAction = {
-      ...(authId ? { auth_id: authId } : {}),
-      ...(guestName ? { guest_name: guestName } : {}),
+    if (!getLiveCardsInAHand(hands.user).length) {
+      setModalVariant("lose")
+      getStatsAndSaveGame(id, false, game)
     }
-    if (!getLiveCards(hands.user).length) {
-      setModal("lose")
-      createAction({ ...baseAction, action: "user-lost" })
-    }
-    if (!getLiveCards(hands.pc).length) {
-      setModal("win")
-      createAction({ ...baseAction, action: "user-won" })
+    if (!getLiveCardsInAHand(hands.pc).length) {
+      setModalVariant("win")
+      getStatsAndSaveGame(id, true, game)
     }
   }, [hands.pc, hands.user]) //eslint-disable-line
 
@@ -73,40 +103,42 @@ export default function Game({ isCampaign }: IProps) {
       setTimeout(() => {
         //@ts-ignore
         dispatch(computerPlay())
-      }, 1800)
+      }, 1600)
     } else dispatch(GAME_ACTIONS.COMPUTER_THINK())
   }, [pcTurn, triggerPcAttack]) //eslint-disable-line
 
   return (
     <>
-      <Wrapper bgImg={terrain!.image}>
-        <SidePanel
+      <Wrapper $bgImg={`/images/habitats/${habitat.name.toLowerCase()}.webp`}>
+        <GamePanel
           isCampaign={isCampaign}
           plants={plants}
-          terrain={terrain!}
+          habitat={habitat}
           userName={userName}
         />
         <Board>
           <HandContainer>
-            {hands.pc.map((animal: IAnimal) => (
-              <Card {...animal} belongsToUser={false} key={animal.name} />
+            {hands.pc.map((animal: Animal) => (
+              <Card {...animal} isForGame key={animal.name} />
             ))}
           </HandContainer>
 
           <PcPlaysCaster />
 
           <HandContainer>
-            {hands.user.map((animal: IAnimal) => (
-              <Card {...animal} belongsToUser={true} key={animal.name} />
+            {hands.user.map((animal: Animal) => (
+              <Card {...animal} belongsToUser isForGame key={animal.name} />
             ))}
           </HandContainer>
         </Board>
       </Wrapper>
-      {modal && (
+      {modalVariant && (
         <Modal closeModal={() => {}} withCloseButton={false}>
           <ModalContentResult
-            closeModal={() => setModal("")}
-            modalType={modal}
+            closeModal={() => setModalVariant("")}
+            modalVariant={modalVariant}
+            earnedAnimal={earnedAnimal}
+            earnedCoins={earnedCoins}
             isCampaignGame={isCampaign}
           />
         </Modal>
@@ -121,17 +153,17 @@ export default function Game({ isCampaign }: IProps) {
 }
 
 interface WrapperProps {
-  bgImg?: string
+  $bgImg?: string
 }
-const Wrapper = styled.div`
-  background: url(${(p: WrapperProps) => p.bgImg});
+const Wrapper = styled.div<WrapperProps>`
+  background: url(${p => p.$bgImg});
   background-repeat: no-repeat;
   background-size: cover;
   display: flex;
   flex-start: left;
   height: 100vh;
   width: 100%;
-  ${BREAKPOINTS.TABLET} {
+  ${BREAKPOINTS.MD} {
     flex-direction: column;
   }
 `
@@ -143,10 +175,10 @@ const Board = styled.div`
   padding: 0px 10px;
   position: relative;
   width: 100%;
-  ${BREAKPOINTS.TABLET} {
+  ${BREAKPOINTS.MD} {
     padding: 21px 0 0 0;
   }
-  ${BREAKPOINTS.MOBILE} {
+  ${BREAKPOINTS.SM} {
     min-height: 285px;
   }
 `

@@ -1,46 +1,35 @@
 import { API_BASE_URL } from "../utils/constants"
 
-export const getAllAnimalsCards = () =>
-  fetch(`${API_BASE_URL}animals/all`)
+export const getAllAnimals = () =>
+  fetch(`${API_BASE_URL}animals`)
     .then(res => res.json())
     .catch(err => console.error(err))
 
-export const getAnimalByName = (name: string) =>
-  fetch(`${API_BASE_URL}animals/name/${name}`)
+export const getAnimalById = (id: number) =>
+  fetch(`${API_BASE_URL}animals/${id}`)
     .then(res => res.json())
     .catch(err => console.error(err))
 
 export const getNewestAnimals = () =>
-  fetch(`${API_BASE_URL}animals/newest`)
+  fetch(`${API_BASE_URL}animals/?sort_by=created_at&limit=3&sort=desc`)
     .then(res => res.json())
     .catch(err => console.error(err))
 
-export const getFilteredAnimalsCards = (
-  habitat?: string,
-  species?: string,
-  skill_type?: string,
-  owned?: string[],
-  owned_to_filter?: string[]
+export const getFilteredAnimals = (
+  habitat_id: number | null,
+  species_id: number | null,
+  skill_type_id: number | null
 ) => {
-  const ownedString = owned && owned.length ? owned.join(";") : undefined
-  const ownedToFilterString =
-    owned_to_filter && owned_to_filter.length ? owned_to_filter.join(";") : undefined
   return fetch(
-    `${API_BASE_URL}animals/filter?${species ? `species=${species}&` : ""}${
-      skill_type ? `skill_type=${skill_type}&` : ""
-    }${habitat ? `habitat=${habitat}&` : ""}${
-      ownedString
-        ? `owned=${ownedString}`
-        : ownedToFilterString
-        ? `owned_to_filter=${ownedToFilterString}`
-        : ""
-    }`
+    `${API_BASE_URL}animals/?${species_id ? `species_id=${species_id}&` : ""}${
+      skill_type_id ? `skill_type_id=${skill_type_id}&` : ""
+    }${habitat_id ? `habitat_id=${habitat_id}` : ""}`
   )
     .then(res => res.json())
     .catch(err => console.error(err))
 }
 
-export const getAnimalsStatistics = () =>
-  fetch(`${API_BASE_URL}animals/all/statistics`)
+export const getAnimalsStats = () =>
+  fetch(`${API_BASE_URL}animals/stats`)
     .then(res => res.json())
     .catch(err => console.error(err))

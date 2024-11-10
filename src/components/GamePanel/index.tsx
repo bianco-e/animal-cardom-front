@@ -1,60 +1,49 @@
-import { useEffect, useState } from "react"
-import { useHistory } from "react-router-dom"
+import { useState } from "react"
+import { useNavigate } from "react-router-dom"
 import Modal from "../Common/Modal"
 import { ACButton, ModalTitle, Text } from "../styled-components"
-import { IPlants, ITerrain } from "../../interfaces/index"
+import { IPlants, Habitat } from "../../interfaces/index"
 import Tooltip from "../Tooltip"
-import { LeftPanel, OptionsPanel, TerrainName } from "./styled"
+import { GamePanel, OptionsPanel, HabitatName } from "./styled"
 import { GAME_ACTIONS } from "../../redux/reducers/game"
-import { useAppDispatch } from "../../hooks/redux-hooks"
+import { useAppDispatch, useAppSelector } from "../../hooks/redux-hooks"
 import PlayerPlants from "./PlayerPlants"
+import { TooltipDirection } from "../Tooltip/styled"
 
 interface IProps {
   plants: IPlants
-  terrain: ITerrain
+  habitat: Habitat
   userName: string
   isCampaign?: boolean
 }
 
-export default function SidePanel({ plants, isCampaign, terrain, userName }: IProps) {
-  const [showTerrainTooltip, setShowTerrainTooltip] = useState<boolean>(false)
-  const [soundState, setSoundState] = useState<"off" | "on">("on")
+export default function SidePanel({ plants, isCampaign, habitat, userName }: IProps) {
+  const [showHabitatTooltip, setShowHabitatTooltip] = useState<boolean>(false)
   const [showExitModal, setShowExitModal] = useState<boolean>(false)
-  const history = useHistory()
+  const { soundOn } = useAppSelector(({ game }) => game)
+  const navigate = useNavigate()
   const dispatch = useAppDispatch()
-
-  useEffect(() => {
-    const currentSoundState = localStorage.getItem("sound")
-    if (
-      currentSoundState &&
-      (currentSoundState === "off" || currentSoundState === "on")
-    ) {
-      setSoundState(currentSoundState)
-    }
-  }, [])
-
-  useEffect(() => {
-    localStorage.setItem("sound", soundState)
-  }, [soundState])
-
-  const handleSoundButton = () => {
-    const soundToSet = soundState === "off" ? "on" : "off"
-    setSoundState(soundToSet)
-  }
 
   const handleExit = () => {
     dispatch(GAME_ACTIONS.EMPTY_STATE())
-    history.push(isCampaign ? "/menu" : "/")
+    navigate(isCampaign ? "/menu" : "/")
+  }
+
+  const handleSound = () => {
+    dispatch(GAME_ACTIONS.SET_GAME_SOUND(!soundOn))
   }
 
   return (
-    <LeftPanel bgImage={terrain.image}>
+    <GamePanel $bgImage={`/images/habitats/${habitat.name.toLowerCase()}.webp`}>
       <PlayerPlants name="PC" plants={plants.pc} />
 
-      <TerrainName color={terrain.color}>
+      <HabitatName color={habitat.color}>
         <OptionsPanel>
-          <button onClick={handleSoundButton}>
-            <img alt="sound-button" src={`/icons/sound-${soundState}-icon.png`} />
+          <button onClick={handleSound}>
+            <img
+              alt="sound-button"
+              src={`/icons/sound-${soundOn ? "on" : "off"}-icon.png`}
+            />
           </button>
           <button onClick={() => setShowExitModal(true)}>
             <img alt="exit-button" src={`/icons/exit-icon.png`} />
@@ -63,22 +52,22 @@ export default function SidePanel({ plants, isCampaign, terrain, userName }: IPr
 
         <div
           className="name-container"
-          onMouseEnter={() => setShowTerrainTooltip(true)}
-          onMouseLeave={() => setShowTerrainTooltip(false)}>
-          {terrain.name}
-          {showTerrainTooltip && (
+          onMouseEnter={() => setShowHabitatTooltip(true)}
+          onMouseLeave={() => setShowHabitatTooltip(false)}>
+          {habitat.name}
+          {showHabitatTooltip && (
             <Tooltip
-              direction="BOTTOM"
+            direction={TooltipDirection.BOTTOM}
               title="Bonus"
               description={
-                terrain.name !== "Neutral"
-                  ? `Animals that feel like home in ${terrain.name} have their attacked increased by 1.`
-                  : "In Neutral terrain there's no benefit"
+                habitat.name !== "Neutral"
+                  ? habitat.description
+                  : "In Neutral habitat there's no benefit"
               }
             />
           )}
         </div>
-      </TerrainName>
+      </HabitatName>
 
       <PlayerPlants name={userName} plants={plants.user} />
 
@@ -86,11 +75,11 @@ export default function SidePanel({ plants, isCampaign, terrain, userName }: IPr
         <Modal closeModal={() => setShowExitModal(false)} withCloseButton={false}>
           <>
             <ModalTitle>You are about to exit</ModalTitle>
-            <Text margin="10px 0 5px">Current game progress will get lost.</Text>
+            <Text $margin="10px 0 5px">Current game progress will get lost.</Text>
             <Text>Are you sure?</Text>
             <ACButton
-              fWeight="bold"
-              margin="20px 0"
+              $fWeight="bold"
+              $margin="20px 0"
               onClick={() => setShowExitModal(false)}>
               Stay
             </ACButton>
@@ -98,6 +87,6 @@ export default function SidePanel({ plants, isCampaign, terrain, userName }: IPr
           </>
         </Modal>
       )}
-    </LeftPanel>
+    </GamePanel>
   )
 }

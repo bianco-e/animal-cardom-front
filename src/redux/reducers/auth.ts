@@ -5,16 +5,12 @@ export const slice = createSlice({
   name: "user",
   initialState: {
     error: false,
-    isLogged: false,
     isLoading: true,
     token,
     user: {
+      id: undefined,
       auth_id: undefined,
       role: undefined,
-      coins: 0,
-      xp: 0,
-      hand: [],
-      owned_cards: [],
     },
   },
   reducers: {
@@ -32,55 +28,17 @@ export const slice = createSlice({
         token: null,
       }
     },
-    SET_COINS: (state, action) => {
-      return {
-        ...state,
-        user: {
-          ...state.user,
-          coins: action.payload,
-        },
-      }
-    },
-    SET_XP: (state, action) => {
-      return {
-        ...state,
-        user: {
-          ...state.user,
-          xp: action.payload,
-        },
-      }
-    },
-    SET_HAND: (state, action) => {
-      return {
-        ...state,
-        user: {
-          ...state.user,
-          hand: action.payload,
-        },
-      }
-    },
-    SET_OWNED_CARDS: (state, action) => {
-      return {
-        ...state,
-        user: {
-          ...state.user,
-          owned_cards: action.payload,
-        },
-      }
-    },
     SET_USER_SUCCESS: (state, action) => {
       return {
         ...state,
         user: action.payload,
         isLoading: false,
-        isLogged: true,
         error: false,
       }
     },
     SET_USER_REQUEST: state => {
       return {
         ...state,
-        isLogged: false,
         isLoading: true,
         error: false,
       }
@@ -88,7 +46,6 @@ export const slice = createSlice({
     SET_USER_ERROR: state => {
       return {
         ...state,
-        isLogged: false,
         isLoading: false,
         error: true,
       }

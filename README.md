@@ -10,7 +10,7 @@ Animal Cardom is a card game where you get 5 different animals cards, and the ob
 
 ## Run local:
 
-_Node version: v12.13.0_
+_Node version: v18.17.0_
 
 - Clone this repo
 - run `cd animal-cardom-front`

@@ -2,22 +2,15 @@ import styled from "styled-components"
 import { BREAKPOINTS } from "../../utils/constants"
 
 interface PlantCardProps {
-  selectionAnimation?: any
-  opacity?: string
-  isPlantSelected?: boolean
-  transform?: string
-  belongsToUser?: boolean
+  $selectionAnimation?: any
+  $opacity?: string
+  $isPlantSelected?: boolean
+  $transform?: string
+  $belongsToUser?: boolean
 }
 
 export const PlantContainer = styled.div`
-  height: 25%;
-  margin: 0 auto 8%;
   position: relative;
-  width: 75%;
-  ${BREAKPOINTS.TABLET} {
-    height: 100%;
-    width: 56px;
-  }
 `
 
 export const PlantCard = styled.button<PlantCardProps>`
@@ -26,24 +19,23 @@ export const PlantCard = styled.button<PlantCardProps>`
   background-image: url("/images/backgrounds/card-bg.svg");
   border-radius: 4px;
   box-shadow: inset 0px 0px 2px black;
-  cursor: ${({ belongsToUser }) => (belongsToUser ? "pointer" : "default")};
+  cursor: ${({ $belongsToUser }) => ($belongsToUser ? "pointer" : "default")};
   display: flex;
   flex-direction: column;
-  height: 100%;
+  height: 64px;
   margin: 0 auto;
-  max-width: 64px;
   min-height: 45px;
-  opacity: ${({ opacity }) => opacity};
+  opacity: ${({ $opacity }) => $opacity};
   overflow: hidden;
   padding: 3px 3px 5px;
   position: relative;
-  transform: ${({ transform }) => transform};
+  transform: ${({ $transform }) => $transform};
   transition: transform 0.2s ease;
-  width: 100%;
+  width: 64px;
   > img {
     border-radius: 4px;
     height: 80%;
-    width: 85%;
+    width: calc(100% - 8px);
   }
   > span {
     font-size: 8px;
@@ -60,11 +52,11 @@ export const PlantCard = styled.button<PlantCardProps>`
   }
   &::before {
     background: ${({
-      opacity,
-      belongsToUser,
+      $opacity,
+      $belongsToUser,
       theme: { primary_violet, secondary_violet, light_brown },
     }) =>
-      opacity === "1" && belongsToUser
+      $opacity === "1" && $belongsToUser
         ? `linear-gradient(90deg, ${primary_violet}, ${light_brown}, ${secondary_violet})`
         : "none"};
     content: "";
@@ -74,7 +66,7 @@ export const PlantCard = styled.button<PlantCardProps>`
     top: -35%;
     width: 45%;
     z-index: -1;
-    ${({ selectionAnimation }) => selectionAnimation};
+    ${({ $selectionAnimation }) => $selectionAnimation};
   }
   &::after {
     background-color: ${({ theme }) => theme.secondary_brown};
@@ -87,8 +79,16 @@ export const PlantCard = styled.button<PlantCardProps>`
     top: 3px;
     transform: translateX(-50%);
     -webkit-transform: translateX(-50%);
-    width: ${({ opacity }) => (opacity === "1" ? "calc(100% - 6px);" : "auto")};
+    width: ${({ $opacity }) => ($opacity === "1" ? "calc(100% - 6px);" : "auto")};
     z-index: -1;
+  }
+  ${BREAKPOINTS.LG} {
+    height: 60px;
+    width: 60px;
+  }
+  ${BREAKPOINTS.MD} {
+    height: 48px;
+    width: 56px;
   }
 `
 export const PlantThumbnail = styled(PlantCard)`

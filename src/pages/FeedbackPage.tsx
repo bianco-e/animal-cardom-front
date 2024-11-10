@@ -43,7 +43,7 @@ export default function FeedbackPage() {
           value={messageValue}
           onChange={e => setMessageValue(e.target.value)}
         />
-        <ACButton onClick={handleSendFeedback} fWeight="bold">
+        <ACButton onClick={handleSendFeedback} $fWeight="bold">
           {feedbackStatus === "sending"
             ? ". . ."
             : feedbackStatus === "sent"
@@ -70,7 +70,7 @@ const Container = styled.div`
   width: 700px;
   padding-top: 120px;
   margin: 0 auto;
-  ${BREAKPOINTS.MOBILE} {
+  ${BREAKPOINTS.SM} {
     width: calc(100% - 40px);
   }
 `

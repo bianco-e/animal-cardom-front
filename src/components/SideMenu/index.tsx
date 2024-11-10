@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { useLocation, useHistory } from "react-router-dom"
+import { useLocation, useNavigate } from "react-router-dom"
 import { ACButton } from "../../components/styled-components"
 import { useAuth0 } from "@auth0/auth0-react"
 import AnimatedPlaceholder from "../Common/AnimatedPlaceholder"
@@ -11,11 +11,11 @@ import { AUTH_ACTIONS } from "../../redux/reducers/auth"
 
 export default function SideMenu() {
   const [currentSection, setCurrentSection] = useState<string>()
-  const [menuWidth, setMenuWidth] = useState<string>("210px")
+  const [menuWidth, setMenuWidth] = useState<string>("140px")
   const dispatch = useAppDispatch()
   const user = useAppSelector(({ auth }) => auth.user)
   const { logout } = useAuth0()
-  const history = useHistory()
+  const navigate = useNavigate()
   const location = useLocation()
   useEffect(() => {
     setCurrentSection(getCurrentSection(location.pathname))
@@ -23,19 +23,19 @@ export default function SideMenu() {
   const buttonsData = [
     {
       title: "Menu",
-      fn: () => history.push("/menu"),
+      fn: () => navigate("/menu"),
     },
     {
       title: "Profile",
-      fn: () => history.push("/profile"),
+      fn: () => navigate("/profile"),
     },
     {
       title: "Collection",
-      fn: () => history.push("/collection"),
+      fn: () => navigate("/collection"),
     },
     {
       title: "Campaign",
-      fn: () => history.push("/campaign"),
+      fn: () => navigate("/campaign"),
     },
   ]
   const handleLogout = () => {
@@ -43,15 +43,15 @@ export default function SideMenu() {
     logout({ returnTo: window.location.origin })
   }
   const hideSideMenu = () => {
-    setMenuWidth(menuWidth === "1px" ? "200px" : "1px")
+    setMenuWidth(menuWidth === "1px" ? "140px" : "1px")
   }
 
   return (
-    <Wrapper width={menuWidth}>
+    <Wrapper $width={menuWidth}>
       <CloseButton
         className="close-button"
         onClick={hideSideMenu}
-        rotate={menuWidth === "1px" ? "270deg" : "90deg"}>
+        $rotate={menuWidth === "1px" ? "270deg" : "90deg"}>
         <svg x="0px" y="0px" width={30} height={30} viewBox="0 0 960 560">
           <path
             d="M480,344.181L268.869,131.889c-15.756-15.859-41.3-15.859-57.054,0c-15.754,15.857-15.754,41.57,0,57.431l237.632,238.937
@@ -65,11 +65,11 @@ export default function SideMenu() {
         alt="animal-cardom"
         src="/images/animal-cardom-logo.png"
         width={56}
-        onClick={() => history.push("/")}
+        onClick={() => navigate("/")}
       />
       {user.first_name ? (
         <UserInfoContainer>
-          <img className="avatar" alt={user.first_name} src={user.picture} />
+          <img className="avatar" alt={user.first_name} referrerPolicy="no-referrer" src={user.profile_img} />
           <span>
             <b>{user.first_name}</b>
           </span>
@@ -83,9 +83,9 @@ export default function SideMenu() {
           <ACButton
             className={`menu-button-${idx}`}
             key={title}
-            fWeight="bold"
+            $fWeight="bold"
             onClick={fn}
-            selected={isSelected}>
+            $selected={isSelected}>
             {title}
           </ACButton>
         )

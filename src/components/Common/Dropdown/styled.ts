@@ -1,16 +1,16 @@
 import styled from "styled-components"
 
 interface WrapperProps {
-  isOpened?: boolean
+  $isOpened?: boolean
   width?: string
 }
 
 interface OptionsContainerProps {
-  display?: string
+  $display?: string
 }
 
 interface OptionProps {
-  fWeight?: string
+  $fWeight?: string
 }
 
 export const Wrapper = styled.div<WrapperProps>`
@@ -26,7 +26,7 @@ export const Wrapper = styled.div<WrapperProps>`
     width: 100%;
     > svg {
       transition: transform 0.2s ease;
-      transform: ${({ isOpened }) => (isOpened ? "rotate(180deg)" : "")};
+      transform: ${({ $isOpened }) => ($isOpened ? "rotate(180deg)" : "")};
     }
   }
 `
@@ -34,7 +34,7 @@ export const OptionsContainer = styled.div<OptionsContainerProps>`
   align-items: center;
   border-radius: 5px;
   box-shadow: 0 0 3px 3px rgba(95, 57, 0, 0.3);
-  display: ${({ display }) => display};
+  display: ${({ $display }) => $display};
   max-height: 250px;
   flex-direction: column;
   font-size: 15px;
@@ -65,7 +65,7 @@ export const StyledOption = styled.span<OptionProps>`
   border-bottom: 2px solid ${({ theme }) => theme.secondary_brown};
   cursor: pointer;
   display: flex;
-  font-weight: ${({ fWeight = "bold" }) => fWeight};
+  font-weight: ${({ $fWeight = "bold" }) => $fWeight};
   justify-content: center;
   padding: 10px 15px;
   width: calc(100% - 30px);

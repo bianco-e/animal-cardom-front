@@ -1,15 +1,16 @@
 export interface IGameState {
   isLoading: boolean
+  soundOn: boolean
   gameError: boolean
   hands: IHands
   plants: IPlants
-  animalToTreat?: IAnimal
-  treatedAnimal?: IAnimal
+  animalToTreat?: Animal
+  treatedAnimal?: Animal
   selectedPlant?: IPlant
   usedPlants: IPlant[]
-  attacker?: IAnimal
-  defender?: IAnimal
-  terrain: ITerrain
+  attacker?: Animal
+  defender?: Animal
+  habitat: Habitat
   underAttack?: string
   dodgedAttack?: string
   pcTurn: boolean
@@ -38,11 +39,21 @@ export interface Skill {
   name: string
   description: string
   types: string[]
-  toDo: (state: any, hand: HandKey) => any
+  use_type_id: number
+  offensiveFn: ((state: IGameState, enemyHandKey: HandKey) => IGameState) | null
+  defensiveFn: ((state: IGameState, enemyHandKey: HandKey, statsDiff: number) => IGameState) | null
+  passiveFn: ((state: IGameState, enemyHandKey: HandKey) => IGameState) | null
+}
+
+export interface Species {
+  id: number
+  name: string
+  description: string
+  icon: string
 }
 
 export interface IHands {
-  [x: string]: IAnimal[]
+  [x: string]: Animal[]
 }
 
 export interface IPlants {
@@ -51,16 +62,18 @@ export interface IPlants {
 }
 
 export interface IPlant {
+  id: number
   name: string
   description: string
-  image: string
-  appliable_on: string
-  toDo: (state: any, hand: HandKey) => any
+  use_type_id: number
 }
 
-export interface IAnimal {
+export interface Animal {
+  id: number
+  scientific_name: string
   attack: Stat
   bleeding: boolean
+  is_sleeping: boolean
   life: Stat
   missing: Missing
   name: string
@@ -69,44 +82,50 @@ export interface IAnimal {
   price: number
   sell_price: number
   skill: Skill
-  species: string
+  species: Species
   targeteable: boolean
   habitat: string
 }
 
-export interface ITerrain {
-  image: string
+export interface CampaignAnimal extends Animal {
+  is_in_hand: boolean
+}
+
+export interface Habitat {
+  id: number
   name: string
+  description: string
   color: string
-  campaign_xp: number[]
 }
 
-export interface Game {
-  created_at?: Date
-  earned_animal?: string
-  earned_xp?: number
-  terrain: string
-  won: boolean
-  used_animals: {
-    user: { name: string; survived: boolean }[]
-    pc: { name: string; survived: boolean }[]
-  }
-  used_plants: {
-    user: { name: string; applied: boolean }[]
-    pc: { name: string; applied: boolean }[]
-  }
+export interface CampaignLevel {
+  id: number
+  habitat_name: Habitat['name']
+  habitat_id: Habitat['id'],
+  level_required: number,
+  animal_id_reward: Animal['id'],
+  coins_reward: number,
+  pc_animals: number[],
 }
 
-export interface UserTemplate {
-  sub?: string
-  auth_id?: string
-  picture?: string
-  email?: string
-  given_name?: string
-  first_name?: string
-  family_name?: string
-  last_name?: string
-  locale?: string
+interface UsedCard {
+  id: number
+  name: string
+  finished_game: boolean
+}
+
+export interface GameToSave {
+  habitat_id: Habitat['id']
+  habitat_name: Habitat['name']
+  user_won: boolean
+  pc_used_animals: UsedCard[]
+  user_used_animals: UsedCard[]
+  pc_used_plants: UsedCard[]
+  user_used_plants: UsedCard[]
+}
+
+export interface Game extends GameToSave {
+  created_at: Date
 }
 
 export interface AuthUser {
@@ -119,19 +138,12 @@ export interface AuthUser {
 }
 
 export interface User {
+  id: string
   auth_id: string
-  coins: number
-  picture: string
+  profile_img: string
   email: string
   first_name: string
   last_name: string
-  locale: string
-  preferences: {
-    language: string
-  }
-  xp: number
-  owned_cards: string[]
-  hand: string[]
 }
 
 export interface Action {
@@ -143,17 +155,61 @@ export interface Action {
   action: string
 }
 
-export interface GameParams {
-  requiredXp: string
+export interface CampaignState {
+  id: string
+  isLoading: boolean
+  error: string | null
+  coins: number
+  level: number
+  hand: Animal[]
+  owned_animals: Animal[]
 }
 
 export interface IRootState {
   auth: {
-    isLogged: boolean
     error: boolean
     isLoading: boolean
     token: string | null
     user: User
   }
+  campaign: CampaignState
   game: IGameState
+}
+
+export interface DBAnimal {
+  id: number
+  name: string
+  scientific_name: string
+  description: string
+  species_id: number
+  habitat_id: number
+  attack: number
+  life: number
+  price: number
+  created_at: string
+  updated_at: string
+  skill_name: string
+  skill_description: string
+  skill_type_id: number
+  skill_use_type_id: number
+  targeteable: boolean
+  bleeding: boolean
+  missing_chance: number
+  species_description: string
+  species_name: string
+  species_icon: string
+  habitat_name: string
+}
+
+export interface SkillType {
+  id: number
+  name: string
+  description: number
+}
+
+export interface FiltersData {
+  loading: boolean
+  species: Species[]
+  habitats: Habitat[]
+  skillTypes: SkillType[]
 }

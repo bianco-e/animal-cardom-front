@@ -4,17 +4,19 @@ import Card from "../components/Card"
 import MenuLayout from "../components/MenuLayout"
 import ReleaseNotes from "../components/ReleaseNotes"
 import Spinner from "../components/Spinner"
-import { IAnimal } from "../interfaces"
+import { Animal } from "../interfaces"
 import { getNewestAnimals } from "../queries/animalsCards"
 import { BREAKPOINTS } from "../utils/constants"
+import { parseAnimalsFromDB } from "../utils"
 
 export default function Menu() {
-  const [newestAnimals, setNewestAnimals] = useState<IAnimal[]>([])
+  const [newestAnimals, setNewestAnimals] = useState<Animal[]>([])
 
   const fetchNewestAnimals = async () => {
-    const animalsRes = await getNewestAnimals()
-    if (animalsRes.error) return
-    setNewestAnimals(animalsRes.animals)
+    const newestAnimals = await getNewestAnimals()
+    if (newestAnimals) {
+      setNewestAnimals(parseAnimalsFromDB(newestAnimals))
+    }
   }
 
   useEffect(() => {
@@ -31,7 +33,7 @@ export default function Menu() {
           ) : (
             <div>
               {newestAnimals.map(card => (
-                <Card {...card} key={card.name} opacityForPreview="1" />
+                <Card {...card} key={card.name} />
               ))}
             </div>
           )}
@@ -76,7 +78,7 @@ const Wrapper = styled.div`
       }
     }
   }
-  ${BREAKPOINTS.MOBILE} {
+  ${BREAKPOINTS.SM} {
     > div {
       width: 100%;
       > button {

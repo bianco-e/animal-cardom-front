@@ -18,13 +18,11 @@ export default function Dropdown({ closedText, options, width }: IProps) {
   const dropdownRef = useRef<HTMLDivElement>(null)
 
   const handleClickOutside = (e: MouseEvent) => {
-    const { clientX, clientY } = e
     if (dropdownRef.current) {
+      const { left, top, right, bottom } = dropdownRef.current.getBoundingClientRect()
+      const { clientX, clientY } = e
       const isClickingOut =
-        clientX > dropdownRef.current.offsetLeft + dropdownRef.current.offsetWidth ||
-        clientX < dropdownRef.current.offsetLeft ||
-        clientY > dropdownRef.current.offsetTop + dropdownRef.current.offsetHeight ||
-        clientY < dropdownRef.current.offsetTop
+        clientX < left || clientX > right || clientY < top || clientY > bottom
       if (isClickingOut) {
         setIsOpened(false)
       }
@@ -32,8 +30,8 @@ export default function Dropdown({ closedText, options, width }: IProps) {
   }
 
   useEffect(() => {
-    isOpened && document.addEventListener("click", handleClickOutside)
-    return () => document.removeEventListener("click", handleClickOutside)
+    isOpened && document.addEventListener("mousedown", handleClickOutside)
+    return () => document.removeEventListener("mousedown", handleClickOutside)
   }, [isOpened])
 
   const handleDropdown = () => setIsOpened(!isOpened)
@@ -44,7 +42,7 @@ export default function Dropdown({ closedText, options, width }: IProps) {
     callback()
   }
   return (
-    <Wrapper isOpened={isOpened} width={width}>
+    <Wrapper $isOpened={isOpened} width={width}>
       <LogButton onClick={handleDropdown}>
         <b>{selectedOption ? selectedOption : closedText}</b>
         <svg
@@ -61,12 +59,12 @@ export default function Dropdown({ closedText, options, width }: IProps) {
           />
         </svg>
       </LogButton>
-      <OptionsContainer ref={dropdownRef} display={isOpened ? "flex" : "none"}>
+      <OptionsContainer ref={dropdownRef} $display={isOpened ? "flex" : "none"}>
         {options.map((opt, idx) => {
           return (
             <StyledOption
               key={opt.text + idx}
-              fWeight={idx === 0 ? "normal" : "bold"}
+              $fWeight={idx === 0 ? "normal" : "bold"}
               onClick={() => handleSelection(opt.fn, opt.text)}>
               {opt.text}
             </StyledOption>

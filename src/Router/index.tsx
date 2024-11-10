@@ -1,4 +1,4 @@
-import { Route, Switch, useLocation } from "react-router-dom"
+import { createBrowserRouter, createRoutesFromElements, Route } from "react-router-dom"
 import Campaign from "../pages/Campaign"
 import Collection from "../pages/Collection"
 import ErrorPage from "../pages/ErrorPage"
@@ -8,49 +8,28 @@ import Menu from "../pages/Menu"
 import Profile from "../pages/Profile"
 import WelcomePage from "../pages/WelcomePage"
 import FeedbackPage from "../pages/FeedbackPage"
-import useScrollToTop from "../hooks/useScrollToTop"
 
-import Modal from "../components/Common/Modal"
-import ModalScreenWidthContent from "../components/ModalScreenWidthContent"
-import useWindowDimensions from "../hooks/useWindowDimensions"
 import NotFoundPage from "../pages/NotFound"
-import PrivateRoute from "./PrivateRoute"
+import CampaignRouteWrapper from "./CampaignRouteWrapper"
+import AppLayout from "../components/AppLayout"
 
-const MainRouter = () => {
-  const dimensions = useWindowDimensions()
-  const location = useLocation()
-  const showScreenSizeAlert =
-    dimensions && dimensions.width <= 512 && location.pathname !== "/analytics"
-  useScrollToTop()
-  return (
-    <>
-      {showScreenSizeAlert ? (
-        <Modal closeModal={() => {}} withCloseButton={false}>
-          <ModalScreenWidthContent />
-        </Modal>
-      ) : null}
-      <Switch>
-        <Route exact path="/" render={() => <WelcomePage />} />
-        <Route exact path="/analytics" render={() => <Analytics />} />
-        <Route exact path={"/play"} render={() => <Game />} />
-        <PrivateRoute
-          exact
-          path={"/game/:requiredXp(0|450|900|1350|1800|2250|2700|3150|3600)"}
-          render={() => <Game isCampaign />}
-        />
-        <PrivateRoute exact path="/menu" render={() => <Menu />} />
-        <PrivateRoute exact path="/campaign" render={() => <Campaign />} />
-        <PrivateRoute exact path="/profile" render={() => <Profile />} />
-        <PrivateRoute exact path="/collection" render={() => <Collection />} />
-        <Route exact path="/error" render={() => <ErrorPage />} />
-        <Route exact path="/give-feedback" render={() => <FeedbackPage />} />
+export default createBrowserRouter(
+  createRoutesFromElements(
+    <Route element={<AppLayout />}>
+      <Route index path="/" element={<WelcomePage />} />
+      <Route path="/analytics" element={<Analytics />} />
+      <Route path="/play" element={<Game />} />
+      <Route element={<CampaignRouteWrapper />}>
+        <Route path="/menu" element={<Menu />} />
+        <Route path="/campaign/level/:levelId" element={<Game isCampaign />} />
+        <Route path="/campaign" element={<Campaign />} />
+        <Route path="/profile" element={<Profile />} />
+        <Route path="/collection" element={<Collection />} />
+      </Route>
+      <Route path="/error" element={<ErrorPage />} />
+      <Route path="/give-feedback" element={<FeedbackPage />} />
 
-        <Route>
-          <NotFoundPage />
-        </Route>
-      </Switch>
-    </>
+      <Route path="*" element={<NotFoundPage />} />
+    </Route>
   )
-}
-
-export default MainRouter
+)

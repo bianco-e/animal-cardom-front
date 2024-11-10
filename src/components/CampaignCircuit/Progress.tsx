@@ -1,41 +1,46 @@
 import styled from "styled-components"
 import { useAppSelector } from "../../hooks/redux-hooks"
-import { ITerrain, User } from "../../interfaces"
-
-const TOTAL_LEVELS = 7
+import { CampaignLevel, CampaignState } from "../../interfaces"
 interface IProps {
-  terrains: ITerrain[]
+  campaignLevels: CampaignLevel[]
 }
-export default function CampaignProgress({ terrains }: IProps) {
-  const { xp }: User = useAppSelector(({ auth }) => auth.user)
-  const terrain = terrains.find(t => t.campaign_xp.includes(xp))
-  const terrainNumber = terrain ? terrains.indexOf(terrain) : 0
-  const progress = terrainNumber === 0 ? xp / 1350 : terrainNumber
-  const barWidth: number =
-    xp === 0 ? 0 : xp > 3600 ? 100 : (progress / TOTAL_LEVELS) * 100
+
+const INITIAL_LEVEL = 1
+
+export default function CampaignProgress({ campaignLevels }: IProps) {
+  const { level }: CampaignState = useAppSelector(({ campaign }) => campaign)
+  const levelsPassed = campaignLevels.filter(
+    campaignLevel => campaignLevel.level_required <= level
+  )
+
+  const getBarWidth = (): number => {
+    if (level === INITIAL_LEVEL) return 0
+    if (level >= campaignLevels.length) return 100
+    return (levelsPassed.length / campaignLevels.length) * 100
+  }
 
   return (
     <Wrapper>
       <Title>Campaign Progress</Title>
-      <ProgressBar barWidth={barWidth}>
+      <ProgressBar $barWidth={getBarWidth()}>
         <div></div>
       </ProgressBar>
       <SmallText>
-        <b>{barWidth.toFixed(0)} %</b>
+        <b>{getBarWidth().toFixed(0)} %</b>
       </SmallText>
     </Wrapper>
   )
 }
 
 interface ProgressBarProps {
-  barWidth?: number
+  $barWidth?: number
 }
 const Wrapper = styled.div`
   align-items: center;
   display: flex;
   flex-direction: column;
 `
-const ProgressBar = styled.div`
+const ProgressBar = styled.div<ProgressBarProps>`
   background: color: none;
   border: 1px solid ${({ theme }) => theme.primary_violet};
   border-radius: 5px;
@@ -49,7 +54,7 @@ const ProgressBar = styled.div`
     border-radius: 5px;
     height: 15px;
     transition: all 0.4s ease;
-    width: ${(p: ProgressBarProps) => p.barWidth}%;
+    width: ${props => props.$barWidth}%;
   }
 `
 const Title = styled.span`

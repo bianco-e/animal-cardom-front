@@ -1,10 +1,11 @@
-import { useEffect, useState } from "react"
-import { Link, useHistory, useLocation } from "react-router-dom"
+import { Link, useNavigate, useLocation } from "react-router-dom"
 import { useAuth0 } from "@auth0/auth0-react"
 import { LogButton } from "../../components/styled-components"
 import { createAction } from "../../queries/tracking"
 import { getUtm } from "../../utils"
 import { Container, FeedbackButton, OptionButton, UserImage, Wrapper } from "./styled"
+import { useAppDispatch, useAppSelector } from "../../hooks/redux-hooks"
+import { GAME_ACTIONS } from "../../redux/reducers/game"
 
 interface IProps {
   isHome?: boolean
@@ -13,31 +14,12 @@ interface IProps {
 export default function NavBar({ isHome }: IProps) {
   const { loginWithRedirect, user, isAuthenticated } = useAuth0()
   const username = user?.given_name
-  const picture = user?.picture
+  const profile_img = user?.picture
   const auth_id = user?.sub
-  const history = useHistory()
+  const { soundOn } = useAppSelector(({ game }) => game)
+  const navigate = useNavigate()
   const location = useLocation()
-
-  const [soundState, setSoundState] = useState<"off" | "on">("on")
-
-  useEffect(() => {
-    const currentSoundState = localStorage.getItem("sound")
-    if (
-      currentSoundState &&
-      (currentSoundState === "off" || currentSoundState === "on")
-    ) {
-      setSoundState(currentSoundState)
-    }
-  }, [])
-
-  useEffect(() => {
-    localStorage.setItem("sound", soundState)
-  }, [soundState])
-
-  const handleSoundButton = () => {
-    const soundToSet = soundState === "off" ? "on" : "off"
-    setSoundState(soundToSet)
-  }
+  const dispatch = useAppDispatch()
 
   const handleLogin = () => {
     const guest = localStorage.getItem("ac-guest-name")
@@ -52,7 +34,7 @@ export default function NavBar({ isHome }: IProps) {
         ...action,
         action: "you-are-allowed-button",
       })
-      history.push("/menu")
+      navigate("/menu")
     } else {
       createAction({
         ...action,
@@ -60,6 +42,10 @@ export default function NavBar({ isHome }: IProps) {
       })
       loginWithRedirect()
     }
+  }
+
+  const handleSound = () => {
+    dispatch(GAME_ACTIONS.SET_GAME_SOUND(!soundOn))
   }
 
   return (
@@ -71,20 +57,20 @@ export default function NavBar({ isHome }: IProps) {
           </FeedbackButton>
         )}
 
-        <OptionButton onClick={handleSoundButton}>
+        <OptionButton onClick={handleSound}>
           <img
             alt="sound-button"
-            src={`/icons/sound-${soundState}-icon.png`}
+            src={`/icons/sound-${soundOn ? "on" : "off"}-icon.png`}
             width={35}
           />
         </OptionButton>
         <Link className="logo-link" to="/">
           <img alt="ac-logo" src="/images/animal-cardom-logo.png" width={60} />
         </Link>
-        <LogButton onClick={handleLogin} overflow="visible">
-          {isAuthenticated && username && picture ? (
+        <LogButton onClick={handleLogin} $overflow="visible">
+          {isAuthenticated && username && profile_img ? (
             <>
-              <UserImage src={picture} alt={username} />
+              <UserImage src={profile_img} alt={username} />
               <span>
                 You're allowed, <b>{username}!</b>
               </span>

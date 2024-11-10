@@ -17,7 +17,7 @@ export const CasterText = styled.span`
   margin: ${({ theme }) => theme.$9};
   position: relative;
   text-align: center;
-  ${BREAKPOINTS.MOBILE} {
+  ${BREAKPOINTS.SM} {
     font-size: ${({ theme }) => theme.$7};
   }
 `

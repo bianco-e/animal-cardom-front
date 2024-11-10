@@ -2,61 +2,61 @@ import styled from "styled-components"
 import { BREAKPOINTS } from "../utils/constants"
 
 interface LogButtonProps {
-  overflow?: string
+  $overflow?: string
 }
 interface ButtonProps {
-  fWeight?: string
-  height?: string
-  selected?: boolean
-  margin?: string
-  width?: string
+  $fWeight?: string
+  $height?: string
+  $selected?: boolean
+  $margin?: string
+  $width?: string
 }
 interface TextProps {
-  color?: string
-  fSize?: string
-  fWeight?: string
-  margin?: string
-  padding?: string
-  textAlign?: string
+  $color?: string
+  $fSize?: string
+  $fWeight?: string
+  $margin?: string
+  $padding?: string
+  $textAlign?: string
 }
 interface ImageProps {
-  height?: string
-  width?: string
+  $height?: string
+  $width?: string
 }
 
 interface MessageProps {
-  margin?: string
+  $margin?: string
 }
 
-export const Text = styled.span`
-  color: ${(p: TextProps) => p.color};
-  font-size: ${(p: TextProps) => p.fSize};
-  font-weight: ${(p: TextProps) => p.fWeight};
-  margin: ${(p: TextProps) => p.margin};
-  padding: ${(p: TextProps) => p.padding};
-  text-align: ${(p: TextProps) => p.textAlign};
+export const Text = styled.span<TextProps>`
+  color: ${(p) => p.$color};
+  font-size: ${(p) => p.$fSize};
+  font-weight: ${(p) => p.$fWeight};
+  margin: ${(p) => p.$margin};
+  padding: ${(p) => p.$padding};
+  text-align: ${(p) => p.$textAlign};
 `
 
-export const Image = styled.img`
-  height: ${(p: ImageProps) => p.height};
-  width: ${(p: ImageProps) => p.width};
+export const Image = styled.img<ImageProps>`
+  height: ${(p) => p.$height};
+  width: ${(p) => p.$width};
 `
 
 export const ACButton = styled.button<ButtonProps>`
-  background-color: ${({ selected, theme }) =>
-    selected ? theme.primary_brown : theme.secondary_brown};
+  background-color: ${({ $selected, theme }) =>
+    $selected ? theme.primary_brown : theme.secondary_brown};
   border: 2px solid ${({ theme }) => theme.secondary_brown};
   border-radius: 5px;
   box-shadow: inset 0px 0px 3px rgba(0, 0, 0, 0.5), 1px 1px 5px rgba(0, 0, 0, 0.5);
   color: black;
-  height: ${({ height = "60px" }) => height};
+  height: ${({ $height = "60px" }) => $height};
   font-size: 20px;
-  font-weight: ${({ fWeight }) => fWeight};
-  margin: ${({ margin }) => margin};
+  font-weight: ${({ $fWeight }) => $fWeight};
+  margin: ${({ $margin }) => $margin};
   overflow: hidden;
   padding: 6px 10px;
   position: relative;
-  width: ${({ width = "100%" }) => width};
+  width: ${({ $width = "100%" }) => $width};
   &:active:enabled {
     box-shadow: inset 0px 0px 3px black;
   }
@@ -71,14 +71,14 @@ export const ACButton = styled.button<ButtonProps>`
   }
 `
 
-export const LogButton = styled.button`
+export const LogButton = styled.button<LogButtonProps>`
   background: ${({ theme }) => theme.light_brown};
   border: 2px solid ${({ theme }) => theme.secondary_brown};
   border-radius: 5px;
   box-shadow: inset 0px 0px 3px black;
   font-size: 18px;
   margin-right: 20px;
-  overflow: ${(p: LogButtonProps) => p.overflow || "hidden"};
+  overflow: ${(p) => p.$overflow || "hidden"};
   padding: 6px 20px;
   position: relative;
 `
@@ -95,10 +95,10 @@ export const ComingSoon = styled.span`
   transform: rotate(20deg);
 `
 
-export const Message = styled.span`
+export const Message = styled.span<MessageProps>`
   font-size: 18px;
   font-weight: bold;
-  margin: ${(p: MessageProps) => p.margin};
+  margin: ${(p) => p.$margin};
 `
 
 export const ModalTitle = styled.span`
@@ -108,7 +108,7 @@ export const ModalTitle = styled.span`
 `
 
 interface ACInputProps {
-  marginBottom?: string
+  $marginBottom?: string
 }
 
 export const ACInput = styled.input<ACInputProps>`
@@ -118,7 +118,7 @@ export const ACInput = styled.input<ACInputProps>`
   box-shadow: inset 0px 0px 3px black;
   font-size: 18px;
   height: 30px;
-  margin-bottom: ${({ marginBottom = "40px" }) => marginBottom};
+  margin-bottom: ${({ $marginBottom = "40px" }) => $marginBottom};
   padding: 6px 10px;
   text-align: center;
   width: 96%;
@@ -128,7 +128,7 @@ export const ACInput = styled.input<ACInputProps>`
   &::placeholder {
     color: #000;
   }
-  ${BREAKPOINTS.MOBILE} {
+  ${BREAKPOINTS.SM} {
     margin-bottom: 10px;
   }
 `
@@ -153,7 +153,7 @@ export const ACTextArea = styled.textarea`
     color: #404040;
     font-size: 11px;
   }
-  ${BREAKPOINTS.MOBILE} {
+  ${BREAKPOINTS.SM} {
     margin-bottom: 10px;
   }
 `
@@ -161,10 +161,6 @@ export const ACTextArea = styled.textarea`
 export const HandContainer = styled.div`
   align-items: center;
   display: flex;
-  height: 37%;
   justify-content: space-between;
   width: 100%;
-  ${BREAKPOINTS.MOBILE} {
-    height: 32%;
-  }
 `

@@ -37,7 +37,7 @@ export default function HowToPlay({ action }: IProps) {
               kill all opponent's animals
             </HowToPlayText>
             <HowToPlayText>
-              A <b>terrain</b> will be set at the very beginning affecting (or not)
+              A <b>habitat</b> will be set at the very beginning affecting (or not)
               animals.
             </HowToPlayText>
             <HowToPlayText>
@@ -46,7 +46,7 @@ export default function HowToPlay({ action }: IProps) {
             </HowToPlayText>
             <HowToPlayText>
               There are currently two game modes: playing single matches <b>as a guest</b>{" "}
-              with random cards for both players and a random terrain or playing a{" "}
+              with random cards for both players and a random habitat or playing a{" "}
               <b>campaign</b> which requires signing in to save the progress, where you're
               going to be able to buy cards and build your own hand. <b>PvP mode</b> is
               coming soon.
@@ -55,11 +55,12 @@ export default function HowToPlay({ action }: IProps) {
             <HowToPlaySubtitle>Animals</HowToPlaySubtitle>
             <HowToPlayText>
               Each animal has an <b>ability</b> which can be offensive (activated when
-              attacking) or defensive (activated when the animal is under attack),{" "}
-              <b>attack points</b> and <b>life points</b>, also each animal belongs to a{" "}
-              <b>species</b> which can give you benefits or not depending on the terrain
-              or other cards' abilities. Select an owned animal and click an opponent to
-              attack.
+              attacking), defensive (activated when the animal is under attack) or passive
+              (activated when the round starts), <b>attack points</b> and{" "}
+              <b>life points</b>, also each animal belongs to a <b>species</b> which can
+              give you benefits or not depending on or other cards' abilities, and each
+              animal might feel stronger or not depending on the habitat . Select an owned
+              animal and click an opponent to attack.
             </HowToPlayText>
 
             <HowToPlaySubtitle>Plants</HowToPlaySubtitle>
@@ -69,31 +70,31 @@ export default function HowToPlay({ action }: IProps) {
               allies and <b>offensive plants</b> can only be applied on enemies.
             </HowToPlayText>
 
-            <HowToPlaySubtitle>Terrains</HowToPlaySubtitle>
+            <HowToPlaySubtitle>Habitats</HowToPlaySubtitle>
             <HowToPlayText>
-              There are 7 different terrains. One of them is set when the game begins and
-              it may benefit a species increasing animals attack by 1.
+              There are 7 different habitats. One of them is set when the game begins and
+              it may benefit certain animals increasing their attack by 1.
             </HowToPlayText>
             <HowToPlayText>
               <b>- Neutral</b> doesn't buff any animal
             </HowToPlayText>
             <HowToPlayText>
-              <b>- Swamp</b> buffs 🐸 animals
+              <b>- Swamp</b>
             </HowToPlayText>
             <HowToPlayText>
-              <b>- Desert</b> buffs 🦂 animals
+              <b>- Desert</b>
             </HowToPlayText>
             <HowToPlayText>
-              <b>- Mountain</b> buffs 🦅 animals
+              <b>- Mountain</b>
             </HowToPlayText>
             <HowToPlayText>
-              <b>- Sea</b> buffs 🦈 animals
+              <b>- Sea</b>
             </HowToPlayText>
             <HowToPlayText>
-              <b>- Forest</b> buffs 🦎 animals
+              <b>- Forest</b>
             </HowToPlayText>
             <HowToPlayText>
-              <b>- Jungle</b> buffs 🐺 animals
+              <b>- Jungle</b>
             </HowToPlayText>
           </HowToPlayWrapper>
         </Modal>

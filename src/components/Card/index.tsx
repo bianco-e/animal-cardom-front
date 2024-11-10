@@ -1,11 +1,7 @@
-import { useEffect } from "react"
+import { MouseEventHandler, useEffect, useRef } from "react"
 import { CARD_ICONS } from "../../data/data"
-import { IAnimal, Stat } from "../../interfaces"
-import {
-  attackAnimation,
-  attackAudio,
-  selectionAnimation,
-} from "../../animations/card-animations"
+import { Animal, Stat } from "../../interfaces"
+import { attackAudio } from "../../animations/card-animations"
 import usePlantAnimation from "../../hooks/usePlantAnimation"
 import Tooltip from "../Tooltip"
 import {
@@ -18,80 +14,115 @@ import {
   PlantEffectImage,
   StatsWrapper,
   Text,
+  IconImage,
+  SleepingImage,
 } from "./styled"
 import { useAppDispatch, useAppSelector } from "../../hooks/redux-hooks"
 import { selectCard } from "../../redux/actions/game"
+import styles from "../../styles"
+import { TooltipDirection } from "../Tooltip/styled"
+import { DEFENSIVE_SKILL_TYPE, NONE_SKILL_TYPE, OFFENSIVE_SKILL_TYPE } from "../../utils/constants"
 
-interface IProps extends IAnimal {
+const USER_ANIMAL_ROTATION = 8
+const PC_ANIMAL_ROTATION = 4
+
+interface IProps extends Animal {
   belongsToUser?: boolean
-  onPreviewClick?: (name: string) => void
-  opacityForPreview?: string
-  width?: string
+  onClick?: (id: Animal["id"]) => void
+  cardOpacity?: string
+  isForGame?: boolean
 }
 
 export default function Card({
+  id,
+  scientific_name,
   attack,
-  belongsToUser,
   bleeding,
+  is_sleeping,
   life,
   missing,
   habitat,
   name,
-  onPreviewClick,
-  opacityForPreview,
   paralyzed,
   poisoned,
   skill,
   species,
   targeteable,
-  width,
+  belongsToUser = false,
+  isForGame = false,
+  onClick,
+  cardOpacity,
 }: IProps) {
+  const animalRef = useRef<HTMLButtonElement>(null)
   const dispatch = useAppDispatch()
   const game = useAppSelector(({ game }) => game)
-  const isForPreview = !!opacityForPreview
+  const isDead = life.current <= 0
+  const isPoisoned = poisoned.rounds > 0
   const isParalyzed = paralyzed > 0
-  const isCardSelected = !isForPreview && game.attacker?.name === name
+  const isCardSelected = isForGame && game.attacker?.name === name
   const isCardUnderAttack = game.underAttack === name
   const hasDodgedAttack = game.dodgedAttack === name
-  const soundState = localStorage.getItem("sound")
-  const [animationProps] = usePlantAnimation({ name, soundState })
+  const [animationProps] = usePlantAnimation({ name, soundOn: game.soundOn })
 
   useEffect(() => {
-    isCardUnderAttack && soundState === "on" && attackAudio.play()
-  }, [isCardUnderAttack, soundState])
+    if (isCardUnderAttack && game.soundOn) {
+      attackAudio.play()
+    }
+  }, [isCardUnderAttack, game.soundOn])
 
-  const styledProps = isForPreview
-    ? {
-        attackAnimation: undefined,
-        selectionAnimation: undefined,
-        className: "card",
-        cursor: onPreviewClick ? "pointer" : "default",
-        isCardSelected,
-        isParalyzed,
-        onClick: () => onPreviewClick && onPreviewClick(name),
-        opacity: opacityForPreview ? opacityForPreview : "1",
-        transform: "",
-      }
-    : {
-        attackAnimation: isCardUnderAttack ? attackAnimation : undefined,
-        selectionAnimation: isCardSelected ? selectionAnimation : undefined,
-        cursor:
-          belongsToUser || game.attacker || game.selectedPlant ? "pointer" : "default",
-        isCardSelected,
-        isParalyzed,
-        //@ts-ignore
-        onClick: () => (!game.pcTurn ? dispatch(selectCard(name)) : null),
-        opacity: `${life.current === 0 ? "0.5" : "1"}`,
-        transform: belongsToUser ? "translateY(-8px)" : "",
-      }
+  const handleMouseOver: MouseEventHandler<HTMLButtonElement> = e => {
+    if (!animalRef.current || isDead || !isForGame) return
+    const rotation = belongsToUser ? USER_ANIMAL_ROTATION : PC_ANIMAL_ROTATION
+    const { width, height, top, left } = animalRef.current.getBoundingClientRect()
+    const cardCenterX = left + width / 2
+    const cardCenterY = top + height / 2
+    const rotateX = e.clientY > cardCenterY ? -rotation : rotation
+    const rotateY = e.clientX > cardCenterX ? rotation : -rotation
+    animalRef.current.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`
+  }
 
-  const getStatColor = (stat: Stat): string =>
-    stat.current > stat.initial ? "#a4508b" : stat.current < stat.initial ? "red" : ""
+  const handleMouseLeave = () => {
+    if (animalRef.current) {
+      animalRef.current.style.transform = `rotateX(0deg) rotateY(0deg)`
+    }
+  }
 
-  const getImageName = (name: string) => name.toLowerCase().split(" ").join("-")
+  const handleClick = () => {
+    if (onClick) return onClick(id) //@ts-ignore
+    if (isForGame && !game.pcTurn && !is_sleeping) return dispatch(selectCard(name))
+  }
+
+  const getStatColor = (stat: Stat): string => {
+    if (stat.current > stat.initial) return styles.secondary_violet
+    if (stat.current < stat.initial && !isDead) return styles.primary_red
+    return ""
+  }
+
+  const getSkillIcon = (skill_use_type_id: number): string => {
+    if (skill_use_type_id === NONE_SKILL_TYPE) return CARD_ICONS.PASSIVE
+    if (skill_use_type_id === OFFENSIVE_SKILL_TYPE) return CARD_ICONS.FURY
+    if (skill_use_type_id === DEFENSIVE_SKILL_TYPE) return CARD_ICONS.DEFENSE
+    return ""
+  }
+
+  const getCursor = () => {
+    if (!isForGame) return Boolean(onClick) ? "pointer" : "default"
+    return (belongsToUser || game.attacker || game.selectedPlant) && !isDead && !is_sleeping
+      ? "pointer"
+      : "default"
+  }
 
   return (
-    <AnimalCard {...styledProps} width={width} habitat={habitat.toLowerCase()}>
+    <AnimalCard
+      onClick={handleClick}
+      onMouseOver={handleMouseOver}
+      onMouseLeave={handleMouseLeave}
+      $opacity={isDead ? "0.5" : cardOpacity || "1"}
+      $isCardUnderAttack={isCardUnderAttack}
+      $isCardSelected={isCardSelected}
+      $cursor={getCursor()}
+      $habitat={habitat.toLowerCase()}
+      ref={animalRef}>
       {isCardUnderAttack ? (
         <Injury alt="under-attack" src="/images/svg/blood-splatter.svg" />
       ) : null}
@@ -99,10 +130,12 @@ export default function Card({
 
       {animationProps ? <PlantEffectImage {...animationProps} /> : null}
 
+      {is_sleeping ? <SleepingImage src="/images/animations/sleeping.png" /> : null}
+
       {missing.chance ? (
-        <IconContainer placement="LEFT">
+        <IconContainer $placement="LEFT">
           <Tooltip
-            direction="BOTTOM-RIGHT"
+            direction={TooltipDirection.BOTTOM_RIGHT}
             title="Missing chance"
             description={`${name} has ${missing.chance}% chance of missing the attack`}
           />
@@ -111,13 +144,19 @@ export default function Card({
       ) : null}
 
       <IconContainer>
-        <span>{species}</span>
+        <Tooltip
+          direction={TooltipDirection.BOTTOM}
+          title={species.name}
+          size="MD"
+          description={species.description}
+        />
+        <span>{species.icon}</span>
       </IconContainer>
 
       {!targeteable ? (
-        <IconContainer placement="RIGHT">
+        <IconContainer $placement="RIGHT">
           <Tooltip
-            direction="BOTTOM-LEFT"
+            direction={TooltipDirection.BOTTOM_LEFT}
             title="Untargeteable"
             description={`${name} can't be attacked until it attacks first`}
           />
@@ -125,71 +164,68 @@ export default function Card({
         </IconContainer>
       ) : null}
 
-      <Text className="animal-name spaced-title">{name}</Text>
+      <FlexSection $fDirection="column">
+        <Text className="animal-name spaced-title">{name}</Text>
+        <Text className="animal-scientific-name">({scientific_name})</Text>
+      </FlexSection>
 
       <Image
         className="animal-picture"
         draggable="false"
-        src={`/images/animals/adult-${getImageName(name)}.webp`}
+        src={`/images/animals/adult-${name.toLowerCase().split(" ").join("-")}.webp`}
       />
 
       <DescriptionContainer>
-        <FlexSection mBottom="1px">
-          {!skill.types.includes("none") && (
-            <Image
-              className="small-icon"
-              src={
-                skill.types.includes("defensive") ? CARD_ICONS.DEFENSE : CARD_ICONS.FURY
-              }
-            />
-          )}
-          <Text className="card-sm-name spaced-title" lineThrough={isParalyzed}>
+        <FlexSection>
+          {getSkillIcon(skill.use_type_id) ? (
+            <IconImage src={getSkillIcon(skill.use_type_id)} />
+          ) : null}
+          <Text className="card-sm-name spaced-title" $lineThrough={isParalyzed}>
             {skill.name}
           </Text>
           {isParalyzed ? <span className="paralyzed">({paralyzed})</span> : null}
         </FlexSection>
-        <Text className="skill" fWeight="regular" lineThrough={isParalyzed}>
+        <Text className="skill" $fWeight="regular" $lineThrough={isParalyzed}>
           {skill.description}
         </Text>
       </DescriptionContainer>
 
       <StatsWrapper>
         <div className="stats-container">
-          <Image className="small-icon" src={CARD_ICONS.ATTACK} />
-          <Text className="stats spaced-title" color={getStatColor(attack)}>
+          <IconImage src={CARD_ICONS.ATTACK} />
+          <Text className="stats spaced-title" $color={getStatColor(attack)}>
             {attack.current}
           </Text>
         </div>
 
-        <FlexSection fDirection="column">
+        <FlexSection $fDirection="column">
           {bleeding ? (
             <div className="statuses">
               <Tooltip
-                title={`${name} is bleeding`}
-                description={`Every turn ${name} gets 1 damage. It can be stopped with a plant`}
+                title="Bleeding"
+                description="Takes 1 life point every turn. It might be stopped with a plant"
               />
               <Image className="blood-drop" src={CARD_ICONS.BLOOD} />
             </div>
           ) : null}
-          <FlexSection fDirection="column">
+          <FlexSection $fDirection="column">
             <Image alt="habitat" className="habitat-icon" src={CARD_ICONS.HABITAT} />
             <Text className="card-sm-name">{habitat}</Text>
           </FlexSection>
         </FlexSection>
 
         <div className="stats-container">
-          {poisoned.rounds > 0 && (
+          {isPoisoned && (
             <Tooltip
               title={`${name} is poisoned`}
               description={`${poisoned.damage} poison damage per round - ${poisoned.rounds} round(s) left`}
             />
           )}
-          <Image
-            className="small-icon"
-            src={poisoned.rounds > 0 ? CARD_ICONS.POISON : CARD_ICONS.LIFE}
-          />
-          <Text className="stats spaced-title" color={getStatColor(life)}>
-            {life.current === 0 ? "DEAD" : life.current}
+          {!isDead ? (
+            <IconImage src={isPoisoned ? CARD_ICONS.POISON : CARD_ICONS.LIFE} />
+          ) : null}
+          <Text className="stats spaced-title" $color={getStatColor(life)}>
+            {isDead ? "☠︎" : life.current}
           </Text>
         </div>
       </StatsWrapper>

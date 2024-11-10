@@ -11,7 +11,7 @@ interface IProps {
 export default function PlayerPlants({ name, plants }: IProps) {
   return (
     <HalfPanel>
-      <Text fSize="18px" fWeight="bold" padding="5px">
+      <Text $fSize="18px" $fWeight="bold" $padding="5px">
         {name}
       </Text>
       <PlayerNameTab>{name}</PlayerNameTab>

@@ -1,8 +1,8 @@
 import styled from "styled-components"
 import { BREAKPOINTS } from "../../utils/constants"
 
-interface LeftPanelProps {
-  bgImage?: string
+interface GamePanelProps {
+  $bgImage?: string
 }
 export const PlayerNameTab = styled.div`
   background: rgba(240, 240, 240, 0.6);
@@ -15,16 +15,17 @@ export const PlayerNameTab = styled.div`
   padding: 1px 12px;
   position: absolute;
   transform: translate(-50%, -50%);
-  ${BREAKPOINTS.TABLET} {
+  ${BREAKPOINTS.MD} {
     display: flex;
+    bottom: -32px;
   }
-  ${BREAKPOINTS.MOBILE} {
-    bottom: -42px;
+  ${BREAKPOINTS.SM} {
+    bottom: -30px;
     font-size: 14px;
   }
 `
-export const LeftPanel = styled.div<LeftPanelProps>`
-  background: url(${({ bgImage }) => bgImage});
+export const GamePanel = styled.div<GamePanelProps>`
+  background: url(${({ $bgImage }) => $bgImage});
   background-position: center;
   background-size: cover;
   background-repeat: no-repeat;
@@ -32,10 +33,10 @@ export const LeftPanel = styled.div<LeftPanelProps>`
   box-shadow: 35px 0 40px rgba(0, 0, 0, 0.5);
   display: flex;
   flex-direction: column;
-  width: 110px;
-  ${BREAKPOINTS.TABLET} {
+  width: 108px;
+  ${BREAKPOINTS.MD} {
     align-items: center;
-    background: url(${({ bgImage }) => bgImage});
+    background: url(${({ $bgImage }) => $bgImage});
     background-position: center;
     background-size: cover;
     background-repeat: no-repeat;
@@ -51,11 +52,12 @@ export const HalfPanel = styled.div`
   align-items: center;
   display: flex;
   flex-direction: column;
-  height: 33%;
+  justify-content: space-around;
+  height: 100%;
   > span {
     font-size: 13px;
   }
-  ${BREAKPOINTS.TABLET} {
+  ${BREAKPOINTS.MD} {
     flex-direction: row;
     justify-content: space-between;
     position: relative;
@@ -65,11 +67,11 @@ export const HalfPanel = styled.div`
       display: none;
     }
   }
-  ${BREAKPOINTS.MOBILE} {
+  ${BREAKPOINTS.SM} {
     width: 40%;
   }
 `
-export const TerrainName = styled.h3`
+export const HabitatName = styled.h3`
   align-items: center;
   color: ${({ color }) => color};
   display: flex;
@@ -81,12 +83,12 @@ export const TerrainName = styled.h3`
     position: relative;
     text-shadow: rgba(10, 10, 10, 0.6) 0px 1px 5px;
   }
-  ${BREAKPOINTS.TABLET} {
+  ${BREAKPOINTS.MD} {
     width: 90px;
     min-height: auto;
     height: 100%;
   }
-  ${BREAKPOINTS.MOBILE} {
+  ${BREAKPOINTS.SM} {
     > div.name-container {
       font-size: 14px;
     }
@@ -120,7 +122,7 @@ export const OptionsPanel = styled.div`
       width: 100%;
     }
   }
-  ${BREAKPOINTS.TABLET} {
+  ${BREAKPOINTS.MD} {
     border: 2px solid ${({ theme }) => theme.secondary_brown};
     border-top: 0;
     border-radius: 0 0 50px 50px;

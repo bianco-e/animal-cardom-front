@@ -2,11 +2,11 @@ import styled from "styled-components"
 import { BREAKPOINTS } from "../../utils/constants"
 
 interface ResultProps {
-  bgColor?: string
+  $bgColor?: string
 }
 
 interface HistoryCardProps {
-  terrain?: string
+  $habitat?: string
 }
 export const Wrapper = styled.div`
   align-items: center;
@@ -18,7 +18,7 @@ export const Wrapper = styled.div`
 `
 export const HistoryCard = styled.div<HistoryCardProps>`
   align-items: center;
-  background-image: ${({ terrain }) => `url('/images/terrains/${terrain}.webp')`};
+  background-image: ${({ $habitat }) => `url('/images/habitats/${$habitat}.webp')`};
   background-position: center;
   background-size: cover;
   border-radius: 5px;
@@ -42,25 +42,19 @@ export const DetailsPanel = styled.div`
   content: "";
   display: flex;
   flex-direction: column;
-  height: 40px;
+  height: 36px;
   justify-content: center;
   position: absolute;
   left: 50%;
   -webkit-transform: translateX(-50%);
   transform: translateX(-50%);
-  width: 180px;
+  width: 148px;
   bottom: 0;
   > span {
-    font-size: 10px;
-    font-weight: bold;
-    margin-bottom: 2px;
-    &:last-child {
-      font-size: 9px;
-      margin-bottom: 0;
-    }
+    font-size: 12px;
   }
-  ${BREAKPOINTS.MOBILE} {
-    height: 30px;
+  ${BREAKPOINTS.SM} {
+    height: 32px;
   }
 `
 export const PlayerStats = styled.div`
@@ -71,7 +65,7 @@ export const PlayerStats = styled.div`
   > b {
     margin-bottom: 10px;
   }
-  ${BREAKPOINTS.MOBILE} {
+  ${BREAKPOINTS.SM} {
     margin: 0 auto;
     width: 47%;
     &:first-child {
@@ -86,9 +80,9 @@ export const CardsContainer = styled.div`
   align-items: center;
   display: flex;
   margin-bottom: 8px;
-  justify-content: space-around;
-  width: 85%;
-  ${BREAKPOINTS.MOBILE} {
+  justify-content: space-between;
+  width: 100%;
+  ${BREAKPOINTS.SM} {
     justify-content: space-between;
     &:last-child {
       padding-bottom: 20px;
@@ -97,7 +91,7 @@ export const CardsContainer = styled.div`
   }
 `
 export const Result = styled.span<ResultProps>`
-  background: ${({ bgColor }) => bgColor};
+  background: ${({ $bgColor }) => $bgColor};
   border-radius: 5px;
   color: #fff;
   font-size: 12px;

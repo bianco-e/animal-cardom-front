@@ -29,10 +29,6 @@ export const Container = styled.div`
       > span.skill {
         font-size: 10px;
       }
-      > img.small-icon {
-        height: 12px;
-        width: 12px;
-      }
     }
     > div > span.skill {
       font-size: 10px;
@@ -42,8 +38,7 @@ export const Container = styled.div`
       transform: none;
     }
   }
-
-  ${BREAKPOINTS.MOBILE} {
+  ${BREAKPOINTS.SM} {
     > button {
       height: 200px;
       width: 20%;

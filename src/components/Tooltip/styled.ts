@@ -1,38 +1,51 @@
 import styled from "styled-components"
-import { Direction } from "."
+import { BREAKPOINTS } from "../../utils/constants"
+
+export enum TooltipDirection {
+  TOP = "TOP",
+  BOTTOM = "BOTTOM",
+  BOTTOM_LEFT = "BOTTOM-LEFT",
+  BOTTOM_RIGHT = "BOTTOM-RIGHT"
+}
 
 interface TooltipProps {
-  direction: Direction
+  $direction: TooltipDirection
+  $size: "SM" | "MD"
+}
+
+const widths = {
+  SM: 96,
+  MD: 124,
 }
 
 const positions = {
-  TOP: `bottom: 120%; flex-direction: column; left: calc(50% - 49px);`,
-  BOTTOM: `top: 120%; flex-direction: column-reverse; left: calc(50% - 49px);`,
-  "BOTTOM-LEFT": `top: 100%; flex-direction: column-reverse; right: 90%;`,
-  "BOTTOM-RIGHT": `top: 100%; flex-direction: column-reverse; left: 90%;`,
+  [TooltipDirection.TOP]: (width: number) => `bottom: 120%; flex-direction: column; left: calc(50% - ${width / 2}px);`,
+  [TooltipDirection.BOTTOM]: (width: number) => `top: 120%; flex-direction: column-reverse; left: calc(50% - ${width / 2}px);`,
+  [TooltipDirection.BOTTOM_LEFT]: (width: number) => `top: 100%; flex-direction: column-reverse; right: 90%;`,
+  [TooltipDirection.BOTTOM_RIGHT]: (width: number) => `top: 100%; flex-direction: column-reverse; left: 90%;`,
 }
 
 const descriptionContainer = {
   borderRadius: {
-    TOP: `4px 4px 0 0;`,
-    BOTTOM: `0 0 4px 4px;`,
-    "BOTTOM-LEFT": `0 0 4px 4px;`,
-    "BOTTOM-RIGHT": `0 0 4px 4px;`,
+    [TooltipDirection.TOP]: `4px 4px 0 0;`,
+    [TooltipDirection.BOTTOM]: `0 0 4px 4px;`,
+    [TooltipDirection.BOTTOM_LEFT]: `0 0 4px 4px;`,
+    [TooltipDirection.BOTTOM_RIGHT]: `0 0 4px 4px;`,
   },
 }
 
 const titleContainer = {
   arrowPosition: {
-    TOP: `bottom: -4px; left: calc(50% - 4px); transform: rotate(45deg);`,
-    BOTTOM: `top: -4px; left: calc(50% - 4px); transform: rotate(45deg);`,
-    "BOTTOM-LEFT": `display: none;`,
-    "BOTTOM-RIGHT": `display: none;`,
+    [TooltipDirection.TOP]: `bottom: -4px; left: calc(50% - 4px); transform: rotate(45deg);`,
+    [TooltipDirection.BOTTOM]: `top: -4px; left: calc(50% - 4px); transform: rotate(45deg);`,
+    [TooltipDirection.BOTTOM_LEFT]: `display: none;`,
+    [TooltipDirection.BOTTOM_RIGHT]: `display: none;`,
   },
   borderRadius: {
-    TOP: `0 0 4px 4px;`,
-    BOTTOM: `4px 4px 0 0;`,
-    "BOTTOM-LEFT": `4px 0 0 0;`,
-    "BOTTOM-RIGHT": `0 4px 0 0;`,
+    [TooltipDirection.TOP]: `0 0 4px 4px;`,
+    [TooltipDirection.BOTTOM]: `4px 4px 0 0;`,
+    [TooltipDirection.BOTTOM_LEFT]: `4px 0 0 0;`,
+    [TooltipDirection.BOTTOM_RIGHT]: `0 4px 0 0;`,
   },
 }
 
@@ -42,9 +55,9 @@ export const TooltipWrapper = styled.div<TooltipProps>`
   display: flex;
   justify-content: center;
   position: absolute;
-  width: 98px;
+  width: ${({ $size }) => widths[$size]}px;
   z-index: 3;
-  ${({ direction }) => positions[direction]}
+  ${({ $direction, $size }) => positions[$direction](widths[$size])}
   > hr {
     background: ${({ theme }) => theme.secondary_violet};
     border: 1px solid ${({ theme }) => theme.secondary_violet};
@@ -62,14 +75,14 @@ export const TooltipWrapper = styled.div<TooltipProps>`
   }
   .description-container {
     background: ${({ theme }) => theme.light_brown};
-    border-radius: ${({ direction }) => descriptionContainer.borderRadius[direction]};
+    border-radius: ${({ $direction }) => descriptionContainer.borderRadius[$direction]};
     font-size: 9px;
     font-weight: normal;
     width: 100%;
   }
   .title-container {
     background: ${({ theme }) => theme.primary_brown};
-    border-radius: ${({ direction }) => titleContainer.borderRadius[direction]};
+    border-radius: ${({ $direction }) => titleContainer.borderRadius[$direction]};
     font-size: 8px;
     font-weight: bold;
     position: relative;
@@ -77,10 +90,14 @@ export const TooltipWrapper = styled.div<TooltipProps>`
   }
   &::after {
     background: ${({ theme }) => theme.primary_brown};
-    ${({ direction }) => titleContainer.arrowPosition[direction]}
+    ${({ $direction }) => titleContainer.arrowPosition[$direction]}
     content: "";
     height: 8px;
     position: absolute;
     width: 8px;
+  }
+  ${BREAKPOINTS.SM} {
+    width: ${widths.SM}px;
+    ${({ $direction }) => positions[$direction](widths.SM)}
   }
 `

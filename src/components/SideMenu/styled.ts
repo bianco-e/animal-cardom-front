@@ -2,11 +2,11 @@ import styled from "styled-components"
 import { BREAKPOINTS } from "../../utils/constants"
 
 interface WrapperProps {
-  width?: string
+  $width?: string
 }
 
 interface CloseButtonProps {
-  rotate?: string
+  $rotate?: string
 }
 
 export const UserInfoContainer = styled.div`
@@ -20,7 +20,7 @@ export const UserInfoContainer = styled.div`
   }
   > span {
     font-size: 16px;
-    ${BREAKPOINTS.MOBILE} {
+    ${BREAKPOINTS.SM} {
       display: none;
     }
   }
@@ -28,7 +28,7 @@ export const UserInfoContainer = styled.div`
 
 export const CloseButton = styled.div<CloseButtonProps>`
   display: none;
-  ${BREAKPOINTS.MOBILE} {
+  ${BREAKPOINTS.SM} {
     background: #f4e4bc;
     border-radius: 0 5px 5px 0;
     display: flex;
@@ -41,7 +41,7 @@ export const CloseButton = styled.div<CloseButtonProps>`
     width: 18px;
     > svg {
       transition: all 0.4s ease;
-      transform: rotate(${({ rotate }) => rotate});
+      transform: rotate(${({ $rotate }) => $rotate});
     }
   }
 `
@@ -57,7 +57,7 @@ export const Wrapper = styled.div<WrapperProps>`
   padding: 0 20px;
   position: fixed;
   top: 0;
-  width: 200px;
+  width: 140px;
   z-index: 5;
   & > *:not(:last-child) {
     margin-bottom: ${({ theme }) => theme.$4};
@@ -66,11 +66,11 @@ export const Wrapper = styled.div<WrapperProps>`
     cursor: pointer;
     margin-top: 60px;
   }
-  ${BREAKPOINTS.MOBILE} {
+  ${BREAKPOINTS.SM} {
     transition: all 0.4s ease;
-    width: ${({ width }) => width};
-    ${({ width }) =>
-      width === "1px"
+    width: ${({ $width }) => $width};
+    ${({ $width }) =>
+      $width === "1px"
         ? `
             padding: 0 3px;
             button, img {

@@ -1,8 +1,14 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 import { IGameState } from "../../interfaces"
 
+enum SoundState {
+  ON = "ON",
+  OFF = "OFF",
+}
+
 const initialState: IGameState = {
   isLoading: false,
+  soundOn: localStorage.getItem("sound") === SoundState.ON,
   gameError: false,
   hands: { user: [], pc: [] },
   plants: { user: [], pc: [] },
@@ -13,11 +19,11 @@ const initialState: IGameState = {
   attacker: undefined,
   defender: undefined,
   underAttack: undefined,
-  terrain: {
+  habitat: {
+    id: 0,
     name: "",
+    description: "",
     color: "#fff",
-    image: "",
-    campaign_xp: [0],
   },
   pcTurn: false,
   triggerPcAttack: false,
@@ -30,6 +36,13 @@ export const slice = createSlice({
   reducers: {
     SET_STATE: (state, action) => {
       return action.payload
+    },
+    SET_GAME_SOUND: (state, action) => {
+      localStorage.setItem("sound", action.payload ? SoundState.OFF : SoundState.ON)
+      return {
+        ...state,
+        soundOn: action.payload
+      }
     },
     SET_LOADING_GAME: (state, action) => {
       return {

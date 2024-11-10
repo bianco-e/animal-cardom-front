@@ -99,7 +99,7 @@ const Container = styled.div`
   margin: 0 0 32px;
   width: 50%;
   text-align: center;
-  ${BREAKPOINTS.MOBILE} {
+  ${BREAKPOINTS.SM} {
     width: 100%;
   }
 `
@@ -116,14 +116,14 @@ const Title = styled.h1`
   font-size: ${({ theme }) => theme.$3};
   font-weight: bold;
   margin: 96px 0 44px;
-  ${BREAKPOINTS.MOBILE} {
+  ${BREAKPOINTS.SM} {
     margin: 96px 0 32px;
     font-size: ${({ theme }) => theme.$4};
   }
 `
 const ActionContainer = styled.div`
   margin: 16px 0;
-  ${BREAKPOINTS.MOBILE} {
+  ${BREAKPOINTS.SM} {
     margin: 8px 0;
   }
   li {
